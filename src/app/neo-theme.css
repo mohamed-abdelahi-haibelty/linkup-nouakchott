@@ -1,0 +1,178 @@
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}
+:root {
+  /* Background and foreground */
+  --background: #f4f4f0; /* main page background */
+  --foreground: #1f2937; /* dark text for readability */
+
+  /* Card colors */
+  --card: #fff; /* card background */
+  --card-foreground: #1f2937; /* card text */
+
+  /* Popover */
+  --popover: #fff;
+  --popover-foreground: #1f2937;
+
+  /* Primary - main brand color */
+  --primary: #ffa07a;
+  --primary-foreground: #1f2937;
+
+  /* Secondary - minimalist neutral */
+  --secondary: #e0e0d9; /* soft light gray-beige */
+  --secondary-foreground: #1f2937;
+
+  /* Muted / subtle background areas */
+  --muted: #e8e8e4; /* very subtle light neutral */
+  --muted-foreground: #2d3a2d;
+
+  /* Accent - subtle highlight */
+  --accent: #8fad88; /* soft coral-beige highlight */
+  --accent-foreground: #ffffff;
+
+  /* Destructive / error */
+  --destructive: #ff6b6b;
+  --destructive-foreground: #fff;
+
+  /* Borders and inputs */
+  --border: #000;
+  --input: #000;
+
+  /* Focus ring */
+  --ring: #ffa07a;
+
+  /* Chart colors */
+  --chart-1: #ffa07a; /* primary coral */
+  --chart-2: #e0e0d9; /* secondary neutral */
+  --chart-3: #ffea7a; /* muted yellow/gold */
+  --chart-4: #b0c4ff; /* soft info blue */
+  --chart-5: #ff6b6b; /* destructive red */
+
+  /* Sidebar */
+  --sidebar: #fff;
+  --sidebar-foreground: #1f2937;
+  --sidebar-primary: #ffa07a;
+  --sidebar-primary-foreground: #1f2937;
+  --sidebar-accent: #ffd6c2;
+  --sidebar-accent-foreground: #1f2937;
+  --sidebar-border: #ccc; /* subtle neutral border */
+  --sidebar-ring: #ffa07a;
+
+  /* Fonts */
+  --font-sans: "DM Sans", sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "Space Mono", monospace;
+
+  /* Radius & shadows */
+  --radius: 0px;
+  --shadow-2xs: 4px 4px 0px 0px hsl(0 0% 0% / 0.5);
+  --shadow-xs: 4px 4px 0px 0px hsl(0 0% 0% / 0.5);
+  --shadow-sm: 4px 4px 0px 0px hsl(0 0% 0% / 1),
+    4px 1px 2px -1px hsl(0 0% 0% / 1);
+  --shadow: 4px 4px 0px 0px hsl(0 0% 0% / 1), 4px 1px 2px -1px hsl(0 0% 0% / 1);
+  --shadow-md: 4px 4px 0px 0px hsl(0 0% 0% / 1),
+    4px 2px 4px -1px hsl(0 0% 0% / 1);
+  --shadow-lg: 4px 4px 0px 0px hsl(0 0% 0% / 1),
+    4px 4px 6px -1px hsl(0 0% 0% / 1);
+  --shadow-xl: 4px 4px 0px 0px hsl(0 0% 0% / 1),
+    4px 8px 10px -1px hsl(0 0% 0% / 1);
+  --shadow-2xl: 4px 4px 0px 0px hsl(0 0% 0% / 2.5);
+}
+
+/* --radius: 0px;
+  --shadow-2xs: 4px 4px 0px 0px rgba(0,0,0,0.025);
+  --shadow-xs: 4px 4px 0px 0px rgba(0,0,0,0.025);
+  --shadow-sm: 4px 4px 0px 0px rgba(0,0,0,0.05), 4px 1px 2px -1px rgba(0,0,0,0.05);
+  --shadow: 4px 4px 0px 0px rgba(0,0,0,0.05), 4px 1px 2px -1px rgba(0,0,0,0.05);
+  --shadow-md: 4px 4px 0px 0px rgba(0,0,0,0.05), 4px 2px 4px -1px rgba(0,0,0,0.05);
+  --shadow-lg: 4px 4px 0px 0px rgba(0,0,0,0.05), 4px 4px 6px -1px rgba(0,0,0,0.05);
+  --shadow-xl: 4px 4px 0px 0px rgba(0,0,0,0.05), 4px 8px 10px -1px rgba(0,0,0,0.05);
+  --shadow-2xl: 4px 4px 0px 0px rgba(0,0,0,0.025); */
+
+.dark {
+  --background: #1e213f; /* Dark navy background */
+  --foreground: oklch(0.984 0.003 247.858); /* White text */
+  --card: oklch(0.208 0.042 265.755); /* Slightly lighter navy for cards */
+  --card-foreground: oklch(0.984 0.003 247.858);
+  --popover: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.984 0.003 247.858);
+  /* Updated primary color to match the coral/salmon color in the image */
+  --primary: #f87070; /* #F87070 - Coral/salmon color */
+  --primary-foreground: #1e213f;
+  --secondary: oklch(0.279 0.041 260.031);
+  --secondary-foreground: oklch(0.984 0.003 247.858);
+  --muted: oklch(0.279 0.041 260.031);
+  --muted-foreground: oklch(0.704 0.04 256.788);
+  --accent: oklch(0.279 0.041 260.031);
+  --accent-foreground: oklch(0.984 0.003 247.858);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: #f87070;
+
+  /* Color palette from the image */
+  --chart-1: oklch(0.65 0.25 25); /* #F87070 - Coral/salmon */
+  --chart-2: oklch(0.7 0.15 180); /* #70F3F8 - Cyan */
+  --chart-3: oklch(0.7 0.15 270); /* #D881F8 - Purple */
+  --chart-4: oklch(0.7 0.15 220); /* #D7E0FF - Light blue */
+  --chart-5: oklch(0.65 0.25 25); /* #F87070 - Coral/salmon (repeated) */
+
+  /* Sidebar colors */
+  --sidebar: #1e213f;
+  --sidebar-foreground: #d7e0ff;
+  --sidebar-primary: #f87070;
+  --sidebar-primary-foreground: #d7e0ff;
+  --sidebar-accent: #161932;
+  --sidebar-accent-foreground: #d7e0ff;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #f87070;
+}

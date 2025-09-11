@@ -1,0 +1,276 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  //output   = "../src/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id String @id
+  role UserRole @default(user)
+  name String
+  email String @unique
+  avatarUrl String? @map("avatar_url")
+  phoneNumber String? @map("phone_number")
+  bio String?
+
+  //Relations
+  events Event[]
+  posts CommunityPost[]
+  registrations Participant[]
+  notifications Notification[]
+  tickets Ticket[]
+  approvedEvents Event[] @relation("EventApprover")
+  approvedPosts CommunityPost[] @relation("PostApprover")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@map("users")
+  @@index([email])
+  @@index([role])
+}
+
+model Event {
+  id String @id @default(cuid())
+  title String  @db.VarChar(255)
+  slug String @unique @db.VarChar(255)
+  description String @db.Text
+  imageUrl String? @map("image_url") @db.VarChar(500)
+  capacity Int @default(0)
+  price Decimal @default(0) @db.Decimal(10, 2)
+  location String @db.VarChar(500)
+  status EventStatus @default(pending)
+  contactPhone String? @db.VarChar(20)
+  startTime DateTime @map("start_time")
+  endTime DateTime @map("end_time")
+  tag EventTag?
+
+  // Foreign keys
+  organizerId String @map("organizer_id")
+  approvedById String? @map("approved_by_id")
+
+  // Relations
+  organizer User @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  approvedBy User? @relation("EventApprover", fields: [approvedById], references: [id])
+  timelineItems TimelineItem[] 
+  participants Participant[]
+  tickets Ticket[]
+
+   // Soft delete and audit fields
+  approvedAt DateTime? @map("approved_at")
+  rejectedAt DateTime? @map("rejected_at")
+  cancelledAt DateTime? @map("cancelled_at")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? @map("deleted_at")
+
+
+  @@map("events")
+  @@index([slug])
+  @@index([organizerId])
+  @@index([status])
+  @@index([startTime])
+  @@index([tag])
+  @@index([location])
+
+}
+
+model TimelineItem {
+  id String @id @default(cuid())
+  eventId String @map("event_id")
+  title String @db.VarChar(255)
+  description String @db.Text
+  startTime DateTime @map("start_time")
+  endTime DateTime @map("end_time")
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@map("event_timeline")
+  @@index([eventId])
+}
+
+model CommunityPost {
+  id String @id @default(cuid())
+  userId String @map("user_id")
+  title String? @db.VarChar(255)
+  posterUrl String? @map("poster_url") @db.VarChar(500)
+  description String @db.Text
+  location String?  @db.VarChar(500)
+  startTime DateTime? @map("start_time")
+  endTime DateTime? @map("end_time")
+  tag EventTag?
+  status CommunityPostStatus @default(pending)
+
+  approvedById String? @map("approved_by_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  approvedBy User? @relation("PostApprover", fields: [approvedById], references: [id])
+
+  approvedAt DateTime? @map("approved_at")
+  rejectedAt DateTime? @map("rejected_at")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  @@map("community_post")
+  @@index([userId])
+  @@index([status])
+  @@index([tag])
+}
+
+model Participant {
+  id String @id @default(cuid())
+  participantId String @map("participant_id")
+  participant User @relation(fields: [participantId], references: [id])
+  eventId String @map("event_id")
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  status RegistrationStatus @default(pending)
+
+  checkedInAt DateTime?
+  createdAt DateTime @default(now())
+  confirmedAt DateTime? @map("confirmed_at")
+  
+  @@map("participants")
+  @@unique([participantId, eventId]) // Prevent duplicate participation
+  @@index([participantId])
+  @@index([eventId])
+  @@index([status])
+}
+
+model Notification {
+  id String @id @default(cuid())
+  userId String @map("user_id")
+  title String
+  message String
+  readAt DateTime?
+  type NotificationType
+  actionUrl String?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+  @@index([userId])
+  @@index([readAt])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model Ticket {
+  id String @id @default(cuid())
+  eventId String @map("event_id")
+  userId String @map("user_id")
+  code String @unique
+  status TicketStatus @default(active)
+  issuedAt DateTime @default(now())
+  scannedBy String? @map("scanned_by") // Who scanned the ticket
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tickets")
+  @@unique([eventId, userId]) // One ticket per user per event
+  @@index([eventId])
+  @@index([userId])
+  @@index([code])
+  @@index([status])
+}
+
+enum TicketStatus {
+  active
+  used
+  cancelled
+}
+
+enum NotificationType {
+  event_update
+  event_cancelled
+  event_accepted
+  post_accepted
+  reminder
+  general
+}
+
+enum UserRole {
+    user
+    moderator
+    admin
+}
+
+enum EventStatus {
+  pending
+  approved
+  rejected
+  cancelled
+}
+
+enum CommunityPostStatus {
+  pending
+  approved
+  rejected
+}
+
+enum RegistrationStatus {
+  pending     // just requested
+  confirmed   // approved by organizer
+  paid        // organizer confirmed payment
+  cancelled
+}
+
+enum EventTag {
+  music
+  concert
+  festival
+  sports
+  fitness
+  workshop
+  education
+  tech
+  conference
+  seminar
+  meetup
+  party
+  networking
+  food
+  drink
+  art
+  exhibition
+  theater
+  cinema
+  comedy
+  charity
+  religious
+  cultural
+  fashion
+  gaming
+  travel
+  outdoors
+  kids
+  family
+  wellness
+  health
+  business
+  entrepreneurship
+  marketing
+  hackathon
+  photography
+  dance
+  literature
+  poetry
+  debate
+  science
+  environment
+  politics
+  community
+}
