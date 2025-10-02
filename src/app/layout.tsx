@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
+
 const mabry = localFont({
   src: [
     {
@@ -37,7 +40,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${mabry.variable} antialiased`}>{children}</body>
+      <body className={`${mabry.variable} antialiased`}>
+        <NextSSRPlugin
+          /**
+           * The `extractRouterConfig` will extract **only** the route configs
+           * from the router to prevent additional information from being
+           * leaked to the client. The data passed to the client is the same
+           * as if you were to fetch `/api/uploadthing` directly.
+           */
+          routerConfig={extractRouterConfig(ourFileRouter)}
+        />
+        <Toaster />
+        {children}
+      </body>
     </html>
   );
 }

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -189,6 +190,87 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Added custom loader animations */
+@keyframes loader-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes loader-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-progress {
+  0% {
+    width: 0%;
+  }
+  50% {
+    width: 70%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes loader-bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes loader-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.loader-pulse {
+  animation: loader-pulse 2s ease-in-out infinite;
+}
+
+.loader-spin {
+  animation: loader-spin 1.5s linear infinite;
+}
+
+.loader-progress {
+  animation: loader-progress 3s ease-in-out infinite;
+}
+
+.loader-bounce {
+  animation: loader-bounce 1.4s ease-in-out infinite;
+}
+
+.loader-fade-in {
+  animation: loader-fade-in 0.6s ease-out forwards;
 }
 
 /* :root {

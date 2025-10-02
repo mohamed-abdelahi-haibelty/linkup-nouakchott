@@ -1,19 +1,17 @@
 "use client";
-import React, { ReactNode } from "react";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import { ReactNode } from "react";
+import EventDetailsFooter from "../../components/shared/EventDetailsFooter";
+import Footer from "../../components/shared/Footer";
+import Navbar from "@/components/shared/Navbar";
 import { usePathname } from "next/navigation";
-import EventDetailsFooter from "./components/EventDetailsFooter";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import CreateEventButton from "./events/_components/CreateEventButton";
 
 function WebsiteLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isEventDetailsPage =
     pathname?.startsWith("/events/") && pathname.split("/").length === 3;
 
-  const isEventPage = pathname === "/";
-
+  const isEventsPage = pathname === "/events";
   if (isEventDetailsPage) {
     return (
       <div className="h-full">
@@ -21,23 +19,21 @@ function WebsiteLayout({ children }: { children: ReactNode }) {
           <Navbar />
         </div>
         <main className="min-h-screen px-2 pb-24">{children}</main>
-        <EventDetailsFooter />
+        {/* <EventDetailsFooter /> */}
       </div>
     );
   }
 
-  if (isEventPage) {
+  if (isEventsPage) {
     return (
-      <div className="h-full">
+      <div className="h-full ">
         <Navbar />
         <main className="h-full pt-20 mx-6">{children}</main>
         <div
           className="hidden fixed md:flex items-center justify-center bottom-5 z-50 w-12
            mx-auto left-0 right-0 "
         >
-          <Button className="bg-white border rounded-sm   ">
-            <Plus className="w-5 h-5" />
-          </Button>
+          <CreateEventButton />
         </div>
       </div>
     );
