@@ -11,7 +11,9 @@ function EventDetailsFooter() {
         <div className="p-4 border-2 border-none rounded-full bg-background hover:shadow-xs hover:bg-muted">
           <Heart className="w-4 h-4 " />
         </div>
-        <Button className="w-full flex-1  rounded-full p-6">Join</Button>
+        <Button className="w-full bg-accent flex-1  rounded-full p-6">
+          Join
+        </Button>
       </div>
     </div>
   );

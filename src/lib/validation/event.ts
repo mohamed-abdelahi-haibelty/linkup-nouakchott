@@ -12,7 +12,7 @@ export const createEventSchema = z
     tag: z.enum(EventTag).optional(),
     startTime: z.date("Start time is required"),
     endTime: z.date("end time is required"),
-    registrationDeadline: z.date().optional(),
+    registrationDeadline: z.date(),
     isFree: z.boolean().default(true),
     contactPhone: z.string().optional(),
   })

@@ -36,7 +36,7 @@ model Event {
   title         String         @db.VarChar(255)
   slug          String         @unique @db.VarChar(255)
   description   String
-  imageUrl      String?        @map("image_url") @db.VarChar(500)
+  imageUrl      String        @map("image_url") @db.VarChar(500)
   capacity      Int            @default(0)
   price         Decimal        @default(0) @db.Decimal(10, 2)
   location      String         @db.VarChar(500)
@@ -45,7 +45,6 @@ model Event {
   startTime     DateTime       @map("start_time")
   endTime       DateTime       @map("end_time")
   isFree        Boolean        @map("is_free")
-  date          DateTime
   tag           EventTag?
   organizerId   String         @map("organizer_id")
   approvedById  String?        @map("approved_by_id")
@@ -55,7 +54,8 @@ model Event {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   deletedAt     DateTime?      @map("deleted_at")
-  timelineItems TimelineItem[]
+  registrationDeadline DateTime
+  //timelineItems TimelineItem[]
   approvedBy    User?          @relation("EventApprover", fields: [approvedById], references: [id])
   organizer     User           @relation(fields: [organizerId], references: [id], onDelete: Cascade)
   participants  Participant[]
@@ -70,19 +70,19 @@ model Event {
   @@map("events")
 }
 
-model TimelineItem {
-  id          String   @id @default(cuid())
-  eventId     String   @map("event_id")
-  title       String   @db.VarChar(255)
-  description String
-  startTime   DateTime @map("start_time")
-  endTime     DateTime @map("end_time")
-  createdAt   DateTime @default(now())
-  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+// model TimelineItem {
+//   id          String   @id @default(cuid())
+//   eventId     String   @map("event_id")
+//   title       String   @db.VarChar(255)
+//   description String
+//   startTime   DateTime @map("start_time")
+//   endTime     DateTime @map("end_time")
+//   createdAt   DateTime @default(now())
+//   event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
-  @@index([eventId])
-  @@map("event_timeline")
-}
+//   @@index([eventId])
+//   @@map("event_timeline")
+// }
 
 model CommunityPost {
   id           String              @id @default(cuid())
@@ -208,47 +208,15 @@ enum RegistrationStatus {
 
 enum EventTag {
   music
-  concert
-  festival
   sports
-  fitness
-  workshop
   education
   tech
-  conference
-  seminar
-  meetup
-  party
-  networking
-  food
-  drink
-  art
-  exhibition
-  theater
-  cinema
-  comedy
-  charity
-  religious
-  cultural
-  fashion
-  gaming
-  travel
-  outdoors
-  kids
-  family
-  wellness
-  health
   business
-  entrepreneurship
-  marketing
-  hackathon
-  photography
-  dance
-  literature
-  poetry
-  debate
-  science
-  environment
-  politics
+  art
+  food
+  culture
+  charity
+  entertainment
+  health
   community
 }

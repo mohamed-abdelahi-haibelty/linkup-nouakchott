@@ -9,17 +9,16 @@ import Image from "next/image";
 
 import { formatDate, formatTime } from "@/lib/utils";
 import EventInfoCard from "./EventInfoCard";
-import { EventWithParticipantsAndTimeLineItems } from "@/types";
 import { BackButton } from "@/components/shared/BackButton";
 import StackedAvatar from "@/components/shared/StackedAvatar";
+import { EventWithParticipantsAndCounts } from "@/types";
 
 type EventHeroProps = Pick<
-  EventWithParticipantsAndTimeLineItems,
+  EventWithParticipantsAndCounts,
   | "title"
   | "description"
   | "imageUrl"
   | "startTime"
-  | "date"
   | "isFree"
   | "price"
   | "participants"
@@ -36,7 +35,6 @@ function EventHero({ event }: EventHeroComponentProps) {
     imageUrl,
     description,
     participants,
-    date,
     startTime,
     isFree,
     price,
@@ -47,7 +45,7 @@ function EventHero({ event }: EventHeroComponentProps) {
   const infoItems = [
     {
       icon: <CalendarRange className="w-4 h-4 text-white" />,
-      label: formatDate(date),
+      label: formatDate(startTime),
     },
     {
       icon: <Clock className="w-4 h-4 text-white" />,

@@ -2,13 +2,11 @@
 import prisma from "@/lib/db";
 import {
   EventWithParticipants,
-  EventWithParticipantsAndTimeLineItems,
+  EventWithParticipantsAndCounts,
   ParticipantWithUserAndCount,
 } from "@/types";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { CreateEventInput, createEventSchema } from "./validation/event";
-import { error } from "console";
-import z from "zod";
 import { generateSlug } from "./utils";
 import { revalidatePath } from "next/cache";
 
@@ -116,7 +114,7 @@ export async function getEvents({
 
 export async function getEventById(
   id: string
-): Promise<EventWithParticipantsAndTimeLineItems | null> {
+): Promise<EventWithParticipantsAndCounts | null> {
   try {
     const event = await prisma.event.findUnique({
       where: {
@@ -133,7 +131,6 @@ export async function getEventById(
             events: { select: { id: true } },
           },
         },
-        timelineItems: true,
       },
     });
 
@@ -201,7 +198,6 @@ export async function createEventAction(data: CreateEventInput) {
     const event = await prisma.event.create({
       data: {
         ...parsed.data,
-        date: parsed.data.startTime, // TODO: remove the date later from the event modal
         slug: generateSlug(parsed.data.title),
         organizerId: user?.id!,
       },

@@ -17,7 +17,6 @@ type EventCardProps = Pick<
   | "title"
   | "description"
   | "startTime"
-  | "date"
   | "isFree"
   | "price"
   | "tag"
@@ -32,7 +31,6 @@ function EventCard({
   title,
   description,
   startTime,
-  date,
   isFree,
   price,
   tag,
@@ -40,7 +38,7 @@ function EventCard({
   capacity,
 }: EventCardProps) {
   const priceValue = isFree ? "Free" : price;
-  const formatedDate = formatDate(date);
+  const formatedDate = formatDate(startTime);
   const formatedTime = formatTime(startTime);
 
   const registredParticipantsNum = participants.length;

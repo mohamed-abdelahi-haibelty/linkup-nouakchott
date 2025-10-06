@@ -2,10 +2,10 @@ import React from "react";
 import EventDescription from "./EventDescription";
 import EventDetailedCard from "./EventDetailedCard";
 import OrganizerCard from "./OrganizerCard";
-import { EventWithParticipantsAndTimeLineItems } from "@/types";
+import { EventWithParticipantsAndCounts } from "@/types";
 
 type Props = {
-  event: EventWithParticipantsAndTimeLineItems;
+  event: EventWithParticipantsAndCounts;
 };
 
 function EventMainContent({ event }: Props) {

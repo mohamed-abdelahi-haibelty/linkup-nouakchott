@@ -15,7 +15,6 @@ type Props = {
 
 function EventDetailedCard({ event }: Props) {
   const {
-    date,
     startTime,
     endTime,
     location,
@@ -48,7 +47,7 @@ function EventDetailedCard({ event }: Props) {
   const eventDetails: EventDetailItem[] = [
     {
       icon: <Calendar className="w-4 h-4 text-accent" />,
-      label: formatDate(date),
+      label: formatDate(startTime),
       value: `${formatTime(startTime)} - ${formatTime(endTime)}`,
     },
     {

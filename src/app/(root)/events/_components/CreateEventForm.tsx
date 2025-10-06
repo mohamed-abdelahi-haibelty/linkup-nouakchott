@@ -119,8 +119,8 @@ function CreateEventForm() {
             )}
           />
 
-          <div className="grid grid-cols-1 gap-y-1 md:grid-cols-2 md:gap-x-6 border-b border-dashed pb-8">
-            <div className="hidden md:block">
+          <div className="grid grid-cols-1 gap-y-3 md:grid-cols-2 md:gap-x-6 border-b border-dashed pb-8">
+            <div className="">
               <FormField
                 name="tag"
                 control={form.control}
@@ -310,25 +310,6 @@ function CreateEventForm() {
                       />
                     </div>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="mt-3 border-t border-dashed pt-3 md:hidden">
-            <FormField
-              name="tag"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Event Category</FormLabel>
-
-                  <EventTags
-                    selectedTag={field.value}
-                    onChange={field.onChange}
-                    tags={tagList}
-                  />
                   <FormMessage />
                 </FormItem>
               )}

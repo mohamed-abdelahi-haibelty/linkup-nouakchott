@@ -1,4 +1,4 @@
-import { Event, TimelineItem } from "@prisma/client";
+import { Event } from "@prisma/client";
 
 import {
   ParticipantWithUser,
@@ -16,10 +16,5 @@ export type EventWithParticipants = SafeEvent & {
 // Event with participants that include attended event counts
 export type EventWithParticipantsAndCounts = SafeEvent & {
   participants: ParticipantWithUserAndCount[];
-};
-
-// Event with participants (with counts) and timeline items
-export type EventWithParticipantsAndTimeLineItems = EventWithParticipantsAndCounts & {
-  timelineItems: TimelineItem[];
   organizer: Organizer;
 };

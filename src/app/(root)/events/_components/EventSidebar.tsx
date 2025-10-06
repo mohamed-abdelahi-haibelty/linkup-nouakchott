@@ -2,18 +2,16 @@
 
 import { ParticipantWithUserAndCount } from "@/types";
 import ParticipantsSection from "./ParticipantsSection";
-import { TimelineItem } from "@prisma/client";
 import { JoinEventButton } from "@/components/shared/JoinEventButton";
 
 type Props = {
   participants: ParticipantWithUserAndCount[];
-  timelineItems: TimelineItem[];
   eventId: string;
   capacity: number;
 };
 
 // _components/EventSidebar.tsx
-export function EventSidebar({ participants, timelineItems, eventId }: Props) {
+export function EventSidebar({ participants, eventId }: Props) {
   const participantsCount = participants?.length;
   const handleJoinEvent = async (eventId: string) => {
     console.log("[v0] Joining event:", eventId);

@@ -1,12 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EventHero from "../_components/EventHero";
 import ParticipantsList from "../_components/ParticipantsList";
-import TimeLineList from "../_components/TimeLineList";
 import EventMainContent from "./EventMainContent";
-import { EventWithParticipantsAndTimeLineItems } from "@/types";
+import { EventWithParticipantsAndCounts } from "@/types";
 
 type Props = {
-  event: EventWithParticipantsAndTimeLineItems;
+  event: EventWithParticipantsAndCounts;
 };
 
 function EventMobileLayout({ event }: Props) {
@@ -14,16 +13,16 @@ function EventMobileLayout({ event }: Props) {
     <div className="md:hidden">
       <EventHero event={event} />
 
-      <Tabs className="mt-3 " defaultValue="Schedule">
+      <Tabs className="mt-3 " defaultValue="About">
         <TabsList className="flex justify-center w-full">
-          <TabsTrigger value="Schedule"> Schedule</TabsTrigger>
+          {/* <TabsTrigger value="Schedule"> Schedule</TabsTrigger> */}
           <TabsTrigger value="About">About</TabsTrigger>
           <TabsTrigger value="Participants">Participants</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="Schedule">
+        {/* <TabsContent value="Schedule">
           <TimeLineList items={event.timelineItems} />
-        </TabsContent>
+        </TabsContent> */}
 
         <TabsContent value="About" className="px-2 sm:px-4">
           <EventMainContent event={event} />

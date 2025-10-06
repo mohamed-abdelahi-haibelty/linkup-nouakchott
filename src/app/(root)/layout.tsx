@@ -19,7 +19,7 @@ function WebsiteLayout({ children }: { children: ReactNode }) {
           <Navbar />
         </div>
         <main className="min-h-screen px-2 pb-24">{children}</main>
-        {/* <EventDetailsFooter /> */}
+        <EventDetailsFooter />
       </div>
     );
   }
