@@ -1,14 +1,7 @@
 "use client";
 import { useState } from "react";
 import { UploadButton } from "@/lib/uploadthing";
-import {
-  X,
-  Loader2,
-  AlertCircle,
-  Upload,
-  Image,
-  ImageIcon,
-} from "lucide-react";
+import { X, Loader2, AlertCircle, Upload, ImageIcon } from "lucide-react";
 
 interface FileUploadComponentProps {
   onImageChange?: (url: string | null) => void;

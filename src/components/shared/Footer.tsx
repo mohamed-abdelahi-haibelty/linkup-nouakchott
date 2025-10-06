@@ -1,4 +1,4 @@
-import { Compass, Telescope, Ticket, User, Users } from "lucide-react";
+import { Compass, Ticket, User, Users } from "lucide-react";
 
 function Footer() {
   return (

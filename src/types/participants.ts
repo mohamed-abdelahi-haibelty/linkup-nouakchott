@@ -1,4 +1,4 @@
-import { Event, Participant, User } from "@prisma/client";
+import { Participant, User } from "@prisma/client";
 
 // A "Participant" with its related "User"
 export type ParticipantWithUser = Participant & {

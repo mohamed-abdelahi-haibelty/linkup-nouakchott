@@ -6,7 +6,7 @@ import {
   DrawerContent,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { CheckIcon, ChevronDownIcon, GlobeIcon, XIcon } from "lucide-react";
+import { CheckIcon, GlobeIcon, XIcon } from "lucide-react";
 import React from "react";
 
 function LanguageSwitcher() {

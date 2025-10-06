@@ -1,10 +1,4 @@
-import {
-  CalendarRange,
-  ChevronLeft,
-  Clock,
-  Share2,
-  Ticket,
-} from "lucide-react";
+import { CalendarRange, Clock, Share2, Ticket } from "lucide-react";
 import Image from "next/image";
 
 import { formatDate, formatTime } from "@/lib/utils";

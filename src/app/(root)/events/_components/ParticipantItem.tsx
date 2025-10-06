@@ -2,7 +2,6 @@ import { ParticipantWithUserAndCount } from "@/types";
 import Image from "next/image";
 
 function ParticipantItem({
-  id,
   participant,
   attendedEventsCount,
 }: ParticipantWithUserAndCount) {

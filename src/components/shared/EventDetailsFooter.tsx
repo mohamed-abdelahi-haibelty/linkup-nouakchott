@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Compass, Heart, Telescope, Ticket, User, Users } from "lucide-react";
+import { Heart } from "lucide-react";
 
 function EventDetailsFooter() {
   return (
