@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { UploadButton } from "@/lib/uploadthing";
 import { X, Loader2, AlertCircle, Upload, ImageIcon } from "lucide-react";
+import Image from "next/image";
 
 interface FileUploadComponentProps {
   onImageChange?: (url: string | null) => void;
@@ -27,7 +28,7 @@ function FileUploadComponent({
   if (imageUrl) {
     return (
       <div className="relative mt-2 border shadow-[4px_4px_0px_0px_hsl(0_0%_0%_/_1)] rounded-md overflow-hidden group">
-        <img
+        <Image
           src={imageUrl}
           alt="Uploaded image"
           className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
@@ -95,7 +96,7 @@ function FileUploadComponent({
                       );
                     return (
                       <span className="text-foreground">
-                        "Getting ready..."
+                        &quot;Getting ready...&quot;
                       </span>
                     );
                   },

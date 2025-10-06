@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import EventCard from "./EventCard";
 import { getEvents } from "@/lib/actions";
 import { useInView } from "react-intersection-observer";
@@ -33,7 +33,7 @@ function EventList({ initialData, query, initialPagination }: Props) {
   const [isSearching, setIsSeaching] = useState(false);
   const { ref, inView } = useInView();
 
-  async function loadMoreEvents() {
+  const loadMoreEvents = useCallback(async () => {
     if (isLoading || !hasMore) return;
 
     setIsLoading(true);
@@ -45,9 +45,7 @@ function EventList({ initialData, query, initialPagination }: Props) {
         limit: NUMBER_OF_EVENTS_TO_FETCH,
       });
 
-      if (error) {
-        setError(error);
-      }
+      if (error) setError(error);
 
       if (data.length === 0 || pagination.page > pagination.totalPages) {
         setHasMore(false);
@@ -61,7 +59,7 @@ function EventList({ initialData, query, initialPagination }: Props) {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [isLoading, hasMore, page, query]);
 
   function retryLoadMore() {
     setError(null);
@@ -87,7 +85,7 @@ function EventList({ initialData, query, initialPagination }: Props) {
     if (inView && hasMore && !isLoading) {
       loadMoreEvents();
     }
-  }, [inView, hasMore, isLoading]);
+  }, [inView, hasMore, isLoading, loadMoreEvents]);
 
   if (!events.length && !isLoading) {
     return <EventNotFound query={query} />;
@@ -126,7 +124,7 @@ function EventList({ initialData, query, initialPagination }: Props) {
         {!hasMore && events.length > 0 && !error && (
           <div className="flex justify-center py-6">
             <p className="text-sm text-muted-foreground">
-              You've reached the end of the results
+              You&apos;ve reached the end of the results
             </p>
           </div>
         )}

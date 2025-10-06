@@ -51,7 +51,7 @@ export async function getEvents({
     };
   }
 
-  let skip = (page - 1) * limit;
+  const skip = (page - 1) * limit;
 
   const where = query?.trim()
     ? {
@@ -193,13 +193,14 @@ export async function createEventAction(data: CreateEventInput) {
   }
 
   const user = await getUser();
+  const organizerId = user?.id ?? "unkown";
 
   try {
     const event = await prisma.event.create({
       data: {
         ...parsed.data,
         slug: generateSlug(parsed.data.title),
-        organizerId: user?.id!,
+        organizerId: organizerId,
       },
     });
 

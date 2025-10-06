@@ -29,7 +29,7 @@ function ParticipantsList({ users }: Props) {
           </h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Be the first to join this amazing event! Registration is open and
-            we're excited to see who will be part of this experience.
+            we&apos;re excited to see who will be part of this experience.
           </p>
         </div>
 

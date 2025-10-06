@@ -13,8 +13,8 @@ function EventNotFound({ query }: Props) {
             <h2 className="text-xl font-semibold">No events found</h2>
             <p className="text-muted-foreground">
               No events match your search for{" "}
-              <span className=" text-destructive">"{query}"</span>. Try a
-              different search term.
+              <span className=" text-destructive">&quot;{query}&quot;</span>.
+              Try a different search term.
             </p>
           </>
         ) : (

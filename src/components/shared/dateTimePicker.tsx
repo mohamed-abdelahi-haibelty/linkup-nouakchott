@@ -132,7 +132,9 @@ export function DateTimePicker({
           }
         }
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const formatDisplayValue = () => {
