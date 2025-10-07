@@ -28,13 +28,14 @@ function WebsiteLayout({ children }: { children: ReactNode }) {
     return (
       <div className="h-full ">
         <Navbar />
-        <main className="h-full pt-20 mx-6">{children}</main>
+        <main className="h-full pt-20 mx-6 ">{children}</main>
         <div
           className="hidden fixed md:flex items-center justify-center bottom-5 z-50 w-12
            mx-auto left-0 right-0 "
         >
           <CreateEventButton />
         </div>
+        <Footer />
       </div>
     );
   }

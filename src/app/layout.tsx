@@ -50,7 +50,7 @@ export default function RootLayout({
            */
           routerConfig={extractRouterConfig(ourFileRouter)}
         />
-        <Toaster />
+        <Toaster position="top-right" />
         {children}
       </body>
     </html>

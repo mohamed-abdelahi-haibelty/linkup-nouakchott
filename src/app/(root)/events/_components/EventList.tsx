@@ -107,7 +107,7 @@ function EventList({ initialData, query, initialPagination }: Props) {
   return (
     <ErrorWrapper error={error} onRetry={retryLoadMore} isLoading={isLoading}>
       <div className="flex flex-col gap-3">
-        <div className="mt-4 flex items-start gap-x-4 gap-y-3 flex-wrap">
+        <div className="mt-4 flex items-start gap-x-4 gap-y-4 flex-wrap">
           {events?.map((event) => (
             <EventCard {...event} key={event.id} />
           ))}

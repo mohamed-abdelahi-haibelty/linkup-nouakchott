@@ -9,6 +9,7 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { CreateEventInput, createEventSchema } from "./validation/event";
 import { generateSlug } from "./utils";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 
 type EventsResponse =
   | {
@@ -199,14 +200,49 @@ export async function createEventAction(data: CreateEventInput) {
     const event = await prisma.event.create({
       data: {
         ...parsed.data,
+        price: parsed.data?.price ?? 0,
         slug: generateSlug(parsed.data.title),
         organizerId: organizerId,
       },
     });
 
     revalidatePath("/events");
-    return { success: true, event };
+    return {
+      success: true,
+      event,
+      message: "Event created successfully!",
+    };
   } catch (e) {
     console.error(e);
+    // Handle Prisma errors
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        // Unique constraint violation
+        const target = e.meta?.target as string[] | undefined;
+        if (target?.includes("slug")) {
+          return {
+            success: false,
+            message:
+              "An event with this title already exists. Please use a different title.",
+          };
+        }
+        return {
+          success: false,
+          message: "An event with similar details already exists.",
+        };
+      }
+
+      if (e.code === "P2003") {
+        // Foreign key constraint violation
+        return {
+          success: false,
+          message: "Invalid reference data. Please check your inputs.",
+        };
+      }
+    }
+    return {
+      success: false,
+      message: "Failed to create event. Please try again.",
+    };
   }
 }

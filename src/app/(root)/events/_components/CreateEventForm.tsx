@@ -22,12 +22,14 @@ import { cn } from "@/lib/utils";
 import { CreateEventInput } from "@/lib/validation/event";
 import { ArrowLeft, DollarSign, Loader2, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 function CreateEventForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [formError, setFormError] = useState<string | null>(null);
 
   const form = useForm<CreateEventInput>({
     defaultValues: {
@@ -42,7 +44,7 @@ function CreateEventForm() {
       price: 0,
       location: "",
       contactPhone: "",
-      capacity: 1,
+      capacity: 0,
     },
   });
 
@@ -52,18 +54,42 @@ function CreateEventForm() {
     startTransition(async () => {
       const res = await createEventAction(values);
 
-      if (res?.error) {
-        // map server errors into form
-        Object.entries(res.error).forEach(([key, value]) => {
-          if (key in values) {
-            form.setError(key as keyof CreateEventInput, {
-              type: "server",
-              message: value?.[0],
-            });
-          }
-        });
-      } else {
+      if (!res) {
+        toast.error("Something went wrong. Please try again.");
+        return;
+      }
+
+      if (res.success) {
+        // Success case
+        toast.success(res.message || "Event created successfully!");
         form.reset();
+
+        // redirect to the event page
+        if (res.event) {
+          const eventLink = `/events/${res.event.id}_${res.event.slug}`;
+          router.push(eventLink);
+        }
+      } else {
+        // Error case
+        if (res.message) {
+          // General error message (database errors, etc.)
+          toast.error(res.message);
+        }
+
+        // Map field-specific validation errors into form
+        if (res.error) {
+          Object.entries(res.error).forEach(([key, value]) => {
+            if (key in values) {
+              form.setError(key as keyof CreateEventInput, {
+                type: "server",
+                message: value?.[0],
+              });
+            }
+          });
+
+          // Show a toast for validation errors
+          toast.error("Please check the form for errors.");
+        }
       }
     });
   };
@@ -156,7 +182,7 @@ function CreateEventForm() {
               />
             </div>
           </div>
-          <div className="mt-8 grid grid-cols-1 gap-y-4 md:grid-cols-3 md:gap-x-6">
+          <div className="mt-8 grid items-start grid-cols-1 gap-y-4 md:grid-cols-3 md:gap-x-6">
             <FormField
               name="startTime"
               control={form.control}
@@ -183,6 +209,7 @@ function CreateEventForm() {
                   <DateTimePickerField
                     field={field}
                     fieldState={fieldState}
+                    timeFormat="24"
                     placeholder="Select end date and time"
                     minDate={new Date()}
                   />
@@ -200,6 +227,7 @@ function CreateEventForm() {
                     field={field}
                     fieldState={fieldState}
                     placeholder="Select registration deadline"
+                    timeFormat="24"
                     minDate={new Date()}
                   />
                   <FormMessage />
@@ -263,7 +291,7 @@ function CreateEventForm() {
               </div>
             )}
           </div>
-          <div className="grid grid-cols-1 gap-y-4 md:grid-cols-3 md:gap-x-4 border-t border-dashed pt-8">
+          <div className="grid grid-cols-1 items-start gap-y-4 md:grid-cols-3 md:gap-x-4 border-t border-dashed pt-8">
             <FormField
               control={form.control}
               name="location"
@@ -306,6 +334,7 @@ function CreateEventForm() {
                       <Input
                         className="pl-10"
                         placeholder="Enter address"
+                        type="number"
                         {...field}
                       />
                     </div>

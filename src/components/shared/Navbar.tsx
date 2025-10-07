@@ -12,17 +12,17 @@ function Navbar() {
   return (
     <nav
       className={cn(
-        "p-6 fixed z-50 top-0 h-20 w-full bg-background",
+        "p-6 fixed z-50 top-0 h-20 md:h-24 w-full bg-background",
         scrolled && "border-b shadow-xs"
       )}
     >
-      <div className="hidden sm:flex items-center justify-between">
+      <div className="hidden sm:flex items-center justify-between max-w-7xl mx-auto">
         <div className="flex items-center space-x-2">
           <Cable className="" />
           <span className="text-lg font-semibold ">LinkUp Nouakchott</span>
         </div>
 
-        <div className="flex items-center gap-x-1 p-1 bg-white border rounded-lg">
+        <div className="flex items-center gap-2 p-1.5 bg-white border rounded-lg">
           <Button
             asChild
             variant={"ghost"}
