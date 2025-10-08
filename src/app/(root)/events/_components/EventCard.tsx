@@ -43,22 +43,21 @@ function EventCard({
 
   const registredParticipantsNum = participants.length;
   const usersList = participants?.map((p) => p.participant);
+  const participantsCount = participants.length;
 
   const eventLink = `/events/${id}_${slug}`;
 
   return (
     <Link href={eventLink}>
-      <Card className="w-[330px] h-[244px] group  cursor-pointer hover:shadow-[4px_4px_0px_0px_hsl(0_0%_0%_/_1)] transition-shadow">
+      <Card className="w-[330px] md:w-[360px] lg:w-[470px] xl:w-[420px] h-[244px] group  cursor-pointer hover:shadow-[4px_4px_0px_0px_hsl(0_0%_0%_/_1)] transition-shadow">
         <CardContent className="h-full flex flex-col justify-between">
-          <div className="flex items-start gap-x-2">
-            <div className="relative">
+          <div className="flex items-start gap-x-2 ">
+            <div className="relative w-[130px] h-[140px] shrink-0">
               <Image
                 src={imageUrl ?? "/one-piece-poster.png"}
                 alt="event image"
-                width={130}
-                height={140}
+                fill
                 className=" rounded-[8px] object-cover group-hover:opacity-95 transition-opacity"
-                style={{ aspectRatio: "130/140", objectFit: "cover" }}
               />
               {tag && (
                 <Badge
@@ -72,22 +71,29 @@ function EventCard({
                 </Badge>
               )}
             </div>
-            <div className="space-y-1">
-              <h2 className="text-sm font-semibold truncate max-w-[150px] md:max-w-[160px]">
-                {title}
-              </h2>
-              <p className="line-clamp-4 text-[13px] break-words overflow-hidden text-ellipsis max-w-[180px]">
-                {description}
-                &nbsp;
-              </p>
+            <div className="flex flex-col justify-between h-[140px]">
+              <div>
+                <h2 className="text-sm font-semibold truncate max-w-[150px] md:max-w-[180px] lg:max-w-[200px]">
+                  {title}
+                </h2>
+                <p className="line-clamp-4 text-[13px] break-words overflow-hidden text-ellipsis max-w-[150px] md:max-w-[180px] lg:max-w-[200px]">
+                  {description}
+                  &nbsp;
+                </p>
+              </div>
               <div className="flex items-center gap-x-1">
-                <StackedAvatar users={usersList} />
-                <div className="flex items-center gap-x-1">
-                  <Users className="w-3 h-3" />
-                  <span className="text-xs">
-                    {registredParticipantsNum}/{capacity}
-                  </span>
-                </div>
+                {participantsCount > 0 && (
+                  <>
+                    <StackedAvatar users={usersList} />
+
+                    <div className="flex items-center gap-x-1">
+                      <Users className="w-3 h-3" />
+                      <span className="text-xs">
+                        {registredParticipantsNum}/{capacity}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

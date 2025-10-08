@@ -12,7 +12,7 @@ type Props = {
 
 export const StackedAvatar = ({ className, users }: Props) => {
   const userList = users ?? []; // fallback to empty array
-  const maxVisible = 6;
+  const maxVisible = 4;
   const visibleUsers = userList.slice(0, maxVisible);
   const extraCount = Math.max(userList.length - maxVisible, 0);
 

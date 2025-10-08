@@ -106,14 +106,14 @@ function EventList({ initialData, query, initialPagination }: Props) {
 
   return (
     <ErrorWrapper error={error} onRetry={retryLoadMore} isLoading={isLoading}>
-      <div className="flex flex-col gap-3">
-        <div className="mt-4 flex items-start gap-x-4 gap-y-4 flex-wrap">
+      <div className="flex flex-col gap-3 max-w-7xl mx-auto">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 items-start gap-x-4 gap-y-4 ">
           {events?.map((event) => (
             <EventCard {...event} key={event.id} />
           ))}
           {/* Show loading skeletons while loading more */}
           {isLoading &&
-            Array.from({ length: 4 }).map((_, index) => (
+            Array.from({ length: 6 }).map((_, index) => (
               <EventCardSkeleton key={`loading-${index}`} />
             ))}
         </div>
