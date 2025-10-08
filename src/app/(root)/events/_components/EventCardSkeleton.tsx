@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 function EventCardSkeleton() {
   return (
-    <Card className="w-[330px] h-[244px] animate-pulse">
+    <Card className="w-[330px] md:w-[360px] lg:w-[470px] xl:w-[420px]  h-[244px] animate-pulse">
       <CardContent className="h-full flex flex-col justify-between">
         <div className="flex items-start gap-x-2">
           {/* Image skeleton */}

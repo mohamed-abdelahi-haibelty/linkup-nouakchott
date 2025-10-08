@@ -36,6 +36,8 @@ function EventHero({ event }: EventHeroComponentProps) {
   const usersList =
     participants.length > 0 ? participants.map((user) => user.participant) : [];
 
+  const participantsCount = participants.length;
+
   const infoItems = [
     {
       icon: <CalendarRange className="w-4 h-4 text-white" />,
@@ -95,7 +97,9 @@ function EventHero({ event }: EventHeroComponentProps) {
         </p>
 
         {/* Participants */}
-        <StackedAvatar users={usersList} className="mb-2 sm:mb-6" />
+        {participantsCount > 0 && (
+          <StackedAvatar users={usersList} className="mb-2 sm:mb-6" />
+        )}
 
         {/* Event Info Cards */}
         <div className="flex flex-wrap gap-2 sm:gap-4 justify-center">

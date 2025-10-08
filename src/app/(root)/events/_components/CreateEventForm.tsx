@@ -22,14 +22,13 @@ import { cn } from "@/lib/utils";
 import { CreateEventInput } from "@/lib/validation/event";
 import { ArrowLeft, DollarSign, Loader2, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 function CreateEventForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [formError, setFormError] = useState<string | null>(null);
 
   const form = useForm<CreateEventInput>({
     defaultValues: {
@@ -63,12 +62,7 @@ function CreateEventForm() {
         // Success case
         toast.success(res.message || "Event created successfully!");
         form.reset();
-
-        // redirect to the event page
-        if (res.event) {
-          const eventLink = `/events/${res.event.id}_${res.event.slug}`;
-          router.push(eventLink);
-        }
+        router.push("/events/");
       } else {
         // Error case
         if (res.message) {
