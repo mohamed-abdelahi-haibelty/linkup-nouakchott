@@ -9,7 +9,7 @@ async function page() {
     redirect("/api/auth/login");
   }
   return (
-    <div className="md:mt-[100px] bg-card border max-w-7xl mx-auto px-6 py-4">
+    <div className="bg-card xl:rounded-xl border px-6 py-4">
       <CreateEventForm />
     </div>
   );

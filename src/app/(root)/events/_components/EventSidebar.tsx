@@ -24,7 +24,7 @@ export function EventSidebar({ participants, eventId }: Props) {
   };
 
   return (
-    <div className="fixed right-6 w-1/3 h-[calc(100vh-80px)] flex flex-col gap-4">
+    <div className="fixed right-6 xl:right-34 lg:w-1/3 xl:w-[400px] h-[calc(100vh-80px)] flex flex-col gap-4">
       <div className="flex-1">
         <ParticipantsSection users={participants} />
       </div>
