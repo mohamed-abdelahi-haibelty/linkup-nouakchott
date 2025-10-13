@@ -340,7 +340,11 @@ function CreateEventForm() {
           </div>
 
           <div className="flex justify-end">
-            <Button type="submit" disabled={isPending}>
+            <Button
+              className="xl:rounded-lg"
+              type="submit"
+              disabled={isPending}
+            >
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {isPending ? "Creating..." : "Create Event"}
             </Button>

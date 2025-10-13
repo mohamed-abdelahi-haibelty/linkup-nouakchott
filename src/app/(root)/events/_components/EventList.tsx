@@ -94,7 +94,7 @@ function EventList({ initialData, query, initialPagination }: Props) {
   // Show search loading state
   if (isSearching) {
     return (
-      <div className="flex flex-col gap-3 container mx-auto lg:px-8">
+      <div className="flex flex-col gap-3">
         <div className=" mt-4 flex items-start gap-x-4 gap-y-3 flex-wrap">
           {Array.from({ length: 9 }).map((_, index) => (
             <EventCardSkeleton key={index} />
@@ -106,7 +106,7 @@ function EventList({ initialData, query, initialPagination }: Props) {
 
   return (
     <ErrorWrapper error={error} onRetry={retryLoadMore} isLoading={isLoading}>
-      <div className="flex flex-col gap-3 container mx-auto lg:px-8">
+      <div className="flex flex-col gap-3 ">
         <div className="mt-4 comtainer mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 items-start gap-x-4 gap-y-4 ">
           {events?.map((event) => (
             <EventCard {...event} key={event.id} />
