@@ -49,7 +49,7 @@ function EventCard({
 
   return (
     <Link href={eventLink}>
-      <Card className="w-[330px] md:w-[360px] lg:w-[470px] xl:w-[420px] h-[244px] group  cursor-pointer hover:shadow-[4px_4px_0px_0px_hsl(0_0%_0%_/_1)] transition-shadow">
+      <Card className="w-[330px] md:w-[360px] lg:w-[470px] xl:w-[390px] h-[244px] group  cursor-pointer hover:shadow-[4px_4px_0px_0px_hsl(0_0%_0%_/_1)] transition-shadow">
         <CardContent className="h-full flex flex-col justify-between">
           <div className="flex items-start gap-x-2 ">
             <div className="relative w-[130px] h-[140px] shrink-0">

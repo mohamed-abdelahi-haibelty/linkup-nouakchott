@@ -3,6 +3,7 @@ import EventHero from "../_components/EventHero";
 import ParticipantsList from "../_components/ParticipantsList";
 import EventMainContent from "./EventMainContent";
 import { EventWithParticipantsAndCounts } from "@/types";
+import EventDetailsFooter from "@/components/shared/EventDetailsFooter";
 
 type Props = {
   event: EventWithParticipantsAndCounts;
@@ -10,8 +11,9 @@ type Props = {
 
 function EventMobileLayout({ event }: Props) {
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <EventHero event={event} />
+      <EventDetailsFooter />
 
       <Tabs className="mt-3 " defaultValue="About">
         <TabsList className="flex justify-center w-full">

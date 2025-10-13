@@ -17,7 +17,7 @@ async function page({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen">
       <EventMobileLayout event={event} />
 
       <EventDesktop event={event} />
