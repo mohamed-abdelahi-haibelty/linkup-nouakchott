@@ -15,11 +15,7 @@ function EventDesktop({ event }: Props) {
         <EventHero event={event} />
         <EventMainContent event={event} />
       </div>
-      <EventSidebar
-        eventId={event.id}
-        capacity={event.capacity}
-        participants={users}
-      />
+      <EventSidebar event={event} participants={users} />
     </div>
   );
 }

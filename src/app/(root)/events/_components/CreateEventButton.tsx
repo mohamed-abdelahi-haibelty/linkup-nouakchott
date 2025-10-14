@@ -29,10 +29,19 @@ function CreateEventButton() {
 
   return (
     <>
+      <Button
+        className=" md:hidden bg-accent hover:shadow-xl transition-all duration-300 gap-2 font-semibold"
+        size="default"
+        onClick={handleAcessCheck}
+      >
+        <Plus className="h-4 w-4" />
+        Create
+      </Button>
+
       <ActionTooltip label="Create an Event">
         <Button
           onClick={handleAcessCheck}
-          className="bg-white border rounded-sm   shadow-[4px_4px_0px_0px_hsl(0_0%_0%_/_1)]"
+          className="bg-white border hidden md:block rounded-sm   shadow-[4px_4px_0px_0px_hsl(0_0%_0%_/_1)]"
         >
           <Plus className="w-5 h-5" />
         </Button>

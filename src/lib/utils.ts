@@ -18,6 +18,19 @@ export function generateSlug(title: string): string {
   });
 }
 
+export function throwError(message: string): never {
+  throw new Error(message);
+}
+
+
+export function getErrorMessage(error : unknown) : string{
+  if(error instanceof Error){
+    return error.message
+  }else {
+    return "An unexpected error occurred"
+  }
+}
+
 export function getFallback(name : string) : string{
   if(!name) return ''
 

@@ -133,13 +133,15 @@ export default function LandingPage() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                  <Button
-                    size="lg"
-                    className="text-base px-8 h-12 shadow-xl shadow-primary/25 hover:shadow-2xl hover:shadow-primary/30 transition-all group"
-                  >
-                    Explore events
-                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                  <Link href={"/events"}>
+                    <Button
+                      size="lg"
+                      className="text-base px-8 h-12 shadow-xl shadow-primary/25 hover:shadow-2xl hover:shadow-primary/30 transition-all group"
+                    >
+                      Explore events
+                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
                   <Button
                     size="lg"
                     variant="outline"

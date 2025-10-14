@@ -13,7 +13,7 @@ function EventMobileLayout({ event }: Props) {
   return (
     <div className="lg:hidden">
       <EventHero event={event} />
-      <EventDetailsFooter />
+      <EventDetailsFooter event={event} />
 
       <Tabs className="mt-3 " defaultValue="About">
         <TabsList className="flex justify-center w-full">
