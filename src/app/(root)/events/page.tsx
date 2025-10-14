@@ -34,13 +34,7 @@ export default async function Home({
             Discover Events
           </h2>
         </div>
-        <Button
-          className=" bg-accent hover:shadow-xl transition-all duration-300 gap-2 font-semibold"
-          size="default"
-        >
-          <Plus className="h-4 w-4" />
-          Create
-        </Button>
+        <CreateEventButton />
       </div>
 
       <div
