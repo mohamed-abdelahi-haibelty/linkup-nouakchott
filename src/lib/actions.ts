@@ -1,6 +1,7 @@
 "use server";
 import prisma from "@/lib/db";
 import {
+  ActionsResponse,
   EventWithParticipants,
   EventWithParticipantsAndCounts,
   ParticipantWithUserAndCount,
@@ -9,7 +10,7 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { CreateEventInput, createEventSchema } from "./validation/event";
 import { generateSlug } from "./utils";
 import { revalidatePath } from "next/cache";
-import { Prisma } from "@prisma/client";
+import { Participant, Prisma, RegistrationStatus } from "@prisma/client";
 
 type EventsResponse =
   | {
@@ -245,4 +246,153 @@ export async function createEventAction(data: CreateEventInput) {
       message: "Failed to create event. Please try again.",
     };
   }
+}
+
+export async function joinEventAction(
+  eventId: string
+): Promise<ActionsResponse<Participant>> {
+  const { isAuthenticated, getUser } = getKindeServerSession();
+
+  if (!(await isAuthenticated())) {
+    throw new Error("Unautherized user");
+  }
+
+  const user = await getUser();
+
+  const alreadyRegistered = await prisma.participant.findUnique({
+    where: {
+      participantId_eventId: {
+        eventId,
+        participantId: user?.id ?? "",
+      },
+    },
+  });
+
+  if (alreadyRegistered) {
+    throw new Error("You are already registered for this event");
+  }
+
+  const event = await prisma.event.findUnique({
+    where: {
+      id: eventId,
+    },
+  });
+
+  if (!event) {
+    throw new Error("Event not Found");
+  }
+
+  if (user?.id === event.organizerId) {
+    throw new Error("The organizer can't join his own event");
+  }
+
+  const now = new Date();
+
+  // Check registration deadline
+  if (now > event.registrationDeadline) {
+    throw new Error("Registration deadline has passed");
+  }
+
+  //  Check if the event has already ended
+  if (now > event.endTime) {
+    throw new Error("This event has already ended");
+  }
+
+  const participantCount = await prisma.participant.count({
+    where: { eventId },
+  });
+
+  if (participantCount >= event?.capacity!) {
+    throw new Error("Event is full");
+  }
+
+  const participant = await prisma.participant.create({
+    data: {
+      participantId: user?.id ?? "",
+      eventId,
+      status: event?.isFree
+        ? RegistrationStatus.confirmed
+        : RegistrationStatus.pending,
+      confirmedAt: event?.isFree ? new Date() : null,
+    },
+  });
+
+  const url = `events/${eventId}_${event.slug}`;
+
+  revalidatePath(url);
+
+  return {
+    success: true,
+    message: event?.isFree
+      ? "You have successfully joined this event!"
+      : "Registration submitted! Awaitting confirmation!",
+    data: participant,
+  };
+}
+
+export async function leaveEventAction(
+  eventId: string
+): Promise<ActionsResponse> {
+  const { isAuthenticated, getUser } = getKindeServerSession();
+
+  if (!(await isAuthenticated())) {
+    throw new Error("Unauthorized. Please log in to continue.");
+  }
+
+  const event = await prisma.event.findUnique({
+    where: { id: eventId },
+  });
+
+  if (!event) {
+    throw new Error("Event not found. It may have been deleted or cancelled.");
+  }
+
+  const user = await getUser();
+
+  if (!user) {
+    throw new Error("User session not found. Please log in again.");
+  }
+
+  // Check if the user is registered for this event
+  const participant = await prisma.participant.findUnique({
+    where: {
+      participantId_eventId: {
+        participantId: user.id,
+        eventId: event.id,
+      },
+    },
+  });
+
+  if (!participant) {
+    throw new Error("You are not registered for this event.");
+  }
+
+  // Prevent leaving after the event has started
+  const now = new Date();
+  if (now >= event.startTime) {
+    throw new Error("You cannot leave an event that has already started.");
+  }
+
+  // Prevent leaving if the participant has paid for the event
+  if (!event.isFree && participant.status === "paid") {
+    throw new Error("You cannot leave a paid event after completing payment.");
+  }
+
+  await prisma.participant.delete({
+    where: {
+      participantId_eventId: {
+        participantId: user?.id,
+        eventId: event.id,
+      },
+    },
+  });
+
+  const url = `events/${eventId}_${event.slug}`;
+
+  revalidatePath(url);
+
+  return {
+    success: true,
+    message: "You have successfully left the event.",
+  };
 }

@@ -21,7 +21,7 @@ function ParticipantItem({
         <h3 className="font-semibold text-sm text-foreground truncate">
           {participant.name}
         </h3>
-        <p className="text-xs text-muted-foreground mb-2">
+        <p className="text-xs text-muted-foreground mb-2 truncate">
           {attendedEventsCount > 0
             ? `${attendedEventsCount} events attended`
             : "No events attended yet"}

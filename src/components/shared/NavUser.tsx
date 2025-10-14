@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
+import { cn, getFallback } from "@/lib/utils";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
 
 export function NavUser({
@@ -34,6 +34,7 @@ export function NavUser({
   };
   className?: string;
 }) {
+  console.log("avatar", user.avatar);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -47,7 +48,9 @@ export function NavUser({
         >
           <Avatar className="h-8 w-8 rounded-lg">
             <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+            <AvatarFallback className="rounded-lg">
+              {getFallback(user.name)}
+            </AvatarFallback>
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">{user.name}</span>

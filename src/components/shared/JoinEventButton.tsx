@@ -1,56 +1,106 @@
 "use client";
 
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { Check, Loader2, Users } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Check, Loader2, LogIn, Users } from "lucide-react";
+import { cn, getErrorMessage } from "@/lib/utils";
+import { LoginLink, useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { usePathname } from "next/navigation";
+import { joinEventAction, leaveEventAction } from "@/lib/actions";
+import { toast } from "sonner";
+import { EventWithParticipantsAndCounts } from "@/types";
+import { PendingApprovalModal } from "./PendingApprovalModal";
 
 interface JoinEventButtonProps {
-  eventId: string;
-  isJoined?: boolean;
+  event: EventWithParticipantsAndCounts;
   className?: string;
-  maxCapacity?: number;
-  participantCount?: number;
   size?: "default" | "sm" | "lg";
   variant?: "default" | "outline" | "ghost";
   disabled?: boolean;
-  onJoin?: (eventId: string) => Promise<void>;
-  onLeave?: (eventId: string) => Promise<void>;
 }
 
 export function JoinEventButton({
-  eventId,
-  isJoined = false,
-  participantCount = 0,
-  maxCapacity,
   className,
+  event,
   size = "default",
   variant = "default",
   disabled = false,
-  onJoin,
 }: JoinEventButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [joined, setJoined] = useState(isJoined);
+  const [open, setOpen] = useState(false);
+  const [openAprovalModal, setOpenAprovalModal] = useState(false);
+  const { isAuthenticated, getUser } = useKindeBrowserClient();
+  const url = usePathname();
+  const id = getUser()?.id;
+
+  const maxCapacity = event.capacity;
+  const eventId = event.id;
+  const participantCount = event.participants?.length;
   const isFull = maxCapacity ? participantCount >= maxCapacity : false;
-  const isDisabled = disabled || isFull;
+  const owner = event.organizerId === id;
+  const joined =
+    id &&
+    Array.isArray(event.participants) &&
+    event.participants.some((p) => p.participantId === id);
+
+  const isDisabled = disabled || (isFull && !joined) || owner;
+
+  async function handleLeaveEvent() {
+    if (isDisabled || isLoading) return;
+    setIsLoading(true);
+    try {
+      const res = await leaveEventAction?.(eventId);
+      if (res.success) {
+        toast.success(res.message);
+      }
+    } catch (err) {
+      console.error(" Leave error:", err);
+      toast.error(getErrorMessage(err));
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   async function handleJoinEvent() {
     if (isDisabled || isLoading) return;
 
     setIsLoading(true);
     try {
-      await onJoin?.(eventId);
-      setJoined(true);
+      const res = await joinEventAction?.(eventId);
+      if (res.success) {
+        toast.success(res.message);
+        if (!event.isFree) {
+          setOpenAprovalModal(true);
+        }
+      }
     } catch (err) {
       console.error(" Join error:", err);
+      toast.error(getErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
   }
 
+  function handleJoinOrLeaveEvent() {
+    if (joined) {
+      handleLeaveEvent();
+    } else {
+      handleJoinEvent();
+    }
+  }
+
   function getButtonText() {
-    if (isLoading) return "Joining...";
-    if (joined) return "Joined";
+    if (isLoading) return joined ? "Leaving..." : "Joining...";
+    if (joined) return "Leave Event";
     if (isFull) return "Event Full";
     return "Join Event";
   }
@@ -60,64 +110,85 @@ export function JoinEventButton({
     return variant;
   }
 
+  function handleAcessCheck() {
+    if (isAuthenticated) {
+      handleJoinOrLeaveEvent();
+    } else {
+      setOpen(true);
+    }
+  }
+
   return (
-    <Button
-      onClick={handleJoinEvent}
-      disabled={isDisabled || isLoading}
-      variant={getButtonVariant()}
-      size={size}
-      className={cn(
-        "relative overflow-hidden transition-all p-6  duration-300 group",
-        // Default styling
-        !joined && !isDisabled && "hover:scale-[1.02] active:scale-[0.98]",
-        // Joined state
-        joined &&
-          "border-green-500/50 bg-green-500/10 text-green-700 dark:text-green-400 hover:bg-green-500/20",
-        // Full state
-        isFull && "opacity-60 cursor-not-allowed",
-        // Loading state
-        isLoading && "cursor-wait",
-        className
-      )}
-    >
-      <div className="flex items-center gap-2">
-        {isLoading ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : isJoined ? (
-          <Check className="w-4 h-4" />
-        ) : (
-          <Users className="w-4 h-4 " />
+    <>
+      <Button
+        onClick={handleAcessCheck}
+        disabled={isDisabled || isLoading}
+        variant={getButtonVariant()}
+        size={size}
+        className={cn(
+          "relative overflow-hidden transition-all p-6  duration-300 group",
+          // Default styling
+          !joined && !isDisabled && "hover:scale-[1.02] active:scale-[0.98]",
+          // Joined state
+          joined && "!bg-primary lg:!bg-white border hover:!text-foreground",
+          // Full state
+          isFull && " disabled:bg-accent/80 disabled:cursor-not-allowed",
+          // Loading state
+          isLoading && "cursor-wait",
+          className
         )}
-        <span className="font-medium">{getButtonText()}</span>
+      >
+        <div className="flex items-center gap-2">
+          {isLoading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : joined ? (
+            <Check className="w-4 h-4" />
+          ) : (
+            <Users className="w-4 h-4 " />
+          )}
+          <span className="font-medium">{getButtonText()}</span>
 
-        {participantCount > 0 && (
-          <span className="text-xs opacity-75">
-            ({participantCount} {maxCapacity ? `/${maxCapacity}` : ""})
-          </span>
-        )}
+          {participantCount > 0 && (
+            <span className="text-xs opacity-75">
+              ({participantCount} {maxCapacity ? `/${maxCapacity}` : ""})
+            </span>
+          )}
 
-        {/* Subtle animation overlay */}
-        {!joined && !isDisabled && (
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-        )}
-      </div>
-    </Button>
-  );
-}
+          {/* Subtle animation overlay */}
+          {!joined && !isDisabled && (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+          )}
+        </div>
+      </Button>
 
-// Preset variants for common use cases
-export function JoinEventButtonLarge(
-  props: Omit<JoinEventButtonProps, "size">
-) {
-  return (
-    <JoinEventButton {...props} size="lg" className="px-8 h-12 text-base" />
-  );
-}
+      <PendingApprovalModal
+        open={openAprovalModal}
+        setOpen={setOpenAprovalModal}
+        title="Request Submitted"
+        description=" Your join request has been submitted and is pending approval. The organizer will contact you via email or phone. Once confirmed, you will be notified."
+      />
 
-export function JoinEventButtonCompact(
-  props: Omit<JoinEventButtonProps, "size" | "variant">
-) {
-  return (
-    <JoinEventButton {...props} size="sm" variant="outline" className="px-4" />
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Login Required</DialogTitle>
+            <DialogDescription>
+              You need to log in or sign up to join an event.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button asChild>
+              <LoginLink postLoginRedirectURL={url}>
+                <LogIn />
+                Login
+              </LoginLink>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
