@@ -3,6 +3,10 @@ import { twMerge } from "tailwind-merge"
 import slugify from "slugify";
 import { format } from "date-fns";
 import { AVATAR_STYLES } from "./constant";
+import { customAlphabet } from 'nanoid';
+import prisma from "@/lib/db";
+
+
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -22,6 +26,33 @@ export function throwError(message: string): never {
   throw new Error(message);
 }
 
+
+
+const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const nanoid = customAlphabet(ALPHABET, 8);
+
+export async function generateUniqueTicketCode(): Promise<string> {
+  let attempts = 0;
+  const maxAttempts = 10;
+
+  while (attempts < maxAttempts) {
+    const code = nanoid();
+    const formattedCode = `TKT-${code.slice(0, 4)}-${code.slice(4, 8)}`;
+    
+    // Check if exists
+    const exists = await prisma.ticket.findUnique({
+      where: { code: formattedCode },
+    });
+    
+    if (!exists) {
+      return formattedCode;
+    }
+    
+    attempts++;
+  }
+  
+  throw new Error('Failed to generate unique ticket code after 10 attempts');
+}
 
 export function getErrorMessage(error : unknown) : string{
   if(error instanceof Error){
