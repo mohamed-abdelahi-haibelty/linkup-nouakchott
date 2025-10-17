@@ -1,5 +1,6 @@
 "use server";
 import prisma from "@/lib/db";
+import QRCode from "qrcode";
 import {
   ActionsResponse,
   EventWithParticipants,
@@ -8,9 +9,11 @@ import {
 } from "@/types";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { CreateEventInput, createEventSchema } from "./validation/event";
-import { generateSlug } from "./utils";
+import { generateSlug, generateUniqueTicketCode } from "./utils";
 import { revalidatePath } from "next/cache";
 import { Participant, Prisma, RegistrationStatus } from "@prisma/client";
+import { Resend } from "resend";
+import TicketEmail from "@/app/emails/TicketEmail";
 
 type EventsResponse =
   | {
@@ -38,6 +41,11 @@ type Props = {
   query?: string;
   limit: number;
   page: number;
+};
+
+type JoinEventResponse = {
+  participant: Participant;
+  qrDataUrl: string;
 };
 
 export async function getEvents({
@@ -250,7 +258,7 @@ export async function createEventAction(data: CreateEventInput) {
 
 export async function joinEventAction(
   eventId: string
-): Promise<ActionsResponse<Participant>> {
+): Promise<ActionsResponse<JoinEventResponse>> {
   const { isAuthenticated, getUser } = getKindeServerSession();
 
   if (!(await isAuthenticated())) {
@@ -258,6 +266,10 @@ export async function joinEventAction(
   }
 
   const user = await getUser();
+
+  if (!user) {
+    throw new Error("User session not found. Please log in again.");
+  }
 
   const alreadyRegistered = await prisma.participant.findUnique({
     where: {
@@ -308,7 +320,7 @@ export async function joinEventAction(
 
   const participant = await prisma.participant.create({
     data: {
-      participantId: user?.id ?? "",
+      participantId: user?.id,
       eventId,
       status: event?.isFree
         ? RegistrationStatus.confirmed
@@ -316,6 +328,38 @@ export async function joinEventAction(
       confirmedAt: event?.isFree ? new Date() : null,
     },
   });
+
+  // if confirmed, issue a ticket immediately
+
+  let qrDataUrl = "";
+  if (event.isFree) {
+    const code = await generateUniqueTicketCode();
+    await prisma.ticket.create({
+      data: {
+        eventId: event.id,
+        userId: user?.id,
+        issuedAt: new Date(),
+        code: code,
+      },
+    });
+
+    const checkinUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/checkin/${code}`;
+    qrDataUrl = await QRCode.toDataURL(checkinUrl, {
+      margin: 1,
+      scale: 6,
+    });
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    if (user.email) {
+      await resend.emails.send({
+        from: "Acme <onboarding@resend.dev>",
+        to: "eminou756@gmail.com",
+        subject: `🎟️ Your ticket for ${event.title}`,
+        html: `<h1>hello</h1>`,
+      });
+    }
+  }
 
   const url = `events/${eventId}_${event.slug}`;
 
@@ -326,7 +370,7 @@ export async function joinEventAction(
     message: event?.isFree
       ? "You have successfully joined this event!"
       : "Registration submitted! Awaitting confirmation!",
-    data: participant,
+    data: { participant, qrDataUrl },
   };
 }
 
@@ -377,6 +421,14 @@ export async function leaveEventAction(
   if (!event.isFree && participant.status === "paid") {
     throw new Error("You cannot leave a paid event after completing payment.");
   }
+
+  // Delete any existing ticket for this user/event
+  await prisma.ticket.deleteMany({
+    where: {
+      eventId: event.id,
+      userId: user.id,
+    },
+  });
 
   await prisma.participant.delete({
     where: {

@@ -18,3 +18,10 @@ export type EventWithParticipantsAndCounts = SafeEvent & {
   participants: ParticipantWithUserAndCount[];
   organizer: Organizer;
 };
+
+export interface EventTicketProps {
+  title: string;
+  startTime: Date;
+  endTime: Date;
+  qrUrl: string;
+}

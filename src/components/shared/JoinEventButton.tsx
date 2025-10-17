@@ -19,6 +19,7 @@ import { joinEventAction, leaveEventAction } from "@/lib/actions";
 import { toast } from "sonner";
 import { EventWithParticipantsAndCounts } from "@/types";
 import { PendingApprovalModal } from "./PendingApprovalModal";
+import EventTicketModal from "@/app/(root)/events/_components/EventTicketModal";
 
 interface JoinEventButtonProps {
   event: EventWithParticipantsAndCounts;
@@ -37,6 +38,8 @@ export function JoinEventButton({
 }: JoinEventButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openTicketModal, setOpenTicketModal] = useState(false);
+  const [qrUrl, setQrurl] = useState("");
   const [openAprovalModal, setOpenAprovalModal] = useState(false);
   const { isAuthenticated, getUser } = useKindeBrowserClient();
   const url = usePathname();
@@ -75,11 +78,14 @@ export function JoinEventButton({
 
     setIsLoading(true);
     try {
-      const res = await joinEventAction?.(eventId);
+      const res = await joinEventAction(eventId);
       if (res.success) {
         toast.success(res.message);
         if (!event.isFree) {
           setOpenAprovalModal(true);
+        } else {
+          setQrurl(res?.data?.qrDataUrl!);
+          setOpenTicketModal(true);
         }
       }
     } catch (err) {
@@ -166,6 +172,15 @@ export function JoinEventButton({
         setOpen={setOpenAprovalModal}
         title="Request Submitted"
         description=" Your join request has been submitted and is pending approval. The organizer will contact you via email or phone. Once confirmed, you will be notified."
+      />
+
+      <EventTicketModal
+        title={event.title}
+        startTime={event.startTime}
+        endTime={event.endTime}
+        qrUrl={qrUrl}
+        open={openTicketModal}
+        setOpen={setOpenTicketModal}
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
