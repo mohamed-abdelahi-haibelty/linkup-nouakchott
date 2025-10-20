@@ -9,7 +9,7 @@ import {
 } from "@/types";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { CreateEventInput, createEventSchema } from "./validation/event";
-import { generateSlug, generateUniqueTicketCode } from "./utils";
+import { generateSlug, generateUniqueTicketCode, throwError } from "./utils";
 import { revalidatePath } from "next/cache";
 import { Participant, Prisma, RegistrationStatus } from "@prisma/client";
 import { sendTicketEmail } from "./email";
@@ -447,5 +447,70 @@ export async function leaveEventAction(
   return {
     success: true,
     message: "You have successfully left the event.",
+  };
+}
+
+export async function verifyTicket(code: string): Promise<ActionsResponse> {
+  const { getUser, isAuthenticated } = getKindeServerSession();
+
+  if (!(await isAuthenticated())) {
+    throwError("Unautherized user");
+  }
+
+  const user = await getUser();
+
+  if (!user) {
+    throwError("User session not found. Please log in again.");
+  }
+
+  const ticket = await prisma.ticket.findUnique({
+    where: {
+      code,
+    },
+    include: {
+      event: true,
+    },
+  });
+
+  if (!ticket) {
+    throwError("Ticket not found");
+  }
+
+  if (ticket.event.organizerId !== user.id) {
+    throwError("Unautherized");
+  }
+
+  const now = new Date();
+  const startTime = new Date(ticket.event.startTime);
+  const endTime = new Date(ticket.event.endTime);
+  const twoHoursBeforeStart = new Date(
+    startTime.getTime() - 2 * 60 * 60 * 1000
+  );
+
+  if (now < twoHoursBeforeStart) {
+    throwError("Check-in opens 2 hours before event start");
+  }
+
+  if (now > endTime) {
+    throwError("Event has ended. Check-in is no longer available");
+  }
+
+  if (ticket.status !== "active") {
+    throwError("Ticket already used");
+  }
+
+  await prisma.ticket.update({
+    where: {
+      id: ticket.id,
+    },
+    data: {
+      status: "used",
+      scannedBy: user.id,
+    },
+  });
+
+  return {
+    success: true,
+    message: `✅ Ticket verified: ${code}`,
   };
 }
