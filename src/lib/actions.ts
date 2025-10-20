@@ -12,8 +12,7 @@ import { CreateEventInput, createEventSchema } from "./validation/event";
 import { generateSlug, generateUniqueTicketCode } from "./utils";
 import { revalidatePath } from "next/cache";
 import { Participant, Prisma, RegistrationStatus } from "@prisma/client";
-import { Resend } from "resend";
-import TicketEmail from "@/app/emails/TicketEmail";
+import { sendTicketEmail } from "./email";
 
 type EventsResponse =
   | {
@@ -344,20 +343,22 @@ export async function joinEventAction(
     });
 
     const checkinUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/checkin/${code}`;
-    qrDataUrl = await QRCode.toDataURL(checkinUrl, {
-      margin: 1,
-      scale: 6,
-    });
-
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    // qrDataUrl = await QRCode.toDataURL(checkinUrl, {
+    //   margin: 1,
+    //   scale: 6,
+    // });
+    qrDataUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+      checkinUrl
+    )}`;
 
     if (user.email) {
-      await resend.emails.send({
-        from: "Acme <onboarding@resend.dev>",
-        to: "eminou756@gmail.com",
-        subject: `🎟️ Your ticket for ${event.title}`,
-        html: `<h1>hello</h1>`,
-      });
+      await sendTicketEmail(
+        user.email,
+        event.title,
+        event.startTime,
+        event.endTime,
+        qrDataUrl
+      );
     }
   }
 
