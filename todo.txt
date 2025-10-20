@@ -1,2 +1,10 @@
-1 if event is confirmed issue a ticket imeddiately
-2
+1 Implement the ticket scan page
+2 Redirect the user to the login page if not logged in and redirect back to the checkin page.
+3 If ticket holder show ticket details
+4 if organizer show verify button
+5 if none of them show access denied.
+6 create the verifyTicket server action.
+7 check the ticket code
+8 check the ticket status to prevent double checkin
+9 check the ticket time window (2 hours before the start date until the event end date).
+10 if user ticket is verifyed show that your ticket is been verified.
