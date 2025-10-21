@@ -21,6 +21,8 @@ export default function ScanPage() {
     if (code === lastScannedCode) return; // avoid double scan
     setLastScannedCode(code);
 
+    console.log("code scan", code);
+
     try {
       const res = await verifyTicket(code);
 
@@ -70,6 +72,7 @@ export default function ScanPage() {
           } shadow-lg `}
         >
           {feedback.message}
+          <span>{lastScannedCode}</span>
         </div>
       )}
 
