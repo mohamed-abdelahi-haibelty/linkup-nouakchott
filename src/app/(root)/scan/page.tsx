@@ -1,6 +1,7 @@
 "use client";
 
 import { verifyTicket } from "@/lib/actions";
+import { logError } from "@/lib/sentry";
 import { getErrorMessage } from "@/lib/utils";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { useState } from "react";
@@ -26,11 +27,14 @@ export default function ScanPage() {
       if (res.success) {
         setFeedback({ message: `✅ Ticket verified: ${code}`, success: true });
       } else {
-        setFeedback({ message: `❌ Something went wrong`, success: false });
+        setFeedback({ message: res.message, success: false });
       }
     } catch (err) {
-      setFeedback({ message: getErrorMessage(err), success: false });
-      console.error(err);
+      logError(err, { scannedCode: code });
+      setFeedback({
+        message: "❌ Unexpected error. Please try again.",
+        success: false,
+      });
     }
 
     // Reset after 3 seconds to allow next scan

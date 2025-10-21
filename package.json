@@ -48,6 +48,7 @@
     "@radix-ui/react-tooltip": "^1.2.8",
     "@react-email/components": "^0.5.7",
     "@react-email/render": "^1.4.0",
+    "@sentry/nextjs": "^10.20.0",
     "@uploadthing/react": "^7.3.3",
     "@yudiel/react-qr-scanner": "^2.3.1",
     "class-variance-authority": "^0.7.1",
