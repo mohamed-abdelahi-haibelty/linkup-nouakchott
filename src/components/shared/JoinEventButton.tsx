@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { EventWithParticipantsAndCounts } from "@/types";
 import { PendingApprovalModal } from "./PendingApprovalModal";
 import EventTicketModal from "@/app/(root)/events/_components/EventTicketModal";
+import { logError } from "@/lib/sentry";
 
 interface JoinEventButtonProps {
   event: EventWithParticipantsAndCounts;
@@ -64,10 +65,12 @@ export function JoinEventButton({
       const res = await leaveEventAction?.(eventId);
       if (res.success) {
         toast.success(res.message);
+      } else {
+        toast.error(res.message);
       }
     } catch (err) {
-      console.error(" Leave error:", err);
-      toast.error(getErrorMessage(err));
+      logError(err, { eventId, userId: id });
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -87,10 +90,12 @@ export function JoinEventButton({
           setQrurl(res?.data?.qrDataUrl!);
           setOpenTicketModal(true);
         }
+      } else {
+        toast.error(res.message);
       }
     } catch (err) {
-      console.error(" Join error:", err);
-      toast.error(getErrorMessage(err));
+      logError(err, { eventId, userId: id });
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
