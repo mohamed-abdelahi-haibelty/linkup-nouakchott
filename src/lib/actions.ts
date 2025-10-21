@@ -1,6 +1,5 @@
 "use server";
 import prisma from "@/lib/db";
-import QRCode from "qrcode";
 import {
   ActionsResponse,
   EventWithParticipants,
@@ -13,6 +12,7 @@ import { generateSlug, generateUniqueTicketCode, throwError } from "./utils";
 import { revalidatePath } from "next/cache";
 import { Participant, Prisma, RegistrationStatus } from "@prisma/client";
 import { sendTicketEmail } from "./email";
+import { logError, logWarning } from "./sentry";
 
 type EventsResponse =
   | {
@@ -113,6 +113,7 @@ export async function getEvents({
     };
   } catch (err) {
     console.error("Error fetching events:", err);
+    logError(err);
     return {
       data: [],
       pagination: { total: 0, page, limit, totalPages: 0 },
@@ -184,6 +185,7 @@ export async function getEventById(
     };
   } catch (err) {
     console.error(`Error fetching event with id ${id}:`, err);
+    logError(err);
     throw new Error("Failed to fetch event");
   }
 }
@@ -192,17 +194,33 @@ export async function createEventAction(data: CreateEventInput) {
   const { isAuthenticated, getUser } = getKindeServerSession();
 
   if (!(await isAuthenticated())) {
-    throw new Error("Unautherized user");
+    logWarning("Unauthorized user tried to create an event");
+    return { success: false, message: "Unauthorized user", data: null };
   }
 
   const parsed = createEventSchema.safeParse(data);
 
   if (!parsed.success) {
-    return { error: parsed.error.flatten().fieldErrors };
+    return {
+      success: false,
+      message: "Invalid form data",
+      error: parsed.error.flatten().fieldErrors,
+      data: null,
+    };
   }
 
   const user = await getUser();
-  const organizerId = user?.id ?? "unkown";
+
+  if (!user) {
+    logWarning("Authenticated user session not found");
+    return {
+      message: "User session not found. Please log in again.",
+      success: false,
+      data: null,
+    };
+  }
+
+  const organizerId = user?.id;
 
   try {
     const event = await prisma.event.create({
@@ -221,7 +239,10 @@ export async function createEventAction(data: CreateEventInput) {
       message: "Event created successfully!",
     };
   } catch (e) {
-    console.error(e);
+    logError(e, {
+      data,
+      userId: (await getKindeServerSession().getUser())?.id,
+    });
     // Handle Prisma errors
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === "P2002") {
@@ -230,13 +251,14 @@ export async function createEventAction(data: CreateEventInput) {
         if (target?.includes("slug")) {
           return {
             success: false,
-            message:
-              "An event with this title already exists. Please use a different title.",
+            message: "An event with this title already exists.",
+            errorCode: "SLUG_CONFLICT",
           };
         }
         return {
           success: false,
           message: "An event with similar details already exists.",
+          errorCode: "DUPLICATE_ENTRY",
         };
       }
 
@@ -245,12 +267,14 @@ export async function createEventAction(data: CreateEventInput) {
         return {
           success: false,
           message: "Invalid reference data. Please check your inputs.",
+          errorCode: "FK_CONSTRAINT",
         };
       }
     }
     return {
       success: false,
-      message: "Failed to create event. Please try again.",
+      message: "Failed to create event. Please try again later.",
+      errorCode: "UNEXPECTED_ERROR",
     };
   }
 }
@@ -260,119 +284,143 @@ export async function joinEventAction(
 ): Promise<ActionsResponse<JoinEventResponse>> {
   const { isAuthenticated, getUser } = getKindeServerSession();
 
-  if (!(await isAuthenticated())) {
-    throw new Error("Unautherized user");
-  }
+  try {
+    if (!(await isAuthenticated())) {
+      logWarning("Unauthorized user tried to join an event", { eventId });
+      return { success: false, message: "Unauthorized user", data: null };
+    }
+    const user = await getUser();
 
-  const user = await getUser();
+    if (!user) {
+      logWarning("Authenticated user session not found", { eventId });
+      return {
+        success: false,
+        message: "User session not found. Please log in again.",
+        data: null,
+      };
+    }
 
-  if (!user) {
-    throw new Error("User session not found. Please log in again.");
-  }
-
-  const alreadyRegistered = await prisma.participant.findUnique({
-    where: {
-      participantId_eventId: {
-        eventId,
-        participantId: user?.id ?? "",
-      },
-    },
-  });
-
-  if (alreadyRegistered) {
-    throw new Error("You are already registered for this event");
-  }
-
-  const event = await prisma.event.findUnique({
-    where: {
-      id: eventId,
-    },
-  });
-
-  if (!event) {
-    throw new Error("Event not Found");
-  }
-
-  if (user?.id === event.organizerId) {
-    throw new Error("The organizer can't join his own event");
-  }
-
-  const now = new Date();
-
-  // Check registration deadline
-  if (now > event.registrationDeadline) {
-    throw new Error("Registration deadline has passed");
-  }
-
-  //  Check if the event has already ended
-  if (now > event.endTime) {
-    throw new Error("This event has already ended");
-  }
-
-  const participantCount = await prisma.participant.count({
-    where: { eventId },
-  });
-
-  if (participantCount >= event?.capacity!) {
-    throw new Error("Event is full");
-  }
-
-  const participant = await prisma.participant.create({
-    data: {
-      participantId: user?.id,
-      eventId,
-      status: event?.isFree
-        ? RegistrationStatus.confirmed
-        : RegistrationStatus.pending,
-      confirmedAt: event?.isFree ? new Date() : null,
-    },
-  });
-
-  // if confirmed, issue a ticket immediately
-
-  let qrDataUrl = "";
-  if (event.isFree) {
-    const code = await generateUniqueTicketCode();
-    await prisma.ticket.create({
-      data: {
-        eventId: event.id,
-        userId: user?.id,
-        issuedAt: new Date(),
-        code: code,
+    const existing = await prisma.participant.findUnique({
+      where: {
+        participantId_eventId: {
+          eventId,
+          participantId: user?.id ?? "",
+        },
       },
     });
 
-    const checkinUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/checkin/${code}`;
-    // qrDataUrl = await QRCode.toDataURL(checkinUrl, {
-    //   margin: 1,
-    //   scale: 6,
-    // });
-    qrDataUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
-      checkinUrl
-    )}`;
-
-    if (user.email) {
-      await sendTicketEmail(
-        user.email,
-        event.title,
-        event.startTime,
-        event.endTime,
-        qrDataUrl
-      );
+    if (existing) {
+      return {
+        success: false,
+        message: "You are already registered for this event.",
+        data: null,
+      };
     }
+
+    const event = await prisma.event.findUnique({
+      where: {
+        id: eventId,
+      },
+    });
+
+    if (!event) {
+      return { success: false, message: "Event not found.", data: null };
+    }
+
+    if (user?.id === event.organizerId) {
+      return {
+        success: false,
+        message: "The organizer cannot join their own event.",
+        data: null,
+      };
+    }
+
+    const now = new Date();
+
+    // Check registration deadline
+    if (now > event.registrationDeadline) {
+      return {
+        success: false,
+        message: "Registration deadline has passed.",
+        data: null,
+      };
+    }
+
+    //  Check if the event has already ended
+    if (now > event.endTime) {
+      return {
+        success: false,
+        message: "This event has already ended.",
+        data: null,
+      };
+    }
+
+    const participantCount = await prisma.participant.count({
+      where: { eventId },
+    });
+    if (participantCount >= (event?.capacity ?? 0)) {
+      return { success: false, message: "Event is full.", data: null };
+    }
+
+    const participant = await prisma.participant.create({
+      data: {
+        participantId: user?.id,
+        eventId,
+        status: event?.isFree
+          ? RegistrationStatus.confirmed
+          : RegistrationStatus.pending,
+        confirmedAt: event?.isFree ? new Date() : null,
+      },
+    });
+
+    // if confirmed, issue a ticket immediately
+    let qrDataUrl = "";
+    if (event.isFree) {
+      const code = await generateUniqueTicketCode();
+      await prisma.ticket.create({
+        data: {
+          eventId: event.id,
+          userId: user?.id,
+          issuedAt: new Date(),
+          code: code,
+        },
+      });
+
+      const checkinUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/checkin/${code}`;
+      qrDataUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+        checkinUrl
+      )}`;
+
+      if (user.email) {
+        await sendTicketEmail(
+          user.email,
+          event.title,
+          event.startTime,
+          event.endTime,
+          qrDataUrl
+        );
+      }
+    }
+
+    const url = `events/${eventId}_${event.slug}`;
+
+    revalidatePath(url);
+
+    return {
+      success: true,
+      message: event?.isFree
+        ? "You have successfully joined this event!"
+        : "Registration submitted! Awaitting confirmation!",
+      data: { participant, qrDataUrl },
+    };
+  } catch (err) {
+    logError(err);
+    const isPrismaError = err instanceof Prisma.PrismaClientKnownRequestError;
+    const message = isPrismaError
+      ? "Database operation failed. Please try again later."
+      : "An unexpected error occurred.";
+    return { success: false, message, data: null };
   }
-
-  const url = `events/${eventId}_${event.slug}`;
-
-  revalidatePath(url);
-
-  return {
-    success: true,
-    message: event?.isFree
-      ? "You have successfully joined this event!"
-      : "Registration submitted! Awaitting confirmation!",
-    data: { participant, qrDataUrl },
-  };
 }
 
 export async function leaveEventAction(
@@ -380,137 +428,203 @@ export async function leaveEventAction(
 ): Promise<ActionsResponse> {
   const { isAuthenticated, getUser } = getKindeServerSession();
 
-  if (!(await isAuthenticated())) {
-    throw new Error("Unauthorized. Please log in to continue.");
-  }
+  try {
+    if (!(await isAuthenticated())) {
+      logWarning("Unauthorized user tried to leave an event", { eventId });
+      return { success: false, message: "Unauthorized user", data: null };
+    }
 
-  const event = await prisma.event.findUnique({
-    where: { id: eventId },
-  });
+    const user = await getUser();
 
-  if (!event) {
-    throw new Error("Event not found. It may have been deleted or cancelled.");
-  }
+    if (!user) {
+      logWarning("User session not found while leaving event", { eventId });
+      return {
+        success: false,
+        message: "User session not found. Please log in again.",
+        data: null,
+      };
+    }
 
-  const user = await getUser();
+    const event = await prisma.event.findUnique({
+      where: { id: eventId },
+    });
 
-  if (!user) {
-    throw new Error("User session not found. Please log in again.");
-  }
+    if (!event) {
+      return {
+        success: false,
+        message: "Event not found. It may have been deleted or cancelled.",
+        data: null,
+      };
+    }
 
-  // Check if the user is registered for this event
-  const participant = await prisma.participant.findUnique({
-    where: {
-      participantId_eventId: {
-        participantId: user.id,
-        eventId: event.id,
+    // Check if the user is registered for this event
+    const participant = await prisma.participant.findUnique({
+      where: {
+        participantId_eventId: {
+          participantId: user.id,
+          eventId: event.id,
+        },
       },
-    },
-  });
+    });
 
-  if (!participant) {
-    throw new Error("You are not registered for this event.");
-  }
+    if (!participant) {
+      return {
+        success: false,
+        message: "You are not registered for this event.",
+        data: null,
+      };
+    }
 
-  // Prevent leaving after the event has started
-  const now = new Date();
-  if (now >= event.startTime) {
-    throw new Error("You cannot leave an event that has already started.");
-  }
+    // Prevent leaving after the event has started
+    const now = new Date();
+    if (now >= event.startTime) {
+      return {
+        success: false,
+        message: "You cannot leave an event that has already started.",
+        data: null,
+      };
+    }
 
-  // Prevent leaving if the participant has paid for the event
-  if (!event.isFree && participant.status === "paid") {
-    throw new Error("You cannot leave a paid event after completing payment.");
-  }
+    // Prevent leaving if the participant has paid for the event
+    if (!event.isFree && participant.status === "paid") {
+      return {
+        success: false,
+        message: "You cannot leave a paid event after completing payment.",
+        data: null,
+      };
+    }
 
-  // Delete any existing ticket for this user/event
-  await prisma.ticket.deleteMany({
-    where: {
-      eventId: event.id,
-      userId: user.id,
-    },
-  });
-
-  await prisma.participant.delete({
-    where: {
-      participantId_eventId: {
-        participantId: user?.id,
+    // Delete any existing ticket for this user/event
+    await prisma.ticket.deleteMany({
+      where: {
         eventId: event.id,
+        userId: user.id,
       },
-    },
-  });
+    });
 
-  const url = `events/${eventId}_${event.slug}`;
+    await prisma.participant.delete({
+      where: {
+        participantId_eventId: {
+          participantId: user?.id,
+          eventId: event.id,
+        },
+      },
+    });
 
-  revalidatePath(url);
+    const url = `events/${eventId}_${event.slug}`;
 
-  return {
-    success: true,
-    message: "You have successfully left the event.",
-  };
+    revalidatePath(url);
+
+    return {
+      success: true,
+      message: "You have successfully left the event.",
+      data: null,
+    };
+  } catch (err) {
+    logError(err, { eventId });
+    const message =
+      err instanceof Prisma.PrismaClientKnownRequestError
+        ? "Database operation failed. Please try again later."
+        : "Unexpected error occurred while leaving the event.";
+    return { success: false, message, data: null };
+  }
 }
 
-export async function verifyTicket(code: string): Promise<ActionsResponse> {
+export async function verifyTicket(
+  code: string
+): Promise<ActionsResponse<{ eventId: string }>> {
   const { getUser, isAuthenticated } = getKindeServerSession();
 
-  if (!(await isAuthenticated())) {
-    throwError("Unautherized user");
+  try {
+    if (!(await isAuthenticated())) {
+      logWarning("Unauthorized user attempted ticket verification");
+      return { success: false, message: "Unauthorized user", data: null };
+    }
+
+    const user = await getUser();
+
+    if (!user) {
+      logWarning("User session not found during ticket verification");
+      return {
+        success: false,
+        message: "User session not found. Please log in again.",
+        data: null,
+      };
+    }
+
+    const ticket = await prisma.ticket.findUnique({
+      where: {
+        code,
+      },
+      include: {
+        event: true,
+      },
+    });
+
+    if (!ticket) {
+      return { success: false, message: "Ticket not found.", data: null };
+    }
+
+    if (ticket.event.organizerId !== user.id) {
+      logWarning("Unauthorized ticket scan attempt", {
+        userId: user.id,
+        eventId: ticket.event.id,
+      });
+      return { success: false, message: "Unauthorized access.", data: null };
+    }
+
+    const now = new Date();
+    const startTime = new Date(ticket.event.startTime);
+    const endTime = new Date(ticket.event.endTime);
+    const twoHoursBeforeStart = new Date(
+      startTime.getTime() - 2 * 60 * 60 * 1000
+    );
+
+    if (now < twoHoursBeforeStart) {
+      return {
+        success: false,
+        message: "Check-in opens 2 hours before event start.",
+        data: null,
+      };
+    }
+
+    if (now > endTime) {
+      return {
+        success: false,
+        message: "Event has ended. Check-in is no longer available.",
+        data: null,
+      };
+    }
+
+    if (ticket.status !== "active") {
+      return {
+        success: false,
+        message: "Ticket already used.",
+        data: null,
+      };
+    }
+
+    await prisma.ticket.update({
+      where: {
+        id: ticket.id,
+      },
+      data: {
+        status: "used",
+        scannedBy: user.id,
+      },
+    });
+
+    return {
+      success: true,
+      message: `✅ Ticket verified: ${code}`,
+      data: { eventId: ticket.event.id },
+    };
+  } catch (err) {
+    logError(err, { code });
+    const message =
+      err instanceof Prisma.PrismaClientKnownRequestError
+        ? "Database operation failed. Please try again later."
+        : "Unexpected error occurred during ticket verification.";
+    return { success: false, message, data: null };
   }
-
-  const user = await getUser();
-
-  if (!user) {
-    throwError("User session not found. Please log in again.");
-  }
-
-  const ticket = await prisma.ticket.findUnique({
-    where: {
-      code,
-    },
-    include: {
-      event: true,
-    },
-  });
-
-  if (!ticket) {
-    throwError("Ticket not found");
-  }
-
-  if (ticket.event.organizerId !== user.id) {
-    throwError("Unautherized");
-  }
-
-  const now = new Date();
-  const startTime = new Date(ticket.event.startTime);
-  const endTime = new Date(ticket.event.endTime);
-  const twoHoursBeforeStart = new Date(
-    startTime.getTime() - 2 * 60 * 60 * 1000
-  );
-
-  if (now < twoHoursBeforeStart) {
-    throwError("Check-in opens 2 hours before event start");
-  }
-
-  if (now > endTime) {
-    throwError("Event has ended. Check-in is no longer available");
-  }
-
-  if (ticket.status !== "active") {
-    throwError("Ticket already used");
-  }
-
-  await prisma.ticket.update({
-    where: {
-      id: ticket.id,
-    },
-    data: {
-      status: "used",
-      scannedBy: user.id,
-    },
-  });
-
-  return {
-    success: true,
-    message: `✅ Ticket verified: ${code}`,
-  };
 }
