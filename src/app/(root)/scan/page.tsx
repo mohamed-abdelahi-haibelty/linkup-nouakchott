@@ -26,7 +26,6 @@ export default function ScanPage() {
     if (isProcessing || !codes || codes.length === 0) return;
     let code: string | null = null;
     const url = new URL(codes[0].rawValue);
-    console.log(url);
     const pathParts = url.pathname.split("/").filter(Boolean);
 
     if (pathParts.length >= 2 && pathParts[0] === "checkin") {
