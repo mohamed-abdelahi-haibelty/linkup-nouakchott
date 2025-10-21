@@ -44,6 +44,7 @@ next-env.d.ts
 /src/generated/prisma
 
 .gitmessage.txt
+test.tsx
 
 # Sentry Config File
 .env.sentry-build-plugin
