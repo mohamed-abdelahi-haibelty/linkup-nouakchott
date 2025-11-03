@@ -1,0 +1,23 @@
+{
+  "name": "Linkup Nouakchott",
+  "short_name": "Linkup",
+  "description": "Allows organizers to create events, manage them, and allows users to see and participate in events.",
+  "categories": ["social", "events", "community"],
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "oklch(0.7938 0.1248 42.4248)",
+  "background_color": "#f5f5f5",
+  "display": "standalone"
+}

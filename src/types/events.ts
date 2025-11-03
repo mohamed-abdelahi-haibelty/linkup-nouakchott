@@ -1,4 +1,4 @@
-import { Event } from "@prisma/client";
+import { Event, EventStatus } from "@prisma/client";
 
 import {
   ParticipantWithUser,
@@ -19,9 +19,20 @@ export type EventWithParticipantsAndCounts = SafeEvent & {
   organizer: Organizer;
 };
 
+export type EventWithOrganizer = SafeEvent & {
+  organizer: Omit<Organizer, "hostedEventsCount">;
+};
+
 export interface EventTicketProps {
   title: string;
   startTime: Date;
   endTime: Date;
   qrUrl: string;
 }
+
+export type PendingEvent = {
+  id: string;
+  title: string;
+  organizer: string;
+  status: EventStatus;
+};

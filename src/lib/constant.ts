@@ -1,3 +1,5 @@
+import { BadgeCheck, Clock, TicketX, XCircle } from "lucide-react";
+
 export const tagColors: Record<string, { bg: string; text: string }> = {
   music: { bg: "#E9D5FF", text: "#581C87" }, // purple
   sports: { bg: "#BBF7D0", text: "#166534" }, // green
@@ -89,5 +91,32 @@ export const tagList = [
     value: "community",
     title: "Community",
     color: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200",
+  },
+];
+
+export const statuses = [
+  {
+    value: "pending",
+    label: "Pending",
+    icon: Clock,
+    className: "bg-amber-100 text-foreground border border-amber-200",
+  },
+  {
+    value: "approved",
+    label: "Approved",
+    icon: BadgeCheck,
+    className: "bg-accent/15 text-foreground border border-accent/20",
+  },
+  {
+    value: "rejected",
+    label: "Rejected",
+    icon: XCircle,
+    className: "bg-destructive/10 text-foreground border border-destructive/15",
+  },
+  {
+    value: "cancelled",
+    label: "Cancelled",
+    icon: TicketX,
+    className: "bg-slate-100 text-slate-600 border border-slate-200",
   },
 ];

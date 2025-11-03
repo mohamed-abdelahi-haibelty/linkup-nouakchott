@@ -3,7 +3,7 @@ import { EventWithParticipantsAndCounts } from "@/types";
 import { Calendar, CalendarRange, MapPin, Receipt, Users } from "lucide-react";
 import { JSX } from "react";
 
-interface EventDetailItem {
+export interface EventDetailItem {
   icon: JSX.Element;
   label: string;
   value: string;

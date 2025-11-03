@@ -2,17 +2,32 @@
 import prisma from "@/lib/db";
 import {
   ActionsResponse,
+  EventWithOrganizer,
   EventWithParticipants,
   EventWithParticipantsAndCounts,
   ParticipantWithUserAndCount,
+  SafeEvent,
 } from "@/types";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { CreateEventInput, createEventSchema } from "./validation/event";
-import { generateSlug, generateUniqueTicketCode, throwError } from "./utils";
+import {
+  generateSlug,
+  generateUniqueTicketCode,
+  handlePrismaError,
+  throwError,
+} from "./utils";
 import { revalidatePath } from "next/cache";
-import { Participant, Prisma, RegistrationStatus } from "@prisma/client";
+import {
+  Event,
+  EventStatus,
+  Participant,
+  Prisma,
+  RegistrationStatus,
+} from "@prisma/client";
 import { sendTicketEmail } from "./email";
 import { logError, logWarning } from "./sentry";
+import { success } from "zod";
+import { getCurrentUserWithRole, requireAuthUser } from "./auth";
 
 type EventsResponse =
   | {
@@ -282,23 +297,10 @@ export async function createEventAction(data: CreateEventInput) {
 export async function joinEventAction(
   eventId: string
 ): Promise<ActionsResponse<JoinEventResponse>> {
-  const { isAuthenticated, getUser } = getKindeServerSession();
-
   try {
-    if (!(await isAuthenticated())) {
-      logWarning("Unauthorized user tried to join an event", { eventId });
-      return { success: false, message: "Unauthorized user", data: null };
-    }
-    const user = await getUser();
+    const { success, message, user } = await requireAuthUser();
 
-    if (!user) {
-      logWarning("Authenticated user session not found", { eventId });
-      return {
-        success: false,
-        message: "User session not found. Please log in again.",
-        data: null,
-      };
-    }
+    if (!success || !user) return { success, message, data: null };
 
     const existing = await prisma.participant.findUnique({
       where: {
@@ -414,36 +416,17 @@ export async function joinEventAction(
       data: { participant, qrDataUrl },
     };
   } catch (err) {
-    logError(err);
-    const isPrismaError = err instanceof Prisma.PrismaClientKnownRequestError;
-    const message = isPrismaError
-      ? "Database operation failed. Please try again later."
-      : "An unexpected error occurred.";
-    return { success: false, message, data: null };
+    return handlePrismaError(err);
   }
 }
 
 export async function leaveEventAction(
   eventId: string
 ): Promise<ActionsResponse> {
-  const { isAuthenticated, getUser } = getKindeServerSession();
-
   try {
-    if (!(await isAuthenticated())) {
-      logWarning("Unauthorized user tried to leave an event", { eventId });
-      return { success: false, message: "Unauthorized user", data: null };
-    }
+    const { success, message, user } = await requireAuthUser();
 
-    const user = await getUser();
-
-    if (!user) {
-      logWarning("User session not found while leaving event", { eventId });
-      return {
-        success: false,
-        message: "User session not found. Please log in again.",
-        data: null,
-      };
-    }
+    if (!success || !user) return { success, message, data: null };
 
     const event = await prisma.event.findUnique({
       where: { id: eventId },
@@ -521,36 +504,17 @@ export async function leaveEventAction(
       data: null,
     };
   } catch (err) {
-    logError(err, { eventId });
-    const message =
-      err instanceof Prisma.PrismaClientKnownRequestError
-        ? "Database operation failed. Please try again later."
-        : "Unexpected error occurred while leaving the event.";
-    return { success: false, message, data: null };
+    return handlePrismaError(err);
   }
 }
 
 export async function verifyTicket(
   code: string
 ): Promise<ActionsResponse<{ eventId: string }>> {
-  const { getUser, isAuthenticated } = getKindeServerSession();
-
   try {
-    if (!(await isAuthenticated())) {
-      logWarning("Unauthorized user attempted ticket verification");
-      return { success: false, message: "Unauthorized user", data: null };
-    }
+    const { success, message, user } = await requireAuthUser();
 
-    const user = await getUser();
-
-    if (!user) {
-      logWarning("User session not found during ticket verification");
-      return {
-        success: false,
-        message: "User session not found. Please log in again.",
-        data: null,
-      };
-    }
+    if (!success || !user) return { success, message, data: null };
 
     const ticket = await prisma.ticket.findUnique({
       where: {
@@ -620,11 +584,204 @@ export async function verifyTicket(
       data: { eventId: ticket.event.id },
     };
   } catch (err) {
-    logError(err, { code });
-    const message =
-      err instanceof Prisma.PrismaClientKnownRequestError
-        ? "Database operation failed. Please try again later."
-        : "Unexpected error occurred during ticket verification.";
-    return { success: false, message, data: null };
+    return handlePrismaError(err);
+  }
+}
+
+export async function getAllEventsForAdmin(): Promise<
+  ActionsResponse<EventWithOrganizer[]>
+> {
+  try {
+    const { user, message, success } = await getCurrentUserWithRole();
+
+    if (!success || !user) return { success, message, data: null };
+
+    // Restrict by role
+    if (user.role !== "admin") {
+      return {
+        success: false,
+        message: "You are not authorized to view events.",
+        data: null,
+      };
+    }
+
+    const events = await prisma.event.findMany({
+      include: {
+        organizer: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const plainEvents: EventWithOrganizer[] = events.map((event) => ({
+      ...event,
+      price: event.price?.toNumber() ?? 0,
+    }));
+
+    return { message: "ok", success: true, data: plainEvents };
+  } catch (err) {
+    return handlePrismaError(err);
+  }
+}
+export async function getEventByAdmin(
+  id: string
+): Promise<ActionsResponse<SafeEvent>> {
+  try {
+    const { user, message, success } = await getCurrentUserWithRole();
+
+    if (!success || !user) return { success, message, data: null };
+
+    // Restrict by role
+    if (user.role !== "admin") {
+      return {
+        success: false,
+        message: "You are not authorized to view event.",
+        data: null,
+      };
+    }
+
+    const event = await prisma.event.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!event) {
+      return { message: "event not found", success: false, data: null };
+    }
+
+    return {
+      message: "ok",
+      success: true,
+      data: { ...event, price: event.price?.toNumber() ?? 0 },
+    };
+  } catch (err) {
+    return handlePrismaError(err);
+  }
+}
+
+export async function changeEventStatus(eventId: string, status: EventStatus) {
+  try {
+    const { success, user, message } = await getCurrentUserWithRole();
+    if (!success || !user) return { success, message, data: null };
+
+    if (user.role !== "admin") {
+      return {
+        success: false,
+        message: "You are not authorized to change event status.",
+        data: null,
+      };
+    }
+
+    const updatedEvent = await prisma.event.update({
+      where: { id: eventId },
+      data: { status },
+    });
+
+    revalidatePath("/admin/events");
+
+    return {
+      success: true,
+      message: "Event status updated",
+      data: { ...updatedEvent, price: updatedEvent.price?.toNumber() ?? 0 },
+    };
+  } catch (err) {
+    return handlePrismaError(err);
+  }
+}
+
+export async function deleteEventAction(eventId: string) {
+  try {
+    const { success, user, message } = await getCurrentUserWithRole();
+    if (!success || !user) return { success, message, data: null };
+
+    if (user.role !== "admin") {
+      return {
+        success: false,
+        message: "You are not authorized to delete event.",
+        data: null,
+      };
+    }
+
+    const currentEvent = await prisma.event.findUnique({
+      where: { id: eventId },
+      include: { participants: true },
+    });
+
+    if (!currentEvent) {
+      return { success: false, message: "Event not found.", data: null };
+    }
+
+    if (currentEvent.participants.length > 0) {
+      return {
+        success: false,
+        message: "You can not delete an event that already has participants.",
+        data: null,
+      };
+    }
+
+    await prisma.event.delete({
+      where: { id: eventId },
+    });
+
+    revalidatePath("/admin/events");
+
+    return {
+      success: true,
+      message: "Event Deleted successfully",
+      data: null,
+    };
+  } catch (err) {
+    return handlePrismaError(err);
+  }
+}
+
+export async function deleteManyEventsAction(eventIds: string[]) {
+  try {
+    const { success, user, message } = await getCurrentUserWithRole();
+    if (!success || !user) return { success, message, data: null };
+
+    if (user.role !== "admin") {
+      return {
+        success: false,
+        message: "You are not authorized to delete events.",
+        data: null,
+      };
+    }
+
+    // Find events that have participants
+    const eventsWithParticipants = await prisma.event.findMany({
+      where: {
+        id: { in: eventIds },
+        participants: { some: {} },
+      },
+      select: { id: true, title: true },
+    });
+
+    if (eventsWithParticipants.length > 0) {
+      const blockedTitles = eventsWithParticipants
+        .map((e) => e.title)
+        .join(", ");
+      return {
+        success: false,
+        message: `Cannot delete the following events (they have participants): ${blockedTitles}`,
+        data: null,
+      };
+    }
+
+    await prisma.event.deleteMany({
+      where: { id: { in: eventIds } },
+    });
+
+    revalidatePath("/admin/events");
+
+    return {
+      success: true,
+      message: `${eventIds.length} event(s) deleted successfully.`,
+      data: null,
+    };
+  } catch (err) {
+    return handlePrismaError(err);
   }
 }

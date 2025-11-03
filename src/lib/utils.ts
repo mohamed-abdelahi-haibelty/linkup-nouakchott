@@ -5,6 +5,8 @@ import { format } from "date-fns";
 import { AVATAR_STYLES } from "./constant";
 import { customAlphabet } from 'nanoid';
 import prisma from "@/lib/db";
+import { logError } from "./sentry";
+import { Prisma } from "@prisma/client";
 
 
 
@@ -87,5 +89,14 @@ export function generateRandomAvatar(id : string){
    const seed = `${id}`;
    const avatarUrl = `https://api.dicebear.com/9.x/${randomStyle}/svg?seed=${seed}`;
    return avatarUrl
+}
+
+export function handlePrismaError(err: unknown) {
+  logError(err);
+  const message =
+    err instanceof Prisma.PrismaClientKnownRequestError
+      ? "Database operation failed. Please try again later."
+      : "Unexpected error occurred. Please try again.";
+  return { success: false, message, data: null }
 }
 
