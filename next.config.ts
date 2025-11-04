@@ -50,6 +50,17 @@ const pwaConfig = withPWAInit({
   dest: "public",
   register: true,
   disable: process.env.NODE_ENV === "development",
+  extendDefaultRuntimeCaching: true,
+  workboxOptions: {
+    additionalManifestEntries: [
+      {
+        url: "/custom-sw.js",
+        revision: Date.now().toString(),
+      },
+    ],
+    // Import the custom service worker
+    importScripts: ["/custom-sw.js"],
+  },
 })(sentryConfig as any);
 
 export default pwaConfig;

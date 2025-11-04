@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { subscribeToNotifications } from "@/lib/actions";
+import { urlBase64ToUint8Array } from "@/lib/utils";
 
 interface NotificationPermissionDialogProps {
   open: boolean;
@@ -21,9 +22,12 @@ interface NotificationPermissionDialogProps {
 async function generateSubscriptionEndpoint(
   registration: ServiceWorkerRegistration
 ) {
+  const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
+  const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+
   const subscription = await registration.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    applicationServerKey: convertedVapidKey,
   });
 
   const subscriptionJson = JSON.parse(JSON.stringify(subscription));
@@ -72,21 +76,12 @@ export function NotificationPermissionDialog({
       const permission = await Notification.requestPermission();
 
       if (permission === "granted") {
-        // Check if there's already a registration
-        let registration = await navigator.serviceWorker.getRegistration();
+        console.log("Waiting for service worker...");
+        const registration = await navigator.serviceWorker.ready;
+        console.log("Service worker ready:", registration);
+        console.log("Active service worker:", registration.active);
 
-        if (!registration) {
-          // Register and wait for it to be ready
-          console.log("No registration found, registering service worker...");
-          registration = await navigator.serviceWorker.register("/sw.js");
-        }
-
-        // Wait for the service worker to be active
-        console.log("Waiting for service worker to be ready...");
-        const activeRegistration = await waitForServiceWorker();
-
-        console.log("Service worker ready, subscribing to push...");
-        await generateSubscriptionEndpoint(activeRegistration);
+        await generateSubscriptionEndpoint(registration);
       } else if (permission === "denied") {
         toast.error(
           "Notification permission denied. Please enable it in your browser settings."
