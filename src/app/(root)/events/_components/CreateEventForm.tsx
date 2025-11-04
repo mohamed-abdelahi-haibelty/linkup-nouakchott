@@ -3,6 +3,7 @@
 import { DateTimePickerField } from "@/components/shared/dateTimePicker";
 import EventTags from "@/components/shared/EventTags";
 import FileUploadComponent from "@/components/shared/FileUploadComponent";
+import { NotificationPermissionDialog } from "@/components/shared/NotificationPermissionDialog";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,13 +23,14 @@ import { cn } from "@/lib/utils";
 import { CreateEventInput } from "@/lib/validation/event";
 import { ArrowLeft, DollarSign, Loader2, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 function CreateEventForm() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [showPermissionDialog, setShowPermissionDialog] = useState(false);
 
   const form = useForm<CreateEventInput>({
     defaultValues: {
@@ -62,7 +64,17 @@ function CreateEventForm() {
         // Success case
         toast.success(res.message || "Event created successfully!");
         form.reset();
-        router.push("/events/");
+
+        const permission = Notification.permission;
+        if (permission === "granted") {
+          const registration = await navigator.serviceWorker.getRegistration();
+          const existingSub = await registration?.pushManager.getSubscription();
+          if (existingSub) {
+            router.push("/events/");
+            return;
+          }
+        }
+        setShowPermissionDialog(true);
       } else {
         // Error case
         if (res.message) {
@@ -90,6 +102,13 @@ function CreateEventForm() {
 
   return (
     <div className="">
+      <NotificationPermissionDialog
+        open={showPermissionDialog}
+        onComplete={() => {
+          setShowPermissionDialog(false);
+          router.push("/events/");
+        }}
+      />
       <div className="flex items-center gap-x-3 border-b border-dashed pb-3">
         <Button
           className="hover:text-foreground hover:border-accent border border-transparent hover:bg-white/60 transition duration-75"

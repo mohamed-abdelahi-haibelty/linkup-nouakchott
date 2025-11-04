@@ -25,6 +25,7 @@ model User {
   notifications  Notification[]
   registrations  Participant[]
   tickets        Ticket[]
+  pushSubscriptions PushSubscription[]
 
   @@index([email])
   @@index([role])
@@ -163,6 +164,16 @@ model Ticket {
   @@index([code])
   @@index([status])
   @@map("tickets")
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  endpoint  String   @unique()
+  keys      Json
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
 }
 
 enum TicketStatus {

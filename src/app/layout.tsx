@@ -53,7 +53,7 @@ export default function RootLayout({
           routerConfig={extractRouterConfig(ourFileRouter)}
         />
         <Toaster position="top-right" />
-        <Pwa />
+
         {children}
       </body>
     </html>
