@@ -1,6 +1,6 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
-import withPWA from "next-pwa";
+import withPWAInit from "@ducanh2912/next-pwa";
 
 const nextConfig: NextConfig = {
   eslint: {
@@ -46,10 +46,9 @@ const sentryConfig = withSentryConfig(nextConfig, {
   automaticVercelMonitors: true,
 });
 
-const pwaConfig = withPWA({
+const pwaConfig = withPWAInit({
   dest: "public",
   register: true,
-  skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
 })(sentryConfig as any);
 

@@ -4,9 +4,14 @@ import React, { useEffect } from "react";
 export default function Pwa() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", async function () {
-        await navigator.serviceWorker.register("/sw.js");
-      });
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((registration) => {
+          console.log("Service Worker registered:", registration);
+        })
+        .catch((error) => {
+          console.error("Service Worker registration failed:", error);
+        });
     }
   }, []);
 

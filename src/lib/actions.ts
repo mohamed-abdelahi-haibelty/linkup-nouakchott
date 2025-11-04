@@ -14,20 +14,19 @@ import {
   generateSlug,
   generateUniqueTicketCode,
   handlePrismaError,
-  throwError,
 } from "./utils";
 import { revalidatePath } from "next/cache";
 import {
-  Event,
   EventStatus,
+  NotificationType,
   Participant,
   Prisma,
   RegistrationStatus,
 } from "@prisma/client";
 import { sendTicketEmail } from "./email";
 import { logError, logWarning } from "./sentry";
-import { success } from "zod";
 import { getCurrentUserWithRole, requireAuthUser } from "./auth";
+import webpush from "web-push";
 
 type EventsResponse =
   | {
@@ -674,12 +673,89 @@ export async function changeEventStatus(eventId: string, status: EventStatus) {
       };
     }
 
-    const updatedEvent = await prisma.event.update({
+    // Get the event with organizer info
+    const event = await prisma.event.findUnique({
       where: { id: eventId },
-      data: { status },
+      include: {
+        organizer: {
+          include: {
+            pushSubscriptions: true,
+          },
+        },
+      },
     });
 
+    if (!event) {
+      return {
+        success: false,
+        message: "Event not found.",
+        data: null,
+      };
+    }
+
+    // Update event status with approval/rejection timestamp
+    const updateData: any = { status };
+
+    if (status === "approved") {
+      updateData.approvedAt = new Date();
+      updateData.approvedById = user.id;
+    } else if (status === "rejected") {
+      updateData.rejectedAt = new Date();
+    } else if (status === "cancelled") {
+      updateData.cancelledAt = new Date();
+    }
+
+    const updatedEvent = await prisma.event.update({
+      where: { id: eventId },
+      data: updateData,
+    });
+
+    // Prepare notification data based on status
+    let notificationTitle = "";
+    let notificationBody = "";
+    let notificationType: NotificationType = "event_update";
+    let actionUrl = "";
+
+    if (status === "approved") {
+      notificationTitle = "🎉 Event Approved!";
+      notificationBody = `Great news! Your event "${event.title}" has been approved and is now live. People can start registering!`;
+      notificationType = "event_accepted";
+      actionUrl = `/events/${event.id}_${event.slug}`; // Redirect to the event page
+    } else if (status === "rejected") {
+      notificationTitle = "Event Review Update";
+      notificationBody = `Unfortunately, your event "${event.title}" was not approved. Please review our guidelines or contact support for more information.`;
+      notificationType = "event_update";
+      actionUrl = `/events/create`; // Redirect to create page to try again
+    } else if (status === "cancelled") {
+      notificationTitle = "Event Cancelled";
+      notificationBody = `Your event "${event.title}" has been cancelled.`;
+      notificationType = "event_cancelled";
+      actionUrl = `/events`; // Redirect to events list
+    }
+
+    // Create in-app notification in database
+    await prisma.notification.create({
+      data: {
+        userId: event.organizerId,
+        title: notificationTitle,
+        message: notificationBody,
+        type: notificationType,
+        actionUrl: actionUrl,
+      },
+    });
+
+    // Send push notification to all organizer's subscriptions
+    if (event.organizer.pushSubscriptions.length > 0) {
+      await sendPushNotifications(
+        event.organizer.pushSubscriptions,
+        notificationTitle,
+        notificationBody,
+        actionUrl
+      );
+    }
+
     revalidatePath("/admin/events");
+    revalidatePath("/events");
 
     return {
       success: true,
@@ -784,4 +860,77 @@ export async function deleteManyEventsAction(eventIds: string[]) {
   } catch (err) {
     return handlePrismaError(err);
   }
+}
+
+export async function subscribeToNotifications(
+  subscription: any
+): Promise<ActionsResponse> {
+  try {
+    const { success, message, user } = await requireAuthUser();
+
+    if (!success || !user) return { success, message, data: null };
+
+    const { endpoint, keys } = subscription;
+
+    await prisma.pushSubscription.upsert({
+      where: { endpoint },
+      update: { keys, userId: user.id },
+      create: { userId: user.id, endpoint, keys },
+    });
+
+    console.log("called, send notifications");
+
+    return { message: "ok", success: true, data: null };
+  } catch (err) {
+    return handlePrismaError(err);
+  }
+}
+
+async function sendPushNotifications(
+  subscriptions: any[],
+  title: string,
+  body: string,
+  url?: string
+) {
+  // Configure VAPID details
+  webpush.setVapidDetails(
+    "mailto:eminou756@gmail.com",
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!
+  );
+
+  const payload = JSON.stringify({
+    title,
+    body,
+    icon: "/icon512_maskable.png",
+    badge: "/icon512_maskable.png",
+    url: url || "/events",
+  });
+
+  // Send to all subscriptions
+  const sendPromises = subscriptions.map(async (subscription) => {
+    try {
+      await webpush.sendNotification(
+        {
+          endpoint: subscription.endpoint,
+          keys: subscription.keys,
+        },
+        payload
+      );
+      console.log(
+        `✅ Push notification sent to ${subscription.endpoint.substring(
+          0,
+          50
+        )}...`
+      );
+    } catch (error) {
+      console.error("Error sending notification:", error);
+      // Remove invalid subscription
+      await prisma.pushSubscription.delete({
+        where: { endpoint: subscription.endpoint },
+      });
+    }
+  });
+
+  await Promise.allSettled(sendPromises);
 }
