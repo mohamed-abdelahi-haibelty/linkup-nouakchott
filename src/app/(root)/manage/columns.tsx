@@ -68,7 +68,7 @@ export const columns = [
 
       if (!status) return null;
 
-      const Icon = status.icon;
+      // const Icon = status.icon;
 
       return (
         <div
@@ -77,7 +77,7 @@ export const columns = [
             status.className
           )}
         >
-          {Icon && <Icon className="size-4 shrink-0" />}
+          {/* {Icon && <Icon className="size-4 shrink-0" />} */}
           <span className="capitalize">{status.label}</span>
         </div>
       );
