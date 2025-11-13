@@ -1,5 +1,6 @@
 "use client";
 
+import { createEvent } from "@/app/actions/events/organizer/createEvent";
 import { DateTimePickerField } from "@/components/shared/dateTimePicker";
 import EventTags from "@/components/shared/EventTags";
 import FileUploadComponent from "@/components/shared/FileUploadComponent";
@@ -17,10 +18,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { createEventAction } from "@/lib/actions";
+
 import { tagList } from "@/lib/constant";
 import { cn } from "@/lib/utils";
-import { CreateEventInput } from "@/lib/validation/event";
+import { EventFormInput } from "@/lib/validation/event";
 import { ArrowLeft, DollarSign, Loader2, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -32,7 +33,7 @@ function CreateEventForm() {
   const [isPending, startTransition] = useTransition();
   const [showPermissionDialog, setShowPermissionDialog] = useState(false);
 
-  const form = useForm<CreateEventInput>({
+  const form = useForm<EventFormInput>({
     defaultValues: {
       title: "",
       description: "",
@@ -51,9 +52,9 @@ function CreateEventForm() {
 
   const isFree = form.watch("isFree");
 
-  const onSubmit = (values: CreateEventInput) => {
+  const onSubmit = (values: EventFormInput) => {
     startTransition(async () => {
-      const res = await createEventAction(values);
+      const res = await createEvent(values);
 
       if (!res) {
         toast.error("Something went wrong. Please try again.");
@@ -86,7 +87,7 @@ function CreateEventForm() {
         if (res.error) {
           Object.entries(res.error).forEach(([key, value]) => {
             if (key in values) {
-              form.setError(key as keyof CreateEventInput, {
+              form.setError(key as keyof EventFormInput, {
                 type: "server",
                 message: value?.[0],
               });

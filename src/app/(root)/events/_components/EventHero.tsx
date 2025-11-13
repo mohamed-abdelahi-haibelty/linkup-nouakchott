@@ -1,3 +1,5 @@
+"use client";
+
 import { CalendarRange, Clock, Share2, Ticket } from "lucide-react";
 import Image from "next/image";
 
@@ -6,9 +8,13 @@ import EventInfoCard from "./EventInfoCard";
 import { BackButton } from "@/components/shared/BackButton";
 import StackedAvatar from "@/components/shared/StackedAvatar";
 import { EventWithParticipantsAndCounts } from "@/types";
+import { useState } from "react";
+import { toast } from "sonner";
 
 type EventHeroProps = Pick<
   EventWithParticipantsAndCounts,
+  | "id"
+  | "slug"
   | "title"
   | "description"
   | "imageUrl"
@@ -25,6 +31,7 @@ type EventHeroComponentProps = {
 
 function EventHero({ event }: EventHeroComponentProps) {
   const {
+    id,
     title,
     imageUrl,
     description,
@@ -32,9 +39,11 @@ function EventHero({ event }: EventHeroComponentProps) {
     startTime,
     isFree,
     price,
+    slug,
   } = event;
   const usersList =
     participants.length > 0 ? participants.map((user) => user.participant) : [];
+  const [isSharing, setIsSharing] = useState(false);
 
   const participantsCount = participants.length;
 
@@ -53,6 +62,38 @@ function EventHero({ event }: EventHeroComponentProps) {
     },
   ];
 
+  const handleShare = async () => {
+    const shareUrl =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/events/${id}_${slug}`
+        : "";
+
+    const shareData = {
+      title,
+      text: description,
+      url: shareUrl,
+    };
+
+    try {
+      setIsSharing(true);
+
+      if (navigator.share) {
+        await navigator.share(shareData);
+        console.log("Event shared successfully!");
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        toast("Link copied!", {
+          description: "Event URL copied to your clipboard.",
+        });
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+      toast.error("Error sharing");
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   return (
     <div className="relative w-full rounded-xl overflow-hidden shadow-2xl h-[55vh] sm:h-[70vh]">
       {/* Background Image */}
@@ -70,7 +111,11 @@ function EventHero({ event }: EventHeroComponentProps) {
       {/* Navigation Buttons */}
       <div className="absolute top-4 sm:top-6 left-4 right-4 z-30 flex items-center justify-between">
         <BackButton />
-        <button className="p-2 sm:p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 transition-all duration-300">
+        <button
+          onClick={handleShare}
+          disabled={isSharing}
+          className="p-2 sm:p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 transition-all duration-300"
+        >
           <Share2 className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
         </button>
       </div>

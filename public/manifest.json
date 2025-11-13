@@ -1,23 +1,64 @@
 {
   "name": "Linkup Nouakchott",
-  "short_name": "Linkup NKC",
-  "description": "Allows organizers to create events, manage them, and allows users to see and participate in events.",
+  "short_name": "Linkup Nouakchott",
+  "description": "Discover, host, and manage community events in Nouakchott.",
   "categories": ["social", "events", "community"],
+  "id": "linkup-nouakchott",
+  "start_url": "/events?source=pwa",
+  "scope": "/",
   "icons": [
+    { "src": "/icons/linkup-48x48.png", "sizes": "48x48", "type": "image/png" },
+    { "src": "/icons/linkup-72x72.png", "sizes": "72x72", "type": "image/png" },
+    { "src": "/icons/linkup-96x96.png", "sizes": "96x96", "type": "image/png" },
     {
-      "purpose": "maskable",
-      "sizes": "512x512",
-      "src": "icon512_maskable.png",
+      "src": "/icons/linkup-128x128.png",
+      "sizes": "128x128",
       "type": "image/png"
     },
     {
-      "purpose": "any",
-      "sizes": "512x512",
-      "src": "icon512_rounded.png",
+      "src": "/icons/linkup-192x192.png",
+      "sizes": "192x192",
       "type": "image/png"
+    },
+    {
+      "src": "/icons/linkup-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Discover Events",
+      "short_name": "Discover",
+      "description": "Explore all public events",
+      "url": "/events",
+      "icons": [{ "src": "/icons/linkup-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Create Event",
+      "short_name": "Create",
+      "description": "Host your own event",
+      "url": "/events/create",
+      "icons": [{ "src": "/icons/linkup-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Manage Events",
+      "short_name": "Manage",
+      "description": "View and edit hosted events",
+      "url": "/manage",
+      "icons": [{ "src": "/icons/linkup-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Saved Items",
+      "short_name": "Saved",
+      "description": "See your saved events and posts",
+      "url": "/saved",
+      "icons": [{ "src": "/icons/linkup-192x192.png", "sizes": "192x192" }]
     }
   ],
   "theme_color": "oklch(0.966 0.0053 106.4982)",
   "background_color": "#f5f5f5",
-  "display": "standalone"
+  "display": "standalone",
+  "prefer_related_applications": false
 }

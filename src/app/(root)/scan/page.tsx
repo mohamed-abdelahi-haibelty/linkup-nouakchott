@@ -1,7 +1,7 @@
 "use client";
 
+import { verifyTicket } from "@/app/actions/events/ticket/verifyTicket";
 import { Button } from "@/components/ui/button";
-import { verifyTicket } from "@/lib/actions";
 import { logError } from "@/lib/sentry";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { Pause, Repeat } from "lucide-react";

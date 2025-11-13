@@ -19,6 +19,10 @@ export type EventWithParticipantsAndCounts = SafeEvent & {
   organizer: Organizer;
 };
 
+export type EventWithParticipantsCount = SafeEvent & {
+  participantsCount: number;
+};
+
 export type EventWithOrganizer = SafeEvent & {
   organizer: Omit<Organizer, "hostedEventsCount">;
 };

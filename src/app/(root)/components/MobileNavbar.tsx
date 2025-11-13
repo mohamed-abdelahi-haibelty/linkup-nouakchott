@@ -9,7 +9,14 @@ import {
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import React from "react";
-import { ArrowRight, Calendar, Menu, Users, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Menu,
+  Sparkles,
+  LayoutDashboard,
+  SquareDashedMousePointer,
+  FolderKanban,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   LoginLink,
@@ -23,11 +30,16 @@ import { NAVIGATIONS } from "./AppNavbar";
 
 const NAV_ICONS = {
   Discover: Sparkles,
-  Community: Users,
-  "My Events": Calendar,
+  Community: SquareDashedMousePointer,
+  "My Hub": FolderKanban,
+  Dashboard: LayoutDashboard,
 };
 
-function MobileNavbar() {
+type Props = {
+  role?: string | null;
+};
+
+function MobileNavbar({ role }: Props) {
   const { isAuthenticated, isLoading, getUser } = useKindeBrowserClient();
   const user = getUser();
   const pathname = usePathname();
@@ -40,6 +52,13 @@ function MobileNavbar() {
   };
 
   const isActivePath = (href: string) => pathname === href;
+  const showDashboard = role === "admin" || role === "moderator";
+
+  // Combine regular navigations with dashboard if applicable
+  const allNavigations = [
+    ...NAVIGATIONS,
+    ...(showDashboard ? [{ title: "Dashboard", href: "/admin" }] : []),
+  ];
 
   return (
     <div className="lg:hidden">
@@ -59,27 +78,27 @@ function MobileNavbar() {
           className="w-[300px] sm:w-[350px] flex flex-col p-0"
         >
           <SheetHeader className="px-6 pt-6 pb-4 border-b border-border/40">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="absolute inset-0 bg-primary/20 blur-lg rounded-full" />
-                <div className="relative w-10 h-10 bg-gradient-to-br from-primary via-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg">
-                  <span className="text-primary-foreground font-bold text-lg">
-                    L
-                  </span>
-                </div>
-              </div>
-              <SheetTitle className="text-lg font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-                LinkUp Nouakchott
-              </SheetTitle>
-            </div>
+            <Link
+              href="/"
+              className="flex items-center gap-3 group"
+              aria-label="LinkUp Nouakchott home"
+            >
+              <img
+                src="/linkup-logo.svg"
+                alt=""
+                className="h-10 w-[120px] md:w-40 md:h-12"
+              />
+            </Link>
           </SheetHeader>
 
-          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+          <nav className="flex-1 px-4  space-y-1 overflow-y-auto">
             <div className="space-y-1">
-              {NAVIGATIONS.map((item) => {
+              {allNavigations.map((item, index) => {
                 const Icon =
                   NAV_ICONS[item.title as keyof typeof NAV_ICONS] || Sparkles;
                 const isActive = isActivePath(item.href);
+                const nextItem = allNavigations[index + 1];
+                const isNextActive = nextItem && isActivePath(nextItem.href);
 
                 return (
                   <Link
@@ -87,10 +106,15 @@ function MobileNavbar() {
                     href={item.href}
                     onClick={() => setOpen(false)}
                     className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group",
+                      // base styles
+                      "flex items-center gap-3 px-4 py-3 text-sm font-medium transition-all duration-200 group border-dashed",
+                      // border logic
                       isActive
-                        ? "bg-accent text-primary-foreground shadow-lg shadow-primary/25"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                        ? "border border-border/50 rounded-md bg-card/60 text-primary-foreground shadow-primary/25"
+                        : cn(
+                            "text-muted-foreground hover:text-foreground hover:bg-accent",
+                            !isNextActive && "border-b border-border/40"
+                          )
                     )}
                   >
                     <Icon

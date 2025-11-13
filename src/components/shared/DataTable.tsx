@@ -25,11 +25,38 @@ import { DataTableToolbar } from "./DataTableToolbar";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filters?: {
+    columnId: string;
+    title: string;
+    options: {
+      label: string;
+      value: string;
+      icon?: React.ComponentType<{ className?: string }>;
+    }[];
+  }[];
+  /** which columns should receive the search string (e.g. ["name","email","phone"]) */
+  searchColumns?: string[];
+  /** Placeholder for the search input */
+  searchPlaceholder?: string;
+  deleteAction?: (ids: string[]) => Promise<{ message: string }>;
+  /** Optional labels for the confirmation dialog */
+  deleteConfirmTitle?: string;
+  deleteConfirmDescription?: string;
+  deleteConfirmLabel?: string;
+  deleteCancelLabel?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  filters,
+  searchColumns = ["title"],
+  searchPlaceholder = "Search...",
+  deleteAction,
+  deleteConfirmTitle = "Delete Selected Items",
+  deleteConfirmDescription,
+  deleteConfirmLabel = "Delete",
+  deleteCancelLabel = "Cancel",
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -43,7 +70,17 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar
+        table={table}
+        filters={filters}
+        searchColumns={searchColumns}
+        searchPlaceholder={searchPlaceholder}
+        deleteAction={deleteAction}
+        deleteConfirmDescription={deleteConfirmDescription}
+        deleteConfirmTitle={deleteConfirmTitle}
+        deleteConfirmLabel={deleteConfirmLabel}
+        deleteCancelLabel={deleteCancelLabel}
+      />
       <div className="overflow-hidden rounded-md border">
         <Table className="bg-card">
           <TableHeader>

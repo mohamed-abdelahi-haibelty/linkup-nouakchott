@@ -1,3 +1,4 @@
+// custom-sw.js
 console.log("Custom Service Worker loaded");
 
 // Push notification event listener

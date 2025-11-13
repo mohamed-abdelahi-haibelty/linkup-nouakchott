@@ -12,15 +12,16 @@ import {
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Check, Loader2, LogIn, Users } from "lucide-react";
-import { cn, getErrorMessage } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { LoginLink, useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { usePathname } from "next/navigation";
-import { joinEventAction, leaveEventAction } from "@/lib/actions";
 import { toast } from "sonner";
 import { EventWithParticipantsAndCounts } from "@/types";
 import { PendingApprovalModal } from "./PendingApprovalModal";
 import EventTicketModal from "@/app/(root)/events/_components/EventTicketModal";
 import { logError } from "@/lib/sentry";
+import { leaveEvent } from "@/app/actions/events/participant/leaveEvent";
+import { joinEvent } from "@/app/actions/events/participant/joinEvent";
 
 interface JoinEventButtonProps {
   event: EventWithParticipantsAndCounts;
@@ -62,7 +63,7 @@ export function JoinEventButton({
     if (isDisabled || isLoading) return;
     setIsLoading(true);
     try {
-      const res = await leaveEventAction?.(eventId);
+      const res = await leaveEvent?.(eventId);
       if (res.success) {
         toast.success(res.message);
       } else {
@@ -81,7 +82,7 @@ export function JoinEventButton({
 
     setIsLoading(true);
     try {
-      const res = await joinEventAction(eventId);
+      const res = await joinEvent(eventId);
       if (res.success) {
         toast.success(res.message);
         if (!event.isFree) {

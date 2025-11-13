@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export function DashboardHeader() {
   return (
@@ -19,14 +20,7 @@ export function DashboardHeader() {
             size="sm"
             className="hidden sm:flex"
           >
-            <a
-              href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="dark:text-foreground"
-            >
-              Go to Website
-            </a>
+            <Link href={"/events"}>Go to Website</Link>
           </Button>
         </div>
       </div>

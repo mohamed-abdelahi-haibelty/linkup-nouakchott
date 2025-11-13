@@ -1,5 +1,4 @@
 import EventDescription from "@/app/(root)/events/_components/EventDescription";
-import { getEventByAdmin } from "@/lib/actions";
 import { formatDate, formatTime } from "@/lib/utils";
 import {
   Calendar,
@@ -12,8 +11,6 @@ import {
   User,
   Tag,
   AlertCircle,
-  CheckCircle,
-  XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -21,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getEvent } from "@/app/actions/events/admin/getEvent";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -29,7 +27,7 @@ interface PageProps {
 async function page({ params }: PageProps) {
   const url_param = await params;
   const id = url_param?.id;
-  const { data } = await getEventByAdmin(id);
+  const { data } = await getEvent(id);
   const event = data;
 
   if (!event) {

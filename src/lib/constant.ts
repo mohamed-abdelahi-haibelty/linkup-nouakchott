@@ -98,25 +98,63 @@ export const statuses = [
   {
     value: "pending",
     label: "Pending",
-    icon: Clock,
+
     className: "bg-amber-100 text-foreground border border-amber-200",
   },
   {
     value: "approved",
     label: "Approved",
-    icon: BadgeCheck,
+
     className: "bg-accent/15 text-foreground border border-accent/20",
   },
   {
     value: "rejected",
     label: "Rejected",
-    icon: XCircle,
+
     className: "bg-destructive/10 text-foreground border border-destructive/15",
   },
   {
     value: "cancelled",
     label: "Cancelled",
-    icon: TicketX,
+
     className: "bg-slate-100 text-slate-600 border border-slate-200",
+  },
+];
+
+export const eventHostStatues = [
+  {
+    value: "approved",
+    label: "Approved",
+    //icon: BadgeCheck,
+    className: "bg-accent/15 text-foreground border border-accent/20",
+  },
+  {
+    value: "cancelled",
+    label: "Cancelled",
+    //icon: TicketX,
+    className: "bg-slate-100 text-slate-600 border border-slate-200",
+  },
+];
+
+export const participantsStatues = [
+  {
+    value: "pending",
+    label: "Pending",
+    className: "bg-amber-100 text-foreground border border-amber-200",
+  },
+  {
+    value: "paid",
+    label: "Paid",
+    className: "bg-accent/15 text-foreground border border-accent/20",
+  },
+  {
+    value: "confirmed",
+    label: "Confirmed",
+    className: "bg-slate-100 text-slate-600 border border-slate-200",
+  },
+  {
+    value: "cancelled",
+    label: "Cancelled",
+    className: "bg-destructive/10 text-foreground border border-destructive/15",
   },
 ];

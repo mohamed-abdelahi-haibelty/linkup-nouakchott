@@ -1,7 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  FolderKanban,
+  icons,
+  LayoutDashboard,
+  Sparkles,
+  SquareDashedMousePointer,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   LoginLink,
@@ -17,18 +24,25 @@ export const NAVIGATIONS = [
   {
     title: "Discover",
     href: "/events",
+    icons: Sparkles,
   },
   {
     title: "Community",
     href: "/community",
+    icons: SquareDashedMousePointer,
   },
   {
-    title: "My Events",
-    href: "/my-events",
+    title: "My Hub",
+    href: "/manage",
+    icons: FolderKanban,
   },
 ];
 
-function AppNavbar() {
+type Props = {
+  role?: string | null;
+};
+
+function AppNavbar({ role }: Props) {
   const { isAuthenticated, isLoading, getUser } = useKindeBrowserClient();
   const user = getUser();
   const pathname = usePathname();
@@ -39,24 +53,32 @@ function AppNavbar() {
     email: user?.email!,
   };
 
-  const isActivePath = (href: string) => pathname === href;
+  const isActivePath = (href: string) => pathname.startsWith(href);
+  const showDashboard = role === "admin" || role === "moderator";
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full group-hover:bg-primary/30 transition-all duration-300" />
-              <div className="relative w-9 h-9 bg-gradient-to-br from-primary via-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
-                <span className="text-primary-foreground font-bold text-lg">
-                  L
-                </span>
-              </div>
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-              LinkUp Nouakchott
-            </span>
+          <Link
+            href="/"
+            className="flex items-center gap-3 group"
+            aria-label="LinkUp Nouakchott home"
+          >
+            <img
+              src="/linkup-logo.svg"
+              alt=""
+              className="h-10 w-[120px] md:w-40 md:h-12"
+            />
+
+            {/* <div className="flex flex-col leading-tight">
+              <span className="text-lg font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                LinkUp Nouakchott
+              </span>
+              <span className="text-xs text-muted-foreground hidden lg:inline">
+                Discover events & community
+              </span>
+            </div> */}
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
@@ -65,18 +87,30 @@ function AppNavbar() {
                 key={item.title}
                 href={item.href}
                 className={cn(
-                  "relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200",
+                  "relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2",
                   isActivePath(item.href)
                     ? "text-foreground bg-accent"
                     : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
                 )}
               >
+                <span>{<item.icons className="w-4 h-4" />}</span>
                 {item.title}
-                {isActivePath(item.href) && (
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
-                )}
               </Link>
             ))}
+            {showDashboard && (
+              <Link
+                href="/admin"
+                className={cn(
+                  "relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2",
+                  isActivePath("/admin")
+                    ? "text-foreground bg-accent"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                )}
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </Link>
+            )}
           </nav>
 
           {isLoading ? (
@@ -104,7 +138,7 @@ function AppNavbar() {
             </div>
           )}
 
-          <MobileNavbar />
+          <MobileNavbar role={role} />
         </div>
       </div>
     </header>

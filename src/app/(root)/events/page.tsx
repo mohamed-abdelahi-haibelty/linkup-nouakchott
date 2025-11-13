@@ -1,10 +1,10 @@
 import { Plus, SlidersHorizontal, TrendingUp } from "lucide-react";
 import EventList from "./_components/EventList";
 import SearchInput from "./_components/SearchInput";
-import { getEvents } from "@/lib/actions";
 import ErrorWrapper from "@/components/shared/ErrorWrapper";
 import { Button } from "@/components/ui/button";
 import CreateEventButton from "./_components/CreateEventButton";
+import { getEvents } from "@/app/actions/events/getEvents";
 
 export default async function Home({
   searchParams,

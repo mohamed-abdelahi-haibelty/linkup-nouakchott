@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import EventCard from "./EventCard";
-import { getEvents } from "@/lib/actions";
 import { useInView } from "react-intersection-observer";
 
 import DotsLoader from "@/components/shared/DotsLoader";
@@ -10,6 +9,7 @@ import EventNotFound from "./EventNotFound";
 import EventCardSkeleton from "./EventCardSkeleton";
 import ErrorWrapper from "@/components/shared/ErrorWrapper";
 import { EventWithParticipants } from "@/types/events";
+import { getEvents } from "@/app/actions/events/getEvents";
 
 type Props = {
   initialData: EventWithParticipants[];

@@ -8,12 +8,14 @@ interface FileUploadComponentProps {
   onImageChange?: (url: string | null) => void;
   endpoint: "eventImage";
   value: string | null;
+  disabled?: boolean;
 }
 
 function FileUploadComponent({
   onImageChange,
   endpoint,
   value,
+  disabled = false,
 }: FileUploadComponentProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(value);
   const [isUploading, setIsUploading] = useState(false);
@@ -80,6 +82,7 @@ function FileUploadComponent({
                   container: "flex items-center justify-center",
                   allowedContent: "hidden",
                 }}
+                disabled={disabled}
                 content={{
                   button({ ready, isUploading }) {
                     if (isUploading)

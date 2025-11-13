@@ -7,13 +7,17 @@ import EventDetailsFooter from "@/components/shared/EventDetailsFooter";
 
 type Props = {
   event: EventWithParticipantsAndCounts;
+  favoriteStatus: {
+    isAuthenticated: boolean;
+    isFavorited: boolean;
+  };
 };
 
-function EventMobileLayout({ event }: Props) {
+function EventMobileLayout({ event, favoriteStatus }: Props) {
   return (
     <div className="lg:hidden">
       <EventHero event={event} />
-      <EventDetailsFooter event={event} />
+      <EventDetailsFooter event={event} favoriteStatus={favoriteStatus} />
 
       <Tabs className="mt-3 " defaultValue="About">
         <TabsList className="flex justify-center w-full">

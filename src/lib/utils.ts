@@ -111,6 +111,6 @@ export function handlePrismaError(err: unknown) {
     err instanceof Prisma.PrismaClientKnownRequestError
       ? "Database operation failed. Please try again later."
       : "Unexpected error occurred. Please try again.";
-  return { success: false, message, data: null }
+  return { success: false, message, data: null, code : 500 }
 }
 

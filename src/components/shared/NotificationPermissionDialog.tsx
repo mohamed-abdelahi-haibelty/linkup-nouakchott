@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { subscribeToNotifications } from "@/lib/actions";
 import { urlBase64ToUint8Array } from "@/lib/utils";
+import { subscribeToNotifications } from "@/app/actions/events/notifications/subscribeToNotifications";
 
 interface NotificationPermissionDialogProps {
   open: boolean;
@@ -44,12 +44,6 @@ async function generateSubscriptionEndpoint(
   } else {
     toast(message);
   }
-}
-
-// Wait for service worker to be ready
-async function waitForServiceWorker(): Promise<ServiceWorkerRegistration> {
-  const registration = await navigator.serviceWorker.ready;
-  return registration;
 }
 
 export function NotificationPermissionDialog({

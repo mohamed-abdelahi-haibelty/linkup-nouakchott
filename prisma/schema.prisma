@@ -26,6 +26,7 @@ model User {
   registrations  Participant[]
   tickets        Ticket[]
   pushSubscriptions PushSubscription[]
+  favorites Favorite[]
 
   @@index([email])
   @@index([role])
@@ -37,9 +38,9 @@ model Event {
   title         String         @db.VarChar(255)
   slug          String         @db.VarChar(255)
   description   String
-  imageUrl      String        @map("image_url") @db.VarChar(500)
+  imageUrl      String         @map("image_url") @db.VarChar(500)
   capacity      Int            @default(0)
-  price         Decimal        @default(0) @db.Decimal(10, 2)
+  price         Float          @default(0) @db.DoublePrecision
   location      String         @db.VarChar(500)
   status        EventStatus    @default(pending)
   contactPhone  String?        @db.VarChar(20)
@@ -61,6 +62,7 @@ model Event {
   organizer     User           @relation(fields: [organizerId], references: [id], onDelete: Cascade)
   participants  Participant[]
   tickets       Ticket[]
+  favorites Favorite[]
 
   @@index([slug])
   @@index([organizerId])
@@ -104,6 +106,7 @@ model CommunityPost {
   deletedAt    DateTime?
   approvedBy   User?               @relation("PostApprover", fields: [approvedById], references: [id])
   user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  favorites Favorite[]
 
   @@index([userId])
   @@index([status])
@@ -118,6 +121,7 @@ model Participant {
   status        RegistrationStatus @default(pending)
   checkedInAt   DateTime?
   createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @default(now()) @updatedAt
   confirmedAt   DateTime?          @map("confirmed_at")
   event         Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
   participant   User               @relation(fields: [participantId], references: [id])
@@ -157,6 +161,7 @@ model Ticket {
   scannedBy String?      @map("scanned_by")
   event     Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt     DateTime       @default(now()) @updatedAt
 
   @@unique([eventId, userId])
   @@index([eventId])
@@ -175,6 +180,35 @@ model PushSubscription {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
 }
+
+model Favorite {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  eventId     String? 
+  event       Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  postId      String?
+  post        CommunityPost? @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  type        FavoriteType
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([eventId])
+  @@index([postId])
+    @@unique([userId, eventId])
+  @@unique([userId, postId])
+}
+
+enum FavoriteType {
+  event
+  post
+}
+
+
 
 enum TicketStatus {
   active
@@ -196,6 +230,7 @@ enum UserRole {
   moderator
   admin
 }
+
 
 enum EventStatus {
   pending

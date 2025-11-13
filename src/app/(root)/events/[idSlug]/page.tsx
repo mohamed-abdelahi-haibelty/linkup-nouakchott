@@ -1,8 +1,10 @@
-import { getEventById } from "@/lib/actions";
 import { notFound } from "next/navigation";
 import EventMobileLayout from "../_components/EventMobileLayout";
 import EventDesktop from "../_components/EventDesktop";
 import { Metadata } from "next";
+import { getEventById } from "@/app/actions/events/organizer/getEventById";
+import { requireAuthUser } from "@/lib/auth";
+import prisma from "@/lib/db";
 
 interface PageProps {
   params: Promise<{ idSlug: string }>;
@@ -53,9 +55,28 @@ async function page({ params }: PageProps) {
     return notFound();
   }
 
+  const { user } = await requireAuthUser();
+  // Define a clear shape for the data you need in the component
+  const favoriteStatus = {
+    isAuthenticated: !!user,
+    isFavorited: false,
+  };
+
+  if (user) {
+    const favorite = await prisma.favorite.findUnique({
+      where: {
+        userId_eventId: {
+          userId: user.id,
+          eventId: event.id,
+        },
+      },
+    });
+
+    favoriteStatus.isFavorited = !!favorite;
+  }
   return (
     <div className="min-h-screen">
-      <EventMobileLayout event={event} />
+      <EventMobileLayout event={event} favoriteStatus={favoriteStatus} />
 
       <EventDesktop event={event} />
     </div>

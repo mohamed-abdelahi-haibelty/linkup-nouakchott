@@ -3,7 +3,7 @@ import { z } from "zod";
 
 const mauritaniaPhoneRegex = /^(?:\+222|00222)?[2-4][0-9]{7}$/;
 
-export const createEventSchema = z
+export const eventFormSchema = z
   .object({
     title: z.string().min(3, "Title must be at least 3 characters"),
     description: z.string().min(10, "Description is required"),
@@ -59,4 +59,4 @@ export const createEventSchema = z
     }
   });
 
-export type CreateEventInput = z.infer<typeof createEventSchema>;
+export type EventFormInput = z.infer<typeof eventFormSchema>;

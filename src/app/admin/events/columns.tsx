@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -21,7 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { changeEventStatus, deleteEventAction } from "@/lib/actions";
+
 import { statuses } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 import { EventWithOrganizer } from "@/types";
@@ -31,6 +30,17 @@ import { Loader2, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+
+import { BadgeCheck, Clock, TicketX, XCircle } from "lucide-react";
+import { changeEventStatus } from "@/app/actions/events/admin/changeEventStatus";
+import { deleteEvent } from "@/app/actions/events/admin/deleteEvent";
+import { multiValueFilter } from "@/lib/tableUtils";
+
+const icons = [BadgeCheck, Clock, TicketX, XCircle];
+const newStatues = statuses.map((status, index) => {
+  const icon = icons[index];
+  return { ...status, icon };
+});
 
 const columnHelper = createColumnHelper<EventWithOrganizer>();
 export const columns = [
@@ -66,7 +76,7 @@ export const columns = [
   columnHelper.accessor("status", {
     header: () => "Status",
     cell: ({ row }) => {
-      const status = statuses.find((s) => s.value === row.getValue("status"));
+      const status = newStatues.find((s) => s.value === row.getValue("status"));
 
       if (!status) return null;
 
@@ -84,6 +94,7 @@ export const columns = [
         </div>
       );
     },
+    filterFn: multiValueFilter,
   }),
   columnHelper.display({
     id: "actions",
@@ -115,7 +126,7 @@ export const columns = [
       const handleDelete = async () => {
         try {
           setLoading(true);
-          const res = await deleteEventAction(event.id);
+          const res = await deleteEvent(event.id);
           toast.message(res.message);
         } finally {
           setLoading(false);
