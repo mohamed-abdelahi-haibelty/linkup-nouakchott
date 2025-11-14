@@ -46,7 +46,7 @@ const communityCategories = [
 
 async function page() {
   const { user, success, code } = await getUserRole();
-  if (!user || success) redirect("/api/auth/login");
+  if (!user || !success) redirect("/api/auth/login");
   if (user.role !== "admin" && user.role !== "moderator") return NotFound();
   const posts = await getAllCommunityPosts();
 

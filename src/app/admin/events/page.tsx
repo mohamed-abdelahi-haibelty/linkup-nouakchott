@@ -10,7 +10,7 @@ import NotFound from "@/app/not-found";
 
 async function page() {
   const { user, success, code } = await getUserRole();
-  if (!user || success) redirect("/api/auth/login");
+  if (!user || !success) redirect("/api/auth/login");
   if (user.role !== "admin") return NotFound();
   const events = await getAllEvents();
   return (
