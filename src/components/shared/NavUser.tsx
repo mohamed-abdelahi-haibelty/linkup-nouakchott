@@ -42,7 +42,7 @@ export function NavUser({
           size="lg"
           variant={"ghost"}
           className={cn(
-            "border border-transparent hover:border-border hover:bg-accent/50 hover:shadow-sm transition-all duration-200 hover:text-foreground data-[state=open]:bg-accent/50 data-[state=open]:border-border data-[state=open]:shadow-sm",
+            "border border-transparent  hover:border-border hover:bg-accent/50 hover:shadow-sm transition-all duration-200 hover:text-foreground data-[state=open]:bg-accent/50 data-[state=open]:border-border data-[state=open]:shadow-sm",
             className
           )}
         >
@@ -53,8 +53,10 @@ export function NavUser({
             </AvatarFallback>
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-medium">{user.name}</span>
-            <span className="truncate text-xs">{user.email}</span>
+            <span className="truncate font-medium max-w-[130px]">
+              {user.name}
+            </span>
+            <span className="truncate text-xs max-w-[130px]">{user.email}</span>
           </div>
           <ChevronsUpDown className="ml-auto size-4" />
         </Button>

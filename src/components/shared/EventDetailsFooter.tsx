@@ -4,7 +4,7 @@ import { EventWithParticipantsAndCounts } from "@/types";
 import { Heart } from "lucide-react";
 import { JoinEventButton } from "./JoinEventButton";
 import { useState, useTransition } from "react";
-import { toggleFavorite } from "@/app/actions/events/favorite/toggleFavorite";
+import { toggleFavorite } from "@/app/actions/favorite/toggleFavorite";
 import { FavoriteType } from "@prisma/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";

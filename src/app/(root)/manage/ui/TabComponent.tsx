@@ -11,6 +11,7 @@ import React from "react";
 import { columns } from "../columns";
 import { eventHostStatues } from "@/lib/constant";
 import AttendedEvents from "./AttendedEvents";
+import Posts from "./Posts";
 
 type Props = {
   data: EventWithParticipantsCount[] | null | undefined;
@@ -55,7 +56,9 @@ function TabComponent({ data }: Props) {
         <AttendedEvents />
       </TabsContent>
       <TabsContent value="saved">Saved</TabsContent>
-      <TabsContent value="posts">Posts</TabsContent>
+      <TabsContent value="posts">
+        <Posts />
+      </TabsContent>
     </Tabs>
   );
 }

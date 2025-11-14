@@ -9,18 +9,16 @@ function LandingNavbar() {
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full group-hover:bg-primary/30 transition-all" />
-              <div className="relative w-9 h-9 bg-gradient-to-br from-primary via-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-primary-foreground font-bold text-lg">
-                  L
-                </span>
-              </div>
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-              LinkUp Nouakchott
-            </span>
+          <Link
+            href="/"
+            className="flex items-center gap-3 group"
+            aria-label="LinkUp Nouakchott home"
+          >
+            <img
+              src="/linkup-logo.svg"
+              alt=""
+              className="h-10 w-[120px] md:w-40 md:h-12"
+            />
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">

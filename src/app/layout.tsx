@@ -55,8 +55,7 @@ export default function RootLayout({
         />
         <Toaster position="top-right" />
 
-        {/* {children} */}
-        <h1>linkup</h1>
+        {children}
       </body>
     </html>
   );

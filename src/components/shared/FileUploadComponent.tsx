@@ -121,7 +121,6 @@ function FileUploadComponent({
                 onUploadBegin={(name) => {
                   setIsUploading(true);
                   setError(null);
-                  console.log("Uploading: ", name);
                 }}
                 endpoint={endpoint}
               />

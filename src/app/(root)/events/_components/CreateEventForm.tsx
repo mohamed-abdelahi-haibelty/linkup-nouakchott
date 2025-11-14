@@ -1,3 +1,4 @@
+//CreateEventForm.tsx
 "use client";
 
 import { createEvent } from "@/app/actions/events/organizer/createEvent";
@@ -215,23 +216,6 @@ function CreateEventForm() {
               )}
             />
             <FormField
-              name="endTime"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>End Time</FormLabel>
-                  <DateTimePickerField
-                    field={field}
-                    fieldState={fieldState}
-                    timeFormat="24"
-                    placeholder="Select end date and time"
-                    minDate={new Date()}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
               name="registrationDeadline"
               control={form.control}
               render={({ field, fieldState }) => (
@@ -242,6 +226,23 @@ function CreateEventForm() {
                     fieldState={fieldState}
                     placeholder="Select registration deadline"
                     timeFormat="24"
+                    minDate={new Date()}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="endTime"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>End Time</FormLabel>
+                  <DateTimePickerField
+                    field={field}
+                    fieldState={fieldState}
+                    timeFormat="24"
+                    placeholder="Select end date and time"
                     minDate={new Date()}
                   />
                   <FormMessage />

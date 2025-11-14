@@ -46,19 +46,23 @@ export async function getEvents({
 
   const skip = (page - 1) * limit;
 
-  const where = query?.trim()
-    ? {
-        OR: [
-          { title: { contains: query.trim(), mode: "insensitive" as const } },
+  const where = (() => {
+    const q = query?.trim();
+    if (q) {
+      return {
+        AND: [
           {
-            description: {
-              contains: query.trim(),
-              mode: "insensitive" as const,
-            },
+            OR: [
+              { title: { contains: q, mode: "insensitive" as const } },
+              { description: { contains: q, mode: "insensitive" as const } },
+            ],
           },
+          { status: "approved" as const },
         ],
-      }
-    : {};
+      };
+    }
+    return { status: "approved" as const };
+  })();
 
   try {
     const [events, total] = await Promise.all([

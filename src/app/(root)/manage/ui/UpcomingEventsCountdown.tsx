@@ -5,6 +5,7 @@ import type { EventWithParticipants } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Clock, Users } from "lucide-react";
 import StackedAvatar from "@/components/shared/StackedAvatar";
+import Link from "next/link";
 
 type Props = {
   data: EventWithParticipants[];
@@ -79,8 +80,8 @@ function CountdownTimer({ startTime }: { startTime: Date }) {
 function CountdownUnit({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="w-full rounded-lg px-2 py-2 sm:px-3 sm:py-3 backdrop-blur-sm border border-primary/20">
-        <p className="text-xl sm:text-2xl font-bold text-primary">
+      <div className="w-full rounded-lg px-2 py-2 sm:px-3 sm:py-3 backdrop-blur-sm border border-dashed ">
+        <p className="text-xl sm:text-2xl font-bold">
           {String(value).padStart(2, "0")}
         </p>
       </div>
@@ -107,7 +108,10 @@ export default function UpcomingEventsCountdown({ data }: Props) {
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 
+    md:grid md:grid-cols-2 md:gap-6 md:overflow-visible md:px-0 md:mx-0"
+      >
         {upcomingEvents.map((event) => {
           const usersList =
             event.participants.length > 0
@@ -125,67 +129,73 @@ export default function UpcomingEventsCountdown({ data }: Props) {
             hour12: true,
           });
 
+          const url = `/events/${event.id}_${event.slug}`;
+
           return (
             <Card
               key={event.id}
-              className=" hover:shadow-lg transition-all duration-300 border-border/50 h-full flex flex-col"
+              className=" min-w-[85%] sm:min-w-[350px] md:min-w-0  hover:shadow-lg border-dashed transition-all rounded-xl duration-300 border-border/50 h-full flex flex-col"
             >
-              <CardContent className="flex-1 flex flex-col pt-4">
-                <div className="mb-3">
-                  <h3 className="font-bold text-lg line-clamp-2 text-card-foreground">
-                    {event.title}
-                  </h3>
-                </div>
+              <Link href={url}>
+                <CardContent className="flex-1 flex flex-col">
+                  <div className="mb-3">
+                    <h3 className="font-bold text-lg line-clamp-1 text-card-foreground">
+                      {event.title}
+                    </h3>
+                  </div>
 
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
-                  {event.description}
-                </p>
+                  <div className="border-t border-dashed border-border/50 pt-3">
+                    {participantsCount > 0 ? (
+                      <div className="flex items-center gap-2">
+                        <StackedAvatar users={usersList} />
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-muted-foreground/40" />
+                        <span className="text-xs text-muted-foreground font-medium">
+                          No Participant yet!
+                        </span>
+                      </div>
+                    )}
+                  </div>
 
-                <div className="mb-4 p-3 rounded-lg  border border-border/50">
-                  <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">
-                    Starts in
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
+                    {event.description}
                   </p>
-                  <CountdownTimer startTime={event.startTime} />
-                </div>
 
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-                  <Clock className="w-4 h-4 " />
-                  <span className="font-medium">
-                    {formattedDate} at {formattedTime}
-                  </span>
-                </div>
+                  <div className="mb-4 p-3 rounded-lg  border border-border/50 border-dashed">
+                    <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wide">
+                      Starts in
+                    </p>
+                    <CountdownTimer startTime={event.startTime} />
+                  </div>
 
-                <div className="flex items-start gap-2 text-sm text-muted-foreground mb-3">
-                  <MapPin className="w-4 h-4  flex-shrink-0 mt-0.5" />
-                  <span className="font-medium line-clamp-1">
-                    {event.location}
-                  </span>
-                </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                    <Clock className="w-4 h-4 " />
+                    <span className="font-medium">
+                      {formattedDate} at {formattedTime}
+                    </span>
+                  </div>
 
-                <div className="flex items-center justify-between mb-4 p-2 rounded  border border-border/50">
-                  <span className="text-xs font-semibold text-muted-foreground">
-                    {event.isFree ? "Free Event" : `$${event.price.toFixed(2)}`}
-                  </span>
-                  <span className="text-xs font-semibold text-muted-foreground">
-                    {event.capacity - event.participants.length} spots left
-                  </span>
-                </div>
+                  <div className="flex items-start gap-2 text-sm text-muted-foreground mb-3">
+                    <MapPin className="w-4 h-4  flex-shrink-0 mt-0.5" />
+                    <span className="font-medium line-clamp-1">
+                      {event.location}
+                    </span>
+                  </div>
 
-                <div className="border-t border-border/50 pt-3">
-                  {participantsCount > 0 ? (
-                    <div className="flex items-center gap-2">
-                      <StackedAvatar users={usersList} />
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4 text-muted-foreground/40" />
-                      <span className="text-xs text-muted-foreground font-medium">
-                        No Participant yet!
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
+                  <div className="flex items-center justify-between mb-4 p-2 rounded  border border-dashed border-border/50">
+                    <span className="text-xs font-semibold text-muted-foreground">
+                      {event.isFree
+                        ? "Free Event"
+                        : `$${event.price.toFixed(2)}`}
+                    </span>
+                    <span className="text-xs font-semibold text-muted-foreground">
+                      {event.capacity - event.participants.length} spots left
+                    </span>
+                  </div>
+                </CardContent>
+              </Link>
             </Card>
           );
         })}

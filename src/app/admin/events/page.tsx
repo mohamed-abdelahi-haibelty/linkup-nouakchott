@@ -4,8 +4,14 @@ import { EventWithOrganizer } from "@/types";
 import { statuses } from "@/lib/constant";
 import { getAllEvents } from "@/app/actions/events/admin/getAllEvent";
 import { deleteManyEvents } from "@/app/actions/events/admin/deleteManyEvents";
+import { getUserRole } from "@/app/actions/user/getUserRole";
+import { redirect } from "next/navigation";
+import NotFound from "@/app/not-found";
 
 async function page() {
+  const { user, success, code } = await getUserRole();
+  if (!user || success) redirect("/api/auth/login");
+  if (user.role !== "admin") return NotFound();
   const events = await getAllEvents();
   return (
     <div className="">

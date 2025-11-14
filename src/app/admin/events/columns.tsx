@@ -1,3 +1,4 @@
+//app/admin/events/columns.tsx
 "use client";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
