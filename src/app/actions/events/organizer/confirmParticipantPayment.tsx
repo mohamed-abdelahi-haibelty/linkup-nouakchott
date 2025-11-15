@@ -58,7 +58,7 @@ export async function confirmParticipantPayment(id: string, eventId: string) {
     await prisma.ticket.create({
       data: {
         eventId: event.id,
-        userId: user?.id,
+        userId: participant.participantId,
         issuedAt: new Date(),
         code: qrcode,
       },
@@ -69,9 +69,9 @@ export async function confirmParticipantPayment(id: string, eventId: string) {
       checkinUrl
     )}`;
 
-    if (user.email) {
+    if (participant.participant.email) {
       await sendTicketEmail(
-        user.email,
+        participant.participant.email,
         event.title,
         event.startTime,
         event.endTime,
