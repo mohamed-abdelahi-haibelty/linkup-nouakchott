@@ -1,5 +1,5 @@
 import NotFound from "@/app/not-found";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import prisma from "@/lib/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 import React from "react";
