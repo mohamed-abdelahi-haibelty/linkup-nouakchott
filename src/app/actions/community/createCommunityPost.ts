@@ -1,7 +1,6 @@
 // app/actions/community/createCommunityPost.ts
 "use server";
 import prisma from "@/lib/db";
-import { requireAuthUser } from "@/lib/auth";
 import {
   CommunityPostFormInput,
   communityPostSchema,
@@ -9,10 +8,11 @@ import {
 import { revalidatePath } from "next/cache";
 import { logError } from "@/lib/sentry";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { Prisma } from "@prisma/client";
+import { CommunityPostStatus, Prisma } from "@prisma/client";
+import { getUserRole } from "../user/getUserRole";
 
 export async function createCommunityPost(data: CommunityPostFormInput) {
-  const { success, message, user } = await requireAuthUser();
+  const { success, message, user } = await getUserRole();
 
   if (!success || !user) return { success, message, data: null };
 
@@ -28,12 +28,21 @@ export async function createCommunityPost(data: CommunityPostFormInput) {
     };
   }
 
+  let status: CommunityPostStatus = CommunityPostStatus.pending;
+  let successMessage =
+    "Community post created successfully! It will be visible after admin approval.";
+
+  if (user.role === "admin" || user.role === "moderator") {
+    status = CommunityPostStatus.approved;
+    successMessage = "Community post created successfully!";
+  }
+
   try {
     const post = await prisma.communityPost.create({
       data: {
         ...parsed.data,
         userId: user.id,
-        status: "pending", // Post needs admin approval
+        status: status,
       },
     });
 

@@ -57,7 +57,7 @@ function MobileNavbar({ role }: Props) {
   // Combine regular navigations with dashboard if applicable
   const allNavigations = [
     ...NAVIGATIONS,
-    ...(showDashboard ? [{ title: "Dashboard", href: "/admin" }] : []),
+    ...(showDashboard ? [{ title: "Dashboard", href: "/admin/events" }] : []),
   ];
 
   return (

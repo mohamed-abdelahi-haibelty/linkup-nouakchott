@@ -99,7 +99,7 @@ function AppNavbar({ role }: Props) {
             ))}
             {showDashboard && (
               <Link
-                href="/admin"
+                href="/admin/events"
                 className={cn(
                   "relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2",
                   isActivePath("/admin")

@@ -214,7 +214,7 @@ export const postColumns = [
                 <AlertDialogAction
                   onClick={handleDelete}
                   disabled={loading}
-                  className="bg-destructive hover:bg-destructive/90"
+                  className="bg-destructive/10 hover:bg-destructive/20"
                 >
                   {loading ? (
                     <>

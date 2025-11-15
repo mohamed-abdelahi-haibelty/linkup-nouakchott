@@ -14,12 +14,7 @@ export function DashboardHeader() {
         />
         <h1 className="text-base font-medium">Home</h1>
         <div className="ml-auto flex items-center gap-2">
-          <Button
-            variant={"secondary"}
-            asChild
-            size="sm"
-            className="hidden sm:flex"
-          >
+          <Button variant={"secondary"} asChild size="sm" className="flex">
             <Link href={"/events"}>Go to Website</Link>
           </Button>
         </div>

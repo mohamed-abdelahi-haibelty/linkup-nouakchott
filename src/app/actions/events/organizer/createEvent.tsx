@@ -1,15 +1,15 @@
 "use server";
 import prisma from "@/lib/db";
-import { requireAuthUser } from "@/lib/auth";
 import { EventFormInput, eventFormSchema } from "@/lib/validation/event";
 import { generateSlug } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { logError } from "@/lib/sentry";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { Prisma } from "@prisma/client";
+import { EventStatus, Prisma } from "@prisma/client";
+import { getUserRole } from "../../user/getUserRole";
 
 export async function createEvent(data: EventFormInput) {
-  const { success, message, user } = await requireAuthUser();
+  const { success, message, user } = await getUserRole();
 
   if (!success || !user) return { success, message, data };
 
@@ -26,11 +26,17 @@ export async function createEvent(data: EventFormInput) {
   }
 
   const organizerId = user?.id;
+  let status: EventStatus = EventStatus.pending;
+
+  if (user.role === "admin") {
+    status = EventStatus.approved;
+  }
 
   try {
     const event = await prisma.event.create({
       data: {
         ...parsed.data,
+        status,
         price: parsed.data?.price ?? 0,
         slug: generateSlug(parsed.data.title),
         organizerId: organizerId,

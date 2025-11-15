@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { Calendar, Clock, MapPin, Share2 } from "lucide-react";
 import { format } from "date-fns";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getFallback } from "@/lib/utils";
 
 interface CommunityPostCardProps {
   post: {
@@ -108,17 +110,14 @@ export function CommunityPostCard({ post }: CommunityPostCardProps) {
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          {post.user.avatarUrl ? (
-            <img
-              src={post.user.avatarUrl}
+          <Avatar className="w-10 h-10 rounded-full object-cover">
+            <AvatarImage
+              src={post.user.avatarUrl || undefined}
               alt={post.user.name}
-              className="w-10 h-10 rounded-full object-cover"
             />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold">
-              {post.user.name.charAt(0).toUpperCase()}
-            </div>
-          )}
+            <AvatarFallback>{getFallback(post.user.name)}</AvatarFallback>
+          </Avatar>
+
           <div>
             <h3 className="font-semibold text-sm">{post.user.name}</h3>
             <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
