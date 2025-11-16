@@ -158,6 +158,15 @@ function CreateEventForm() {
         visible.
       </div>
 
+      <Alert className="mt-2 border-blue-200 bg-blue-50 text-blue-800">
+        <Info className="h-4 w-4 text-blue-600" />
+        <AlertDescription className="text-sm">
+          <strong>Important:</strong> Your contact phone number must include the
+          country code (e.g., +222 for Mauritania, +212 for Morocco). This
+          allows participants to reach you via WhatsApp.
+        </AlertDescription>
+      </Alert>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-4">
           <FormField
@@ -361,8 +370,11 @@ function CreateEventForm() {
                 <FormItem>
                   <FormLabel>Contact phone *</FormLabel>
                   <FormControl>
-                    <Input placeholder="+222 26735397" {...field} />
+                    <Input placeholder="+222 27298087" {...field} />
                   </FormControl>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Include country code (e.g., +222, +212, +1)
+                  </p>
                   <FormMessage />
                 </FormItem>
               )}

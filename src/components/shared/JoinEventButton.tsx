@@ -195,13 +195,15 @@ export function JoinEventButton({
         </div>
       </Button>
 
+      {/* Pending Approval Modal */}
       <PendingApprovalModal
         open={openAprovalModal}
         setOpen={setOpenAprovalModal}
         title="Request Submitted"
-        description=" Your join request has been submitted and is pending approval. The organizer will contact you via email or phone. Once confirmed, you will be notified."
+        description="Your join request has been submitted and is pending approval. The organizer will contact you via email or phone. Once confirmed, you will be notified."
+        phoneNumber={event.contactPhone}
+        eventTitle={event.title}
       />
-
       <EventTicketModal
         title={event.title}
         startTime={event.startTime}

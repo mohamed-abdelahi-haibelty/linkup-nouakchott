@@ -70,6 +70,9 @@ export function PhoneNumberModal({
           <DialogDescription>
             Please add your phone number to join this event. The organizer will
             use this to contact you regarding event details and confirmations.
+            <strong className="block mt-2 text-foreground">
+              Include country code (e.g., +222, +212, +1)
+            </strong>
           </DialogDescription>
         </DialogHeader>
 
@@ -80,14 +83,15 @@ export function PhoneNumberModal({
               <Input
                 id="phoneNumber"
                 type="tel"
-                placeholder="+222 46456380"
+                placeholder="+222 27138997"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 disabled={isLoading}
                 autoFocus
               />
               <p className="text-xs text-muted-foreground">
-                This number will be shared with event organizers only.
+                Must include country code. Examples: +222 (Mauritania), +212
+                (Morocco), +1 (USA)
               </p>
             </div>
           </div>

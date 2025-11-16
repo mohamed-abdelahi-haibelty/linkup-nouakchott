@@ -50,7 +50,22 @@ export const columns = [
   columnHelper.accessor((row) => row.participant.phoneNumber, {
     id: "phone",
     header: () => "Phone",
-    cell: (info) => info.getValue() ?? "-",
+    cell: (info) => {
+      const phone = info.getValue() ?? "";
+      if (!phone) return "-";
+      const cleaned = String(phone).replace(/\D/g, "");
+      const waUrl = `https://wa.me/${cleaned}`;
+      return (
+        <a
+          href={waUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:underline"
+        >
+          {phone}
+        </a>
+      );
+    },
   }),
   columnHelper.accessor("createdAt", {
     header: () => "Joined At",

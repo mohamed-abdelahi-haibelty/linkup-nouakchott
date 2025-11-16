@@ -1,7 +1,8 @@
 import { EventTag } from "@prisma/client";
 import { z } from "zod";
 
-const mauritaniaPhoneRegex = /^(?:(?:\+222|00222)?[2-4][0-9]{7}|(?:\+212|00212|0)?[5-7][0-9]{8})$/;
+// International phone number validation - requires country code
+const internationalPhoneRegex = /^\+\d{10,15}$/;
 
 export const eventFormSchema = z
   .object({
@@ -19,8 +20,8 @@ export const eventFormSchema = z
     contactPhone: z
       .string()
       .regex(
-        mauritaniaPhoneRegex,
-        "Invalid Mauritania or Morocco phone number"
+        internationalPhoneRegex,
+        "Phone must include country code (e.g., +222 for Mauritania, +212 for Morocco)"
       ),
   })
   .superRefine((data, ctx) => {
