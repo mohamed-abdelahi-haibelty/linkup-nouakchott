@@ -71,6 +71,7 @@ function EventDetailsFooter({ event, favoriteStatus, phone }: Props) {
           event={event}
           variant="outline"
           className="w-full bg-accent flex-1 border-none  rounded-full p-6"
+          phone={phone}
         />
       </div>
     </div>
