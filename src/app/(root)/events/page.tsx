@@ -5,16 +5,21 @@ import ErrorWrapper from "@/components/shared/ErrorWrapper";
 import { Button } from "@/components/ui/button";
 import CreateEventButton from "./_components/CreateEventButton";
 import { getEvents } from "@/app/actions/events/getEvents";
+import { EventTag } from "@prisma/client";
+import TagFilter from "@/components/shared/TagFilter";
 
-export default async function Home({
+async function page({
   searchParams,
 }: {
-  searchParams: Promise<{ query?: string }>;
+  searchParams: Promise<{ query?: string; tag?: EventTag }>;
 }) {
   const params = await searchParams;
   const query = params.query || "";
+  const tag = params.tag;
+
   const { data, pagination } = await getEvents({
     query,
+    tag,
     page: 1,
     limit: 12,
   });
@@ -23,7 +28,8 @@ export default async function Home({
     <div dir="ltr" className="min-h-full mt-4 ">
       <div className="flex items-center md:max-w-3xl md:mx-auto justify-between gap-x-3">
         <SearchInput />
-        <SlidersHorizontal className="md:hidden" />
+        {/* Tag Filter */}
+        <TagFilter selectedTag={tag} />
       </div>
       <div className="flex items-center justify-between gap-4 md:hidden mt-8">
         <div className="flex items-center gap-2 flex-1">
@@ -48,9 +54,12 @@ export default async function Home({
         <EventList
           initialData={data}
           query={query}
+          tag={tag}
           initialPagination={pagination}
         />
       </ErrorWrapper>
     </div>
   );
 }
+
+export default page;

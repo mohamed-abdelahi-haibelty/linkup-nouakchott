@@ -2,6 +2,7 @@
 import prisma from "@/lib/db";
 import { EventWithParticipants } from "@/types";
 import { logError } from "@/lib/sentry";
+import { EventTag } from "@prisma/client";
 
 type EventsResponse =
   | {
@@ -29,12 +30,14 @@ type Props = {
   query?: string;
   limit: number;
   page: number;
+  tag?: EventTag;
 };
 
 export async function getEvents({
   query,
   limit,
   page,
+  tag,
 }: Props): Promise<EventsResponse> {
   if (page < 1 || limit < 1 || limit > 100) {
     return {
@@ -48,20 +51,22 @@ export async function getEvents({
 
   const where = (() => {
     const q = query?.trim();
+    const conditions: any[] = [{ status: "approved" as const }];
+
     if (q) {
-      return {
-        AND: [
-          {
-            OR: [
-              { title: { contains: q, mode: "insensitive" as const } },
-              { description: { contains: q, mode: "insensitive" as const } },
-            ],
-          },
-          { status: "approved" as const },
+      conditions.push({
+        OR: [
+          { title: { contains: q, mode: "insensitive" as const } },
+          { description: { contains: q, mode: "insensitive" as const } },
         ],
-      };
+      });
     }
-    return { status: "approved" as const };
+
+    if (tag) {
+      conditions.push({ tag });
+    }
+
+    return { AND: conditions };
   })();
 
   try {

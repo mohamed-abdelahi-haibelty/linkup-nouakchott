@@ -10,10 +10,12 @@ import EventCardSkeleton from "./EventCardSkeleton";
 import ErrorWrapper from "@/components/shared/ErrorWrapper";
 import { EventWithParticipants } from "@/types/events";
 import { getEvents } from "@/app/actions/events/getEvents";
+import { EventTag } from "@prisma/client";
 
 type Props = {
   initialData: EventWithParticipants[];
   query?: string;
+  tag?: EventTag;
   initialPagination: {
     total: number;
     totalPages: number;
@@ -24,7 +26,7 @@ type Props = {
 
 const NUMBER_OF_EVENTS_TO_FETCH = 12;
 
-function EventList({ initialData, query, initialPagination }: Props) {
+function EventList({ initialData, query, tag, initialPagination }: Props) {
   const [events, setEvents] = useState(initialData);
   const [page, setPage] = useState(initialPagination.page);
   const [hasMore, setHasMore] = useState(initialPagination.totalPages > 1);
@@ -41,6 +43,7 @@ function EventList({ initialData, query, initialPagination }: Props) {
     try {
       const { data, pagination, error } = await getEvents({
         query,
+        tag,
         page: page + 1,
         limit: NUMBER_OF_EVENTS_TO_FETCH,
       });
@@ -59,7 +62,7 @@ function EventList({ initialData, query, initialPagination }: Props) {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, hasMore, page, query]);
+  }, [isLoading, hasMore, page, query, tag]);
 
   function retryLoadMore() {
     setError(null);
@@ -79,7 +82,7 @@ function EventList({ initialData, query, initialPagination }: Props) {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [query, initialData, initialPagination]);
+  }, [query, tag, initialData, initialPagination]);
 
   useEffect(() => {
     if (inView && hasMore && !isLoading) {
