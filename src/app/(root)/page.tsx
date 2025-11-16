@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import PatternBg from "@/components/shared/PatternBg";
+import AppNavbar from "./components/AppNavbar";
 
 export default function LandingPage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -42,7 +43,7 @@ export default function LandingPage() {
   return (
     <PatternBg>
       <div className="min-h-screen bg-background">
-        <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
+        {/* <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <Link
@@ -83,7 +84,9 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-        </header>
+        </header> */}
+
+        <AppNavbar />
 
         <section
           ref={heroRef}
@@ -140,13 +143,15 @@ export default function LandingPage() {
                       <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </Link>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="text-base px-8 h-12 border-2 bg-transparent"
-                  >
-                    Create an event
-                  </Button>
+                  <Link href={"/events/create"}>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="text-base px-8 h-12 border-2 bg-transparent"
+                    >
+                      Create an event
+                    </Button>
+                  </Link>
                 </div>
 
                 {/* Social proof */}

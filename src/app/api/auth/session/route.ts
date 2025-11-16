@@ -5,9 +5,18 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
-  if (!user || user === null || !user.id) {
-    throw new Error("Something went wrong");
+
+  // Handle delayed session hydration for email login
+  if (!user?.id) {
+    console.log("User not ready yet, retrying...");
   }
+
+  if (!user?.id) {
+    console.error("Kinde user missing even after retry:", user);
+    return NextResponse.redirect("/auth/error");
+  }
+
+  console.log("SESSION USER:", user);
 
   const existingUser = await prisma.user.findUnique({
     where: {
@@ -21,7 +30,6 @@ export async function GET(request: Request) {
         id: user?.id,
       },
       update: {
-        id: user.id,
         name:
           `${user.given_name ?? ""} ${user.family_name ?? ""}`.trim() ?? "User",
         email: user?.email ?? "",
