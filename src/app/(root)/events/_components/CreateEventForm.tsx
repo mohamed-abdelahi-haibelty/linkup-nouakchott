@@ -6,6 +6,7 @@ import { DateTimePickerField } from "@/components/shared/dateTimePicker";
 import EventTags from "@/components/shared/EventTags";
 import FileUploadComponent from "@/components/shared/FileUploadComponent";
 import { NotificationPermissionDialog } from "@/components/shared/NotificationPermissionDialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,7 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { tagList } from "@/lib/constant";
 import { cn } from "@/lib/utils";
 import { EventFormInput } from "@/lib/validation/event";
-import { ArrowLeft, DollarSign, Loader2, Users } from "lucide-react";
+import { ArrowLeft, DollarSign, Info, Loader2, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -67,16 +68,40 @@ function CreateEventForm() {
         toast.success(res.message || "Event created successfully!");
         form.reset();
 
+        // ----- NEW: check user preference -----
+        const optOut = localStorage.getItem("notifications_opt_out") === "true";
+        if (optOut) {
+          router.push("/events/");
+          return;
+        }
+
         const permission = Notification.permission;
+        // Case 1: User already granted → do NOT show dialog
         if (permission === "granted") {
           const registration = await navigator.serviceWorker.getRegistration();
           const existingSub = await registration?.pushManager.getSubscription();
+
           if (existingSub) {
             router.push("/events/");
             return;
           }
+
+          // Subscription missing → auto subscribe without showing dialog
+          setShowPermissionDialog(true);
+          return;
         }
-        setShowPermissionDialog(true);
+
+        // Case 2: Denied → cannot ask again → skip dialog
+        if (permission === "denied") {
+          router.push("/events/");
+          return;
+        }
+
+        // Case 3: Default (first time ever) → show dialog
+        if (permission === "default") {
+          setShowPermissionDialog(true);
+          return;
+        }
       } else {
         // Error case
         if (res.message) {
@@ -126,6 +151,11 @@ function CreateEventForm() {
             Set up your event details and schedule
           </p>
         </div>
+      </div>
+
+      <div className="p-3 rounded bg-red-100 text-red-800 text-sm mt-2">
+        Created events must be approved by an administrator before they become
+        visible.
       </div>
 
       <Form {...form}>

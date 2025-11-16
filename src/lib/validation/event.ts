@@ -43,13 +43,6 @@ export const eventFormSchema = z
         message: "End time must be after start time",
       });
     }
-    if (data.registrationDeadline <= data.startTime) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["registrationDeadline"],
-        message: "Registration deadline must be after start time",
-      });
-    }
     if (data.registrationDeadline >= data.endTime) {
       ctx.addIssue({
         code: "custom",

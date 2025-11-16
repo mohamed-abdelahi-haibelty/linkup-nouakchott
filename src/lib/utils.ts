@@ -14,6 +14,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+
+
 export function generateSlug(title: string): string {
   if (!title) return "event";
   return slugify(title, {

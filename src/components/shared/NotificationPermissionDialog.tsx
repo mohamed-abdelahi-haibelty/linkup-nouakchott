@@ -67,6 +67,7 @@ export function NotificationPermissionDialog({
         onComplete();
         return;
       }
+      // Only ask permission NOW that the user clicked "Enable"
       const permission = await Notification.requestPermission();
 
       if (permission === "granted") {
@@ -77,6 +78,8 @@ export function NotificationPermissionDialog({
 
         await generateSubscriptionEndpoint(registration);
       } else if (permission === "denied") {
+        // User clicked "Enable" but then clicked "Deny"
+        // In the future, permission === denied, so we will skip dialog entirely
         toast.error(
           "Notification permission denied. Please enable it in your browser settings."
         );
@@ -111,12 +114,24 @@ export function NotificationPermissionDialog({
         </p>
 
         <DialogFooter className="mt-6 flex justify-end gap-3">
-          <Button variant="outline" onClick={onComplete}>
-            Maybe Later
+          <Button
+            variant="ghost"
+            className="text-xs text-muted-foreground"
+            onClick={() => {
+              localStorage.setItem("notifications_opt_out", "true");
+              onComplete();
+            }}
+          >
+            Never ask again
           </Button>
-          <Button onClick={handleEnableNotifications} disabled={loading}>
-            {loading ? "Enabling..." : "Enable Notifications"}
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" onClick={onComplete}>
+              Maybe Later
+            </Button>
+            <Button onClick={handleEnableNotifications} disabled={loading}>
+              {loading ? "Enabling..." : "Enable Notifications"}
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
