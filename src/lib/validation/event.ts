@@ -1,7 +1,7 @@
 import { EventTag } from "@prisma/client";
 import { z } from "zod";
 
-const mauritaniaPhoneRegex = /^(?:\+222|00222)?[2-4][0-9]{7}$/;
+const mauritaniaPhoneRegex = /^(?:(?:\+222|00222)?[2-4][0-9]{7}|(?:\+212|00212|0)?[5-7][0-9]{8})$/;
 
 export const eventFormSchema = z
   .object({
@@ -18,7 +18,10 @@ export const eventFormSchema = z
     isFree: z.boolean().default(true),
     contactPhone: z
       .string()
-      .regex(mauritaniaPhoneRegex, "Invalid Mauritania phone number"),
+      .regex(
+        mauritaniaPhoneRegex,
+        "Invalid Mauritania or Morocco phone number"
+      ),
   })
   .superRefine((data, ctx) => {
     if (data.isFree && data.price && data.price > 0) {

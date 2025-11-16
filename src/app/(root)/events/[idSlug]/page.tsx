@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import { getEventById } from "@/app/actions/events/organizer/getEventById";
 import { requireAuthUser } from "@/lib/auth";
 import prisma from "@/lib/db";
+import { getUserRole } from "@/app/actions/user/getUserRole";
 
 interface PageProps {
   params: Promise<{ idSlug: string }>;
@@ -55,7 +56,7 @@ async function page({ params }: PageProps) {
     return notFound();
   }
 
-  const { user } = await requireAuthUser();
+  const { user } = await getUserRole();
   // Define a clear shape for the data you need in the component
   const favoriteStatus = {
     isAuthenticated: !!user,
@@ -76,9 +77,13 @@ async function page({ params }: PageProps) {
   }
   return (
     <div className="min-h-screen">
-      <EventMobileLayout event={event} favoriteStatus={favoriteStatus} />
+      <EventMobileLayout
+        event={event}
+        favoriteStatus={favoriteStatus}
+        phone={user?.phoneNumber!}
+      />
 
-      <EventDesktop event={event} />
+      <EventDesktop event={event} phone={user?.phoneNumber!} />
     </div>
   );
 }

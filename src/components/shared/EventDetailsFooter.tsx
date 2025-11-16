@@ -5,19 +5,20 @@ import { Heart } from "lucide-react";
 import { JoinEventButton } from "./JoinEventButton";
 import { useState, useTransition } from "react";
 import { toggleFavorite } from "@/app/actions/favorite/toggleFavorite";
-import { FavoriteType } from "@prisma/client";
+import { FavoriteType, UserRole } from "@prisma/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 type Props = {
   event: EventWithParticipantsAndCounts;
+  phone: string;
   favoriteStatus: {
     isAuthenticated: boolean;
     isFavorited: boolean;
   };
 };
 
-function EventDetailsFooter({ event, favoriteStatus }: Props) {
+function EventDetailsFooter({ event, favoriteStatus, phone }: Props) {
   // Initial favorite state (server-rendered or default false)
   const [isFavorited, setIsFavorited] = useState(
     favoriteStatus.isFavorited ?? false

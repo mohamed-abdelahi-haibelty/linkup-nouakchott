@@ -4,20 +4,26 @@ import ParticipantsList from "../_components/ParticipantsList";
 import EventMainContent from "./EventMainContent";
 import { EventWithParticipantsAndCounts } from "@/types";
 import EventDetailsFooter from "@/components/shared/EventDetailsFooter";
+import { UserRole } from "@prisma/client";
 
 type Props = {
   event: EventWithParticipantsAndCounts;
+  phone: string;
   favoriteStatus: {
     isAuthenticated: boolean;
     isFavorited: boolean;
   };
 };
 
-function EventMobileLayout({ event, favoriteStatus }: Props) {
+function EventMobileLayout({ event, favoriteStatus, phone }: Props) {
   return (
     <div className="lg:hidden">
       <EventHero event={event} />
-      <EventDetailsFooter event={event} favoriteStatus={favoriteStatus} />
+      <EventDetailsFooter
+        event={event}
+        favoriteStatus={favoriteStatus}
+        phone={phone}
+      />
 
       <Tabs className="mt-3 " defaultValue="About">
         <TabsList className="flex justify-center w-full">

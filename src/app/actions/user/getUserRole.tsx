@@ -29,7 +29,13 @@ export async function getUserRole() {
 
     const dbUser = await prisma.user.findUnique({
       where: { id: kindeUser.id },
-      select: { id: true, name: true, role: true, email: true },
+      select: {
+        id: true,
+        name: true,
+        role: true,
+        email: true,
+        phoneNumber: true,
+      },
     });
 
     if (!dbUser) {

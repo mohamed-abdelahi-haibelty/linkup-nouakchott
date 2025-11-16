@@ -5,9 +5,10 @@ import { EventSidebar } from "./EventSidebar";
 
 type Props = {
   event: EventWithParticipantsAndCounts;
+  phone: string;
 };
 
-function EventDesktop({ event }: Props) {
+function EventDesktop({ event, phone }: Props) {
   const users = event.participants;
   return (
     <div className="hidden container mx-auto mb-4 lg:grid grid-cols-3 gap-x-24 min-h-[calc(100%-128px)]">
@@ -15,7 +16,7 @@ function EventDesktop({ event }: Props) {
         <EventHero event={event} />
         <EventMainContent event={event} />
       </div>
-      <EventSidebar event={event} participants={users} />
+      <EventSidebar event={event} participants={users} phone={phone} />
     </div>
   );
 }

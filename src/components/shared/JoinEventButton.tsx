@@ -22,6 +22,7 @@ import EventTicketModal from "@/app/(root)/events/_components/EventTicketModal";
 import { logError } from "@/lib/sentry";
 import { leaveEvent } from "@/app/actions/events/participant/leaveEvent";
 import { joinEvent } from "@/app/actions/events/participant/joinEvent";
+import { PhoneNumberModal } from "./PhoneNumberModal";
 
 interface JoinEventButtonProps {
   event: EventWithParticipantsAndCounts;
@@ -29,6 +30,7 @@ interface JoinEventButtonProps {
   size?: "default" | "sm" | "lg";
   variant?: "default" | "outline" | "ghost";
   disabled?: boolean;
+  phone?: string;
 }
 
 export function JoinEventButton({
@@ -37,6 +39,7 @@ export function JoinEventButton({
   size = "default",
   variant = "default",
   disabled = false,
+  phone,
 }: JoinEventButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -44,6 +47,7 @@ export function JoinEventButton({
   const [qrUrl, setQrurl] = useState("");
   const [openAprovalModal, setOpenAprovalModal] = useState(false);
   const { isAuthenticated, getUser } = useKindeBrowserClient();
+  const [openPhoneModal, setOpenPhoneModal] = useState(false);
   const url = usePathname();
   const id = getUser()?.id;
 
@@ -122,18 +126,36 @@ export function JoinEventButton({
     return variant;
   }
 
-  function handleAcessCheck() {
-    if (isAuthenticated) {
-      handleJoinOrLeaveEvent();
-    } else {
+  function handleAccessCheck() {
+    if (!isAuthenticated) {
       setOpen(true);
+      return;
     }
+
+    // If user is leaving, skip phone check
+    if (joined) {
+      handleLeaveEvent();
+      return;
+    }
+
+    // Check if user has a phone number only when joining
+    if (!phone) {
+      setOpenPhoneModal(true);
+      return;
+    }
+
+    handleJoinOrLeaveEvent();
+  }
+
+  function handlePhoneSuccess() {
+    // After phone number is added, proceed with joining the event
+    handleJoinOrLeaveEvent();
   }
 
   return (
     <>
       <Button
-        onClick={handleAcessCheck}
+        onClick={handleAccessCheck}
         disabled={isDisabled || isLoading}
         variant={getButtonVariant()}
         size={size}
@@ -187,6 +209,13 @@ export function JoinEventButton({
         qrUrl={qrUrl}
         open={openTicketModal}
         setOpen={setOpenTicketModal}
+      />
+
+      {/* Phone Number Modal */}
+      <PhoneNumberModal
+        open={openPhoneModal}
+        setOpen={setOpenPhoneModal}
+        onSuccess={handlePhoneSuccess}
       />
 
       <Dialog open={open} onOpenChange={setOpen}>
