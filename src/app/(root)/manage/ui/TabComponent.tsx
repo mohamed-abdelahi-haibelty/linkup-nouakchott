@@ -55,7 +55,13 @@ function TabComponent({ data }: Props) {
       <TabsContent value="attend">
         <AttendedEvents />
       </TabsContent>
-      <TabsContent value="saved">Saved</TabsContent>
+      <TabsContent value="saved" className="px-2 sm:px-4">
+        <div className="flex items-center justify-center py-12">
+          <p className="text-sm text-muted-foreground">
+            This feature is coming soon.
+          </p>
+        </div>
+      </TabsContent>
       <TabsContent value="posts">
         <Posts />
       </TabsContent>
