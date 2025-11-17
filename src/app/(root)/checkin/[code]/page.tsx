@@ -15,13 +15,13 @@ import VerifyTicketButton from "../components/VerifyTicketButton";
 import NotFound from "@/app/not-found";
 
 interface CheckinPageProps {
-  params: {
-    code: string;
-  };
+  params: Promise<{ code: string }>;
 }
 
 export default async function CheckinPage({ params }: CheckinPageProps) {
   const { getUser, isAuthenticated } = getKindeServerSession();
+  const url_param = await params;
+  const code = url_param?.code;
 
   // Check if user is logged in
   if (!(await isAuthenticated())) {
@@ -37,7 +37,7 @@ export default async function CheckinPage({ params }: CheckinPageProps) {
   // Fetch ticket with event and owner details
   const ticket = await prisma.ticket.findUnique({
     where: {
-      code: params.code,
+      code: code,
     },
     include: {
       event: {
