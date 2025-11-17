@@ -132,7 +132,7 @@ model Participant {
   @@index([status])
   @@map("participants")
 }
-
+//in app notification
 model Notification {
   id        String           @id @default(cuid())
   userId    String           @map("user_id")

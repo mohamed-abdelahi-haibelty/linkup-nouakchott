@@ -64,7 +64,7 @@ export async function changeCommunityPostStatus(
     let actionUrl = "";
 
     if (status === "approved") {
-      notificationTitle = "🎉 Post Approved!";
+      notificationTitle = "Post Approved!";
       notificationBody = `Great news! Your community post${
         post.title ? ` "${post.title}"` : ""
       } has been approved and is now visible to everyone!`;

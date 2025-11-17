@@ -136,7 +136,11 @@ export const columns = [
             >
               Details
             </DropdownMenuItem>
-            <DropdownMenuItem>Scan Tickets</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => router.push(`/events/scan/${event.id}`)}
+            >
+              Scan Tickets
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() =>
                 router.push(`/manage/event/${event.id}/participants`)

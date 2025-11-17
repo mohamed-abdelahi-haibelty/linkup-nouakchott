@@ -64,7 +64,7 @@ export async function changeEventStatus(eventId: string, status: EventStatus) {
     let actionUrl = "";
 
     if (status === "approved") {
-      notificationTitle = "🎉 Event Approved!";
+      notificationTitle = "Event Approved!";
       notificationBody = `Great news! Your event "${event.title}" has been approved and is now live. People can start registering!`;
       notificationType = "event_accepted";
       actionUrl = `/events/${event.id}_${event.slug}`; // Redirect to the event page
