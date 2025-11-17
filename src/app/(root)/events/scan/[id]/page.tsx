@@ -11,14 +11,13 @@ import {
 import EventScannerClient from "./EventScannerClient";
 
 interface EventScanPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 async function page({ params }: EventScanPageProps) {
   const { getUser, isAuthenticated } = getKindeServerSession();
-
+  const url_param = await params;
+  const id = url_param?.id;
   // Check if user is logged in
   if (!(await isAuthenticated())) {
     redirect("/api/auth/login");
@@ -33,7 +32,7 @@ async function page({ params }: EventScanPageProps) {
   // Fetch event details
   const event = await prisma.event.findUnique({
     where: {
-      id: params.id,
+      id: id,
     },
     include: {
       organizer: true,
