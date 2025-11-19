@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Loader2, Phone } from "lucide-react";
 import { toast } from "sonner";
-import { updateUserPhone } from "@/app/actions/user/updateUserPhone";
+import { updateUserPhone } from "@/app/[locale]/actions/user/updateUserPhone";
 import { logError } from "@/lib/sentry";
 
 interface PhoneNumberModalProps {

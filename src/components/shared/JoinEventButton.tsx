@@ -18,11 +18,13 @@ import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { EventWithParticipantsAndCounts } from "@/types";
 import { PendingApprovalModal } from "./PendingApprovalModal";
-import EventTicketModal from "@/app/(root)/events/_components/EventTicketModal";
+
 import { logError } from "@/lib/sentry";
-import { leaveEvent } from "@/app/actions/events/participant/leaveEvent";
-import { joinEvent } from "@/app/actions/events/participant/joinEvent";
+import { leaveEvent } from "@/app/[locale]/actions/events/participant/leaveEvent";
+import { joinEvent } from "@/app/[locale]/actions/events/participant/joinEvent";
 import { PhoneNumberModal } from "./PhoneNumberModal";
+import EventTicketModal from "@/app/[locale]/(root)/events/_components/EventTicketModal";
+import { useTranslations } from "next-intl";
 
 interface JoinEventButtonProps {
   event: EventWithParticipantsAndCounts;
@@ -50,6 +52,7 @@ export function JoinEventButton({
   const [openPhoneModal, setOpenPhoneModal] = useState(false);
   const url = usePathname();
   const id = getUser()?.id;
+  const t = useTranslations("events.joinButton");
 
   const maxCapacity = event.capacity;
   const eventId = event.id;
@@ -115,10 +118,11 @@ export function JoinEventButton({
   }
 
   function getButtonText() {
-    if (isLoading) return joined ? "Leaving..." : "Joining...";
-    if (joined) return "Leave Event";
-    if (isFull) return "Event Full";
-    return "Join Event";
+    if (isLoading)
+      return joined ? t("button.loading.leaving") : t("button.loading.joining");
+    if (joined) return t("button.text.leaveEvent");
+    if (isFull) return t("button.text.eventFull");
+    return t("button.text.joinEvent");
   }
 
   function getButtonVariant() {
@@ -199,8 +203,8 @@ export function JoinEventButton({
       <PendingApprovalModal
         open={openAprovalModal}
         setOpen={setOpenAprovalModal}
-        title="Request Submitted"
-        description="Your join request has been submitted and is pending approval. The organizer will contact you via email or phone. Once confirmed, you will be notified."
+        title={t("approveModal.title")}
+        description={t("approveModal.description")}
         phoneNumber={event.contactPhone}
         eventTitle={event.title}
       />
@@ -223,14 +227,12 @@ export function JoinEventButton({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Login Required</DialogTitle>
-            <DialogDescription>
-              You need to log in or sign up to join an event.
-            </DialogDescription>
+            <DialogTitle>{t("dialog.title")}</DialogTitle>
+            <DialogDescription>{t("dialog.description")}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">{t("dialog.button.cancel")}</Button>
             </DialogClose>
             <Button asChild>
               <LoginLink postLoginRedirectURL={url}>

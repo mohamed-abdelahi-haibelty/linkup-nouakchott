@@ -1,6 +1,12 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import withPWAInit from "@ducanh2912/next-pwa";
+import createNextIntlPlugin from "next-intl/plugin";
+import { readFileSync } from "fs";
+import { createHash } from "crypto";
+
+// 1) Create the next-intl plugin
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   eslint: {
@@ -37,7 +43,15 @@ const nextConfig: NextConfig = {
   /* other config options */
 };
 
-const sentryConfig = withSentryConfig(nextConfig, {
+export function getFileHash(filePath: string) {
+  const buffer = readFileSync(filePath);
+  const hash = createHash("md5").update(buffer).digest("hex");
+  return hash;
+}
+
+const intlConfig = withNextIntl(nextConfig);
+
+const sentryConfig = withSentryConfig(intlConfig, {
   org: "linkup-nouakchott",
   project: "javascript-nextjs",
   silent: !process.env.CI,
@@ -55,7 +69,7 @@ const pwaConfig = withPWAInit({
     additionalManifestEntries: [
       {
         url: "/custom-sw.js",
-        revision: Date.now().toString(),
+        revision: getFileHash("public/custom-sw.js"),
       },
     ],
     // Import the custom service worker

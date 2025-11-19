@@ -1,0 +1,275 @@
+{
+  "event": {
+    "details": {
+      "participants": {
+        "list": {
+          "beFirstToJoin": "Soyez le premier à rejoindre cet événement incroyable ! Les inscriptions sont ouvertes et nous sommes impatients de voir qui fera partie de cette expérience.",
+          "noParticipantsYet": "Pas encore de participants"
+        }
+      }
+    }
+  },
+  "navbar": {
+    "homeLabel": "Accueil LinkUp Nouakchott",
+    "signIn": "Se connecter",
+    "getStarted": "Commencer",
+    "account": "Compte",
+
+    "nav": {
+      "discover": "Découvrir",
+      "community": "Communauté",
+      "myHub": "Mon espace",
+      "dashboard": "Tableau de bord"
+    }
+  },
+  "community": {
+    "header": "Communauté",
+    "newPostButton": "Publier un événement",
+    "noPostsYet": "Pas encore de publications",
+    "firstPostHint": "Soyez le premier à partager un événement avec la communauté !",
+    "createFirstPost": "Créer la première publication",
+    "errors": {
+      "somethingWentWrong": "Une erreur est survenue. Veuillez réessayer.",
+      "checkForm": "Veuillez vérifier le formulaire pour les erreurs."
+    },
+    "success": {
+      "postCreated": "Publication créée avec succès !"
+    },
+    "modal": {
+      "header": "Publier un événement communautaire",
+      "subHeader": "Partagez des événements avec la communauté",
+      "posterLabel": "Affiche de l'événement",
+      "titleLabel": "Titre de l'événement *",
+      "titlePlaceholder": "Entrez le titre de l'événement",
+      "categoryLabel": "Catégorie de l'événement",
+      "descriptionLabel": "Description *",
+      "descriptionPlaceholder": "Décrivez votre événement en détail...",
+      "startTimeLabel": "Heure de début",
+      "startTimePlaceholder": "Sélectionnez la date et l'heure de début",
+      "endTimeLabel": "Heure de fin",
+      "endTimePlaceholder": "Sélectionnez la date et l'heure de fin",
+      "locationLabel": "Lieu",
+      "locationPlaceholder": "Entrez le lieu de l'événement",
+      "noteTitle": "Remarque :",
+      "noteContent": "Les publications communautaires sont marquées comme \"En attente\" et doivent être vérifiées par notre équipe avant de devenir visibles pour les autres utilisateurs.",
+      "cancel": "Annuler",
+      "submit": "Publier l'événement",
+      "posting": "Publication en cours..."
+    }
+  },
+  "tabs": {
+    "hosted": "Organisés",
+    "attended": "Participés",
+    "saved": "Enregistrés",
+    "posts": "Publications",
+    "status": "Statut",
+    "comingSoon": "Cette fonctionnalité arrive bientôt."
+  },
+  "myhub": {
+    "attendedEvents": {
+      "upcoming": "Événements à venir",
+      "past": "Événements passés",
+      "loading": "Chargement..."
+    },
+    "hostedEvents": {
+      "columns": {
+        "title": "Titre",
+        "date": "Date",
+        "participants": "Participants",
+        "status": "Statut"
+      },
+      "status": {
+        "approved": "Approuvé",
+        "cancelled": "Annulé"
+      },
+      "loading": "Chargement...",
+      "actions": {
+        "label": "Actions",
+        "openMenu": "Ouvrir le menu",
+        "details": "Détails",
+        "scanTickets": "Scanner les billets",
+        "participants": "Participants",
+        "edit": "Modifier",
+        "cancel": "Annuler",
+        "delete": "Supprimer"
+      },
+      "cancel": {
+        "title": "Annuler l'événement",
+        "description": "Êtes-vous sûr de vouloir annuler '{title}' ? Cette action est irréversible.",
+        "close": "Fermer",
+        "confirm": "Annuler"
+      },
+      "delete": {
+        "title": "Supprimer l'événement",
+        "description": "Êtes-vous sûr de vouloir supprimer '{title}' ? Cette action est irréversible.",
+        "close": "Annuler",
+        "confirm": "Supprimer"
+      }
+    },
+    "upcomingEvents": {
+      "noEvents": "Aucun événement à venir",
+      "started": "Événement commencé",
+      "days": "Jours",
+      "hours": "Heures",
+      "minutes": "Minutes",
+      "seconds": "Secondes",
+      "noParticipants": "Aucun participant pour le moment !",
+      "startsIn": "Commence dans",
+      "freeEvent": "Événement gratuit",
+      "spotsLeft": "places restantes"
+    }
+  },
+  "events": {
+    "components": {
+      "createEventButton": {
+        "button": {
+          "create": {
+            "text": "Créer"
+          },
+          "tooltip": {
+            "label": "Créer un événement"
+          }
+        },
+        "dialog": {
+          "button": {
+            "cancel": "Annuler",
+            "login": "Connexion"
+          },
+          "description": "Vous devez vous connecter ou vous inscrire pour créer un événement.",
+          "title": "Connexion requise"
+        }
+      },
+      "eventNotFound": {
+        "description": "Il n'y a pas d'événements à afficher pour le moment. Revenez plus tard !",
+        "noEvents": "Aucun événement disponible",
+        "noMatch": "Aucun événement ne correspond à votre recherche pour",
+        "noSearchFound": "Aucun événement trouvé",
+        "try": "Essayez un terme de recherche différent"
+      },
+      "searchInput": {
+        "input": {
+          "placeholder": "Rechercher un événement"
+        }
+      }
+    },
+    "details": {
+      "detailedCard": {
+        "attending": "participant",
+        "available": "disponible",
+        "eventDetailsTitle": "Détails de l'événement",
+        "eventFull": "L'événement est complet",
+        "freeEventLabel": "Événement gratuit",
+        "freeRegistrationMessage": "Inscription gratuite requise",
+        "locationLabel": "Lieu",
+        "paidRegistrationMessage": "Les détails de paiement seront fournis après l'inscription",
+        "people": "gens",
+        "person": "personne",
+        "price": "Prix",
+        "spot": "emplacement",
+        "spots": "places",
+        "tba": "À déterminer"
+      },
+      "sidebar": {
+        "joinThisEvent": "Rejoindre cet événement",
+        "secureYourPlace": "Réservez votre place et faites partie de cette expérience."
+      },
+      "organizer": {
+        "card": {
+          "contact": "Contact",
+          "eventOrganizer": "Organisateur d'événements",
+          "eventsHosted": "événements organisés",
+          "organizedBy": "Organisé par",
+          "organizerAlt": "Organisateur",
+          "verifiedOrganizer": "Organisateur vérifié"
+        }
+      },
+      "tabs": {
+        "about": "À propos",
+        "description": "Description",
+        "participants": "Participants",
+        "readLess": "Lire moins",
+        "readMore": "Lire la suite"
+      }
+    },
+    "joinButton": {
+      "approveModal": {
+        "description": "Votre demande de participation a été soumise et est en attente d'approbation. L'organisateur vous contactera par e-mail ou par téléphone. Une fois confirmée, vous serez informé.",
+        "title": "Demande soumise"
+      },
+      "button": {
+        "button": {
+          "text": {
+            "eventFull": "Événement complet"
+          }
+        },
+        "loading": {
+          "joining": "Rejoindre...",
+          "leaving": "Quitter..."
+        },
+        "text": {
+          "joinEvent": "Rejoindre l'événement",
+          "leaveEvent": "Quitter l'événement"
+        }
+      },
+      "dialog": {
+        "button": {
+          "cancel": "Annuler"
+        },
+        "description": "Vous devez vous connecter ou vous inscrire pour rejoindre un événement",
+        "title": "Connexion requise"
+      }
+    },
+    "page": {
+      "discover": "Découvrir des événements"
+    },
+    "create": {
+      "form": {
+        "errorGeneric": "Une erreur est survenue. Veuillez réessayer.",
+        "success": "Événement créé avec succès !",
+        "validationError": "Veuillez vérifier le formulaire pour corriger les erreurs.",
+
+        "createNewEvent": "Créer un nouvel événement",
+        "setupDetails": "Configurez les détails et le planning de votre événement",
+        "adminApprovalNotice": "Les événements créés doivent être approuvés par un administrateur avant d’être visibles.",
+        "important": "Important :",
+        "phoneRequirement": " Votre numéro de téléphone doit inclure l'indicatif du pays (ex. : +222 pour la Mauritanie, +212 pour le Maroc). Cela permet aux participants de vous contacter via WhatsApp.",
+
+        "titleLabel": "Titre de l'événement *",
+        "titlePlaceholder": "Entrez le titre de votre événement",
+
+        "descriptionLabel": "Description *",
+        "descriptionPlaceholder": "Décrivez votre événement en détail...",
+
+        "categoryLabel": "Catégorie de l'événement",
+        "imageLabel": "Image de l'événement",
+
+        "startTime": "Heure de début",
+        "startTimePlaceholder": "Sélectionnez la date et l'heure de début",
+
+        "registrationDeadline": "Date limite d'inscription",
+        "registrationDeadlinePlaceholder": "Sélectionnez la date limite d'inscription",
+
+        "endTime": "Heure de fin",
+        "endTimePlaceholder": "Sélectionnez la date et l'heure de fin",
+
+        "freeEvent": "Ceci est un événement gratuit",
+
+        "ticketPrice": "Prix du billet *",
+        "pricePlaceholder": "0.00",
+
+        "locationLabel": "Lieu *",
+        "locationPlaceholder": "Entrez l'adresse",
+
+        "contactPhoneLabel": "Téléphone de contact *",
+        "phoneExample": "+222 27298087",
+        "phoneHint": "Incluez l'indicatif du pays (ex. : +222, +212, +1)",
+
+        "capacityLabel": "Capacité maximale *",
+        "capacityPlaceholder": "Entrez la capacité",
+
+        "creating": "Création...",
+        "createEvent": "Créer l'événement"
+      }
+    }
+  }
+}
