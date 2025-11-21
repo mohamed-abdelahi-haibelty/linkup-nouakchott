@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { toast } from "sonner";
-import { deleteManyEvents } from "@/app/actions/events/admin/deleteManyEvents";
+import { deleteManyEvents } from "@/app/[locale]/actions/events/admin/deleteManyEvents";
 import {
   getTableSearchValue,
   handleDeleteSelected,

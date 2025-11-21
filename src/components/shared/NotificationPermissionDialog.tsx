@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { urlBase64ToUint8Array } from "@/lib/utils";
-import { subscribeToNotifications } from "@/app/actions/events/notifications/subscribeToNotifications";
+import { subscribeToNotifications } from "@/app/[locale]/actions/events/notifications/subscribeToNotifications";
 
 interface NotificationPermissionDialogProps {
   open: boolean;

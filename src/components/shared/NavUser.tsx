@@ -23,6 +23,7 @@ import { Button } from "../ui/button";
 import { cn, getFallback } from "@/lib/utils";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
 import Link from "next/link";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function NavUser({
   user,
@@ -91,10 +92,7 @@ export function NavUser({
         </DropdownMenuGroup>
         {/* <DropdownMenuSeparator /> */}
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <BadgeCheck />
-            Language
-          </DropdownMenuItem>
+          <LanguageSwitcher />
 
           <DropdownMenuItem asChild>
             <Link href={"/notification"} className="flex items-center">

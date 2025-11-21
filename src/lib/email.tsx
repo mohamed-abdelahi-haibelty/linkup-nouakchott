@@ -2,7 +2,7 @@
 "use server";
 
 import { Resend } from "resend";
-import TicketEmail from "@/app/emails/TicketEmail";
+import TicketEmail from "@/app/[locale]/emails/TicketEmail";
 
 export async function sendTicketEmail(
   email: string,

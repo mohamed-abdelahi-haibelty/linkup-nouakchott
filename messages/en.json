@@ -1,0 +1,365 @@
+{
+  "event": {
+    "details": {
+      "participants": {
+        "list": {
+          "beFirstToJoin": "Be the first to join this amazing event! Registration is open and we're excited to see who will be part of this experience.",
+          "noParticipantsYet": "No participants yet"
+        }
+      }
+    }
+  },
+  "navbar": {
+    "homeLabel": "LinkUp Nouakchott home",
+    "signIn": "Sign in",
+    "getStarted": "Get started",
+    "account": "Account",
+
+    "nav": {
+      "discover": "Discover",
+      "community": "Community",
+      "myHub": "My Hub",
+      "dashboard": "Dashboard"
+    }
+  },
+  "community": {
+    "header": "Community",
+    "newPostButton": "Post Event",
+    "noPostsYet": "No posts yet",
+    "firstPostHint": "Be the first to share an event with the community!",
+    "createFirstPost": "Create First Post",
+    "errors": {
+      "somethingWentWrong": "Something went wrong. Please try again.",
+      "checkForm": "Please check the form for errors."
+    },
+    "success": {
+      "postCreated": "Post created successfully!"
+    },
+    "modal": {
+      "header": "Post Community Event",
+      "subHeader": "Share events with the community",
+      "posterLabel": "Event Poster",
+      "titleLabel": "Event Title *",
+      "titlePlaceholder": "Enter event title",
+      "categoryLabel": "Event Category",
+      "descriptionLabel": "Description *",
+      "descriptionPlaceholder": "Describe your event in detail...",
+      "startTimeLabel": "Start Time",
+      "startTimePlaceholder": "Select start date and time",
+      "endTimeLabel": "End Time",
+      "endTimePlaceholder": "Select end date and time",
+      "locationLabel": "Location",
+      "locationPlaceholder": "Enter event location",
+      "noteTitle": "Note:",
+      "noteContent": "Community posts are marked as \"Pending\" and need verification by our team before they become visible to other users.",
+      "cancel": "Cancel",
+      "submit": "Post Event",
+      "posting": "Posting..."
+    }
+  },
+  "tabs": {
+    "hosted": "Hosted",
+    "attended": "Attended",
+    "saved": "Saved",
+    "posts": "Posts",
+    "status": "Status",
+    "comingSoon": "This feature is coming soon."
+  },
+  "myhub": {
+    "attendedEvents": {
+      "upcoming": "Upcoming Events",
+      "past": "Past Events",
+      "loading": "Loading..."
+    },
+    "hostedEvents": {
+      "columns": {
+        "title": "Title",
+        "date": "Date",
+        "participants": "Participants",
+        "status": "Status"
+      },
+      "status": {
+        "approved": "approved",
+        "cancelled": "cancelled"
+      },
+      "loading": "Loading...",
+      "actions": {
+        "label": "Actions",
+        "openMenu": "Open menu",
+        "details": "Details",
+        "scanTickets": "Scan Tickets",
+        "participants": "Participants",
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "delete": "Delete"
+      },
+      "cancel": {
+        "title": "Cancel Event",
+        "description": "Are you sure you want to cancel '{title}'? This action cannot be undone.",
+        "close": "Close",
+        "confirm": "Cancel"
+      },
+      "delete": {
+        "title": "Delete Event",
+        "description": "Are you sure you want to delete '{title}'? This action cannot be undone.",
+        "close": "Cancel",
+        "confirm": "Delete"
+      }
+    },
+    "upcomingEvents": {
+      "noEvents": "No upcoming events",
+      "started": "Event Started",
+      "days": "Days",
+      "hours": "Hrs",
+      "minutes": "Min",
+      "seconds": "Sec",
+      "noParticipants": "No Participant yet!",
+      "startsIn": "Starts in",
+      "freeEvent": "Free Event",
+      "spotsLeft": "spots left"
+    }
+  },
+  "events": {
+    "components": {
+      "createEventButton": {
+        "button": {
+          "create": {
+            "text": "Create"
+          },
+          "tooltip": {
+            "label": "Create an Event"
+          }
+        },
+        "dialog": {
+          "button": {
+            "cancel": "Cancel",
+            "login": "Login"
+          },
+          "description": "You need to log in or sign up to create an event.",
+          "title": "Login Required"
+        }
+      },
+      "eventNotFound": {
+        "description": "There are no events to display at the moment. Check back later!",
+        "noEvents": "No events available",
+        "noMatch": "No events match your search for",
+        "noSearchFound": "No events found",
+        "try": "Try a different search term"
+      },
+      "searchInput": {
+        "input": {
+          "placeholder": "Search for an event"
+        }
+      }
+    },
+    "details": {
+      "detailedCard": {
+        "attending": "attending",
+        "available": "available",
+        "eventDetailsTitle": "Event Details",
+        "eventFull": "Event is at capacity",
+        "freeEventLabel": "Free Event",
+        "freeRegistrationMessage": "Free registration required",
+        "locationLabel": "Location",
+        "paidRegistrationMessage": "Payment details will be provided after registration",
+        "people": "people",
+        "person": "person",
+        "price": "Price",
+        "spot": "spot",
+        "spots": "spots",
+        "tba": "TBA"
+      },
+      "sidebar": {
+        "joinThisEvent": "Join this event",
+        "secureYourPlace": "Secure your place and be part of this experience."
+      },
+      "organizer": {
+        "card": {
+          "contact": "Contact",
+          "eventOrganizer": "Event Organizer",
+          "eventsHosted": "events hosted",
+          "organizedBy": "Organized by",
+          "organizerAlt": "Organizer",
+          "verifiedOrganizer": "Verified Organizer"
+        }
+      },
+      "tabs": {
+        "about": "About",
+        "description": "Description",
+        "participants": "Participants",
+        "readLess": "Read Less",
+        "readMore": "Read More"
+      }
+    },
+    "joinButton": {
+      "approveModal": {
+        "description": "Your join request has been submitted and is pending approval. The organizer will contact you via email or phone. Once confirmed, you will be notified.",
+        "title": "Request Submitted"
+      },
+      "button": {
+        "button": {
+          "text": {
+            "eventFull": "Event Full"
+          }
+        },
+        "loading": {
+          "joining": "Joining...",
+          "leaving": "Leaving..."
+        },
+        "text": {
+          "joinEvent": "Join Event",
+          "leaveEvent": "Leave Event"
+        }
+      },
+      "dialog": {
+        "button": {
+          "cancel": "Cancel"
+        },
+        "description": "You need to log in or sign up to join an event",
+        "title": "Login Required"
+      }
+    },
+    "page": {
+      "discover": "Discover Events"
+    },
+    "create": {
+      "form": {
+        "errorGeneric": "Something went wrong. Please try again.",
+        "success": "Event created successfully!",
+        "validationError": "Please check the form for errors.",
+
+        "createNewEvent": "Create new event",
+        "setupDetails": "Set up your event details and schedule",
+        "adminApprovalNotice": "Created events must be approved by an administrator before they become visible.",
+        "important": "Important:",
+        "phoneRequirement": " Your contact phone number must include the country code (e.g., +222 for Mauritania, +212 for Morocco). This allows participants to reach you via WhatsApp.",
+
+        "titleLabel": "Event title *",
+        "titlePlaceholder": "Enter your event title",
+
+        "descriptionLabel": "Description *",
+        "descriptionPlaceholder": "Describe your event in detail...",
+
+        "categoryLabel": "Event Category",
+        "imageLabel": "Event Image",
+
+        "startTime": "Start Time",
+        "startTimePlaceholder": "Select start date and time",
+
+        "registrationDeadline": "Registration Deadline",
+        "registrationDeadlinePlaceholder": "Select registration deadline",
+
+        "endTime": "End Time",
+        "endTimePlaceholder": "Select end date and time",
+
+        "freeEvent": "This is a free event",
+
+        "ticketPrice": "Ticket Price *",
+        "pricePlaceholder": "0.00",
+
+        "locationLabel": "Location *",
+        "locationPlaceholder": "Enter address",
+
+        "contactPhoneLabel": "Contact phone *",
+        "phoneExample": "+222 27298087",
+        "phoneHint": "Include country code (e.g., +222, +212, +1)",
+
+        "capacityLabel": "Maximum Capacity *",
+        "capacityPlaceholder": "Enter capacity",
+
+        "creating": "Creating...",
+        "createEvent": "Create Event"
+      }
+    }
+  },
+  "landingPage": {
+    "hero": {
+      "badge": {
+        "live": "Now live in Nouakchott",
+        "beta": "Beta"
+      },
+      "title": {
+        "line1": "Events that bring",
+        "line2": "people together"
+      },
+      "description": "Discover what’s happening in Nouakchott, create your own events, and manage everything in one seamless hub. Smart tickets, QR check-ins, and a community-driven feed — all in one platform built for connection.",
+      "buttons": {
+        "explore": "Explore events",
+        "create": "Create an event"
+      }
+    },
+
+    "features": {
+      "sectionTitle": "Platform features",
+      "sectionSubtitle": {
+        "line1": "Everything you need,",
+        "line2": "nothing you don't"
+      },
+
+      "feature1": {
+        "title": "Never miss what’s happening",
+        "description": "Stop missing out. The Discover page puts every event in Nouakchott right in front of you — clean, simple, and always up to date. Browse categories, search instantly, and jump into anything that interests you.",
+        "categories": ["Sports", "Culture", "Tech", "Food", "Music", "Art"]
+      },
+
+      "feature2": {
+        "title": "Professional check-ins, made effortless.",
+        "description": "Every registration generates a digital ticket with a unique QR code. Attendees keep it on their device, and organizers scan it at the entrance for instant verification.",
+        "points": [
+          {
+            "title": "Paperless",
+            "description": "Faster lines, no paper, no lost tickets"
+          },
+          {
+            "title": "Secure",
+            "description": "Unique QR verification"
+          }
+        ]
+      },
+
+      "feature3": {
+        "title": "Built for organizers",
+        "description": "Creating an event takes minutes. Once it’s live, MyHub becomes your control center. Track registrations, view participants, manage updates, and monitor attendance.",
+        "bullets": [
+          "Create events in under 5 minutes",
+          "You stay organized",
+          "Your attendees stay informed",
+          "Everything stays in one system"
+        ]
+      }
+    },
+
+    "steps": {
+      "sectionTitle": "Simple process",
+      "sectionSubtitle": {
+        "line1": "Get started in",
+        "line2": "three simple steps"
+      },
+      "items": [
+        {
+          "title": "Browse events",
+          "description": "Discover what’s happening by browsing categories or searching instantly. Everything you like, all in one place."
+        },
+        {
+          "title": "Join instantly",
+          "description": "Register with a tap and get your digital ticket right away — complete with your unique QR code."
+        },
+        {
+          "title": "Attend & enjoy",
+          "description": "Show your QR code at entry for quick, effortless check-in. No paper, no hassle — just enjoy the event."
+        }
+      ]
+    },
+
+    "community": {
+      "sectionTitle": "Community feature",
+      "sectionSubtitle": {
+        "line1": "Your events,",
+        "line2": "your community"
+      },
+      "description": "See a cool event online? Share it on the Community page so others can find it too.",
+      "bullets": ["Help the city stay connected", "Anyone can contribute"],
+      "button": "Join the community"
+    }
+  }
+}

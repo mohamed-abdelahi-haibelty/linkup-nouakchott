@@ -16,6 +16,7 @@ export function cn(...inputs: ClassValue[]) {
 
 
 
+
 export function generateSlug(title: string): string {
   if (!title) return "event";
   return slugify(title, {

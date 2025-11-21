@@ -1,55 +1,48 @@
-import { Button } from "@/components/ui/button";
-import { DialogTitle } from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import { CheckIcon, GlobeIcon, XIcon } from "lucide-react";
-import React from "react";
+"use client";
 
-function LanguageSwitcher() {
+import { useLocale } from "next-intl";
+import { useRouter, usePathname } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
+import {
+  DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Languages, Check } from "lucide-react";
+
+const localeNames: Record<string, string> = {
+  en: "English",
+  fr: "Français",
+};
+
+export function LanguageSwitcher() {
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleLocaleChange = (newLocale: string) => {
+    router.replace(pathname, { locale: newLocale });
+  };
+
   return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <button className="flex items-center rounded-full border border-primary p-2">
-          <GlobeIcon className="h-4 w-4" />
-          {/* <span>EN</span>
-          <ChevronDownIcon className="h-4 w-4" /> */}
-        </button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <div className="grid gap-4 p-4">
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-lg font-medium">
-              Select Language
-            </DialogTitle>
-            <DrawerClose asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <XIcon className="h-5 w-5" />
-              </Button>
-            </DrawerClose>
-          </div>
-          <div className="grid gap-2">
-            <Button variant="ghost" className="justify-start gap-2">
-              <GlobeIcon className="h-5 w-5" />
-              <span>English</span>
-              <CheckIcon className="h-5 w-5 ml-auto" />
-            </Button>
-            <Button variant="ghost" className="justify-start gap-2">
-              <GlobeIcon className="h-5 w-5" />
-              <span>Arabic</span>
-            </Button>
-            <Button variant="ghost" className="justify-start gap-2">
-              <GlobeIcon className="h-5 w-5" />
-              <span>Français</span>
-            </Button>
-          </div>
-        </div>
-      </DrawerContent>
-    </Drawer>
+    <DropdownMenuSub>
+      <DropdownMenuSubTrigger>
+        <Languages className="mr-2 h-4 w-4" />
+        <span>Language</span>
+      </DropdownMenuSubTrigger>
+      <DropdownMenuSubContent>
+        {routing.locales.map((loc) => (
+          <DropdownMenuItem
+            key={loc}
+            onClick={() => handleLocaleChange(loc)}
+            className="flex items-center justify-between"
+          >
+            <span>{localeNames[loc]}</span>
+            {locale === loc && <Check className="h-4 w-4" />}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuSubContent>
+    </DropdownMenuSub>
   );
 }
-
-export default LanguageSwitcher;
