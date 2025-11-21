@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
-import MobileNavbar from "@/app/(root)/components/MobileNavbar";
+import MobileNavbar from "@/app/[locale]/(root)/components/MobileNavbar";
 
 function Header() {
   return (

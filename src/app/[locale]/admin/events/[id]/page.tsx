@@ -1,4 +1,3 @@
-import EventDescription from "@/app/(root)/events/_components/EventDescription";
 import { formatDate, formatTime } from "@/lib/utils";
 import {
   Calendar,
@@ -19,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getEvent } from "@/app/[locale]/actions/events/admin/getEvent";
+import EventDescription from "@/app/[locale]/(root)/events/_components/EventDescription";
 
 interface PageProps {
   params: Promise<{ id: string }>;

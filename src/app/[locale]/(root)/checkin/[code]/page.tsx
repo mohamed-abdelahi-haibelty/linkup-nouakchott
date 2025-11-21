@@ -2,7 +2,6 @@ import { redirect } from "next/navigation";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import prisma from "@/lib/db";
 import { CheckCircle2, XCircle, Clock, AlertTriangle } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,

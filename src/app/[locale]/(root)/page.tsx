@@ -13,9 +13,10 @@ import {
 import { useEffect, useRef, useState } from "react";
 import PatternBg from "@/components/shared/PatternBg";
 import BrowserMockup from "@/components/ui/BowserMockup";
-import AppNavbar from "../(root)/components/AppNavbar";
+
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import AppNavbar from "./components/AppNavbar";
 
 export default function LandingPage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
