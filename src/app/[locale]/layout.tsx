@@ -54,7 +54,7 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${mabry.variable} antialiased`}
+        className={`${mabry.variable} antialiased `}
       >
         <NextSSRPlugin
           /**

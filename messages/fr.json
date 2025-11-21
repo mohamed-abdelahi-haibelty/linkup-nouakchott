@@ -271,5 +271,105 @@
         "createEvent": "Créer l'événement"
       }
     }
+  },
+  "landingPage": {
+    "hero": {
+      "badge": {
+        "live": "Maintenant disponible à Nouakchott",
+        "beta": "Bêta"
+      },
+      "title": {
+        "line1": "Des événements qui rassemblent",
+        "line2": "les gens"
+      },
+      "description": "Découvrez ce qui se passe à Nouakchott, créez vos propres événements et gérez tout dans un seul espace. Billets numériques, QR check-ins et fil communautaire — une plateforme pensée pour connecter.",
+      "buttons": {
+        "explore": "Explorer les événements",
+        "create": "Créer un événement"
+      }
+    },
+
+    "features": {
+      "sectionTitle": "Fonctionnalités de la plateforme",
+      "sectionSubtitle": {
+        "line1": "Tout ce dont vous avez besoin,",
+        "line2": "rien de superflu"
+      },
+
+      "feature1": {
+        "title": "Ne manquez plus rien",
+        "description": "Ne ratez aucun événement. La page Découvrir met tous les événements de Nouakchott devant vous — claire, simple et toujours à jour. Parcourez les catégories, cherchez instantanément et rejoignez ce qui vous intéresse.",
+        "categories": [
+          "Sport",
+          "Culture",
+          "Tech",
+          "Gastronomie",
+          "Musique",
+          "Art"
+        ]
+      },
+
+      "feature2": {
+        "title": "Des check-ins professionnels, sans effort.",
+        "description": "Chaque inscription génère un billet numérique avec un QR code unique. Les participants le gardent sur leur appareil, et les organisateurs le scannent à l'entrée pour une vérification instantanée.",
+        "points": [
+          {
+            "title": "Sans papier",
+            "description": "Des files plus rapides, aucun papier, aucun billet perdu"
+          },
+          {
+            "title": "Sécurisé",
+            "description": "Vérification par QR unique"
+          }
+        ]
+      },
+
+      "feature3": {
+        "title": "Conçu pour les organisateurs",
+        "description": "Créer un événement prend quelques minutes. Une fois publié, MyHub devient votre centre de contrôle. Suivez les inscriptions, consultez les participants, gérez les mises à jour et surveillez la présence.",
+        "bullets": [
+          "Créez un événement en moins de 5 minutes",
+          "Vous restez organisé",
+          "Vos participants restent informés",
+          "Tout reste dans un seul système"
+        ]
+      }
+    },
+
+    "steps": {
+      "sectionTitle": "Processus simple",
+      "sectionSubtitle": {
+        "line1": "Commencez en",
+        "line2": "trois étapes simples"
+      },
+      "items": [
+        {
+          "title": "Parcourir les événements",
+          "description": "Découvrez ce qui se passe en parcourant les catégories ou en recherchant instantanément. Tout ce que vous aimez, au même endroit."
+        },
+        {
+          "title": "Rejoindre instantanément",
+          "description": "Inscrivez-vous en un clic et recevez immédiatement votre billet numérique avec votre QR code unique."
+        },
+        {
+          "title": "Participer et profiter",
+          "description": "Montrez votre QR code à l'entrée pour un check-in rapide et sans effort. Pas de papier, aucun souci — profitez simplement de l’événement."
+        }
+      ]
+    },
+
+    "community": {
+      "sectionTitle": "Fonctionnalité communautaire",
+      "sectionSubtitle": {
+        "line1": "Vos événements,",
+        "line2": "votre communauté"
+      },
+      "description": "Vous voyez un événement intéressant en ligne ? Partagez-le sur la page Communauté pour que d'autres puissent le découvrir.",
+      "bullets": [
+        "Aidez la ville à rester connectée",
+        "Tout le monde peut contribuer"
+      ],
+      "button": "Rejoindre la communauté"
+    }
   }
 }

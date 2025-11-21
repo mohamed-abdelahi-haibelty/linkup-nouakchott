@@ -6,7 +6,7 @@ type Props = {
 
 function PatternBg({ children }: Props) {
   return (
-    <div className="min-h-screen w-full bg-[#f9fafb] relative">
+    <div className="min-h-screen w-full  relative">
       {/* Diagonal Fade Center Grid Background */}
       <div
         className="absolute inset-0 z-0"

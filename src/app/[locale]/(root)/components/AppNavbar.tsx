@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   ArrowRight,
   FolderKanban,
@@ -15,10 +14,10 @@ import {
   useKindeBrowserClient,
 } from "@kinde-oss/kinde-auth-nextjs";
 import { NavUser } from "@/components/shared/NavUser";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import MobileNavbar from "./MobileNavbar";
 import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 
 export const NAVIGATIONS = [
   {

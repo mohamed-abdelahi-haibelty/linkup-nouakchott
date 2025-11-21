@@ -271,5 +271,95 @@
         "createEvent": "Create Event"
       }
     }
+  },
+  "landingPage": {
+    "hero": {
+      "badge": {
+        "live": "Now live in Nouakchott",
+        "beta": "Beta"
+      },
+      "title": {
+        "line1": "Events that bring",
+        "line2": "people together"
+      },
+      "description": "Discover what’s happening in Nouakchott, create your own events, and manage everything in one seamless hub. Smart tickets, QR check-ins, and a community-driven feed — all in one platform built for connection.",
+      "buttons": {
+        "explore": "Explore events",
+        "create": "Create an event"
+      }
+    },
+
+    "features": {
+      "sectionTitle": "Platform features",
+      "sectionSubtitle": {
+        "line1": "Everything you need,",
+        "line2": "nothing you don't"
+      },
+
+      "feature1": {
+        "title": "Never miss what’s happening",
+        "description": "Stop missing out. The Discover page puts every event in Nouakchott right in front of you — clean, simple, and always up to date. Browse categories, search instantly, and jump into anything that interests you.",
+        "categories": ["Sports", "Culture", "Tech", "Food", "Music", "Art"]
+      },
+
+      "feature2": {
+        "title": "Professional check-ins, made effortless.",
+        "description": "Every registration generates a digital ticket with a unique QR code. Attendees keep it on their device, and organizers scan it at the entrance for instant verification.",
+        "points": [
+          {
+            "title": "Paperless",
+            "description": "Faster lines, no paper, no lost tickets"
+          },
+          {
+            "title": "Secure",
+            "description": "Unique QR verification"
+          }
+        ]
+      },
+
+      "feature3": {
+        "title": "Built for organizers",
+        "description": "Creating an event takes minutes. Once it’s live, MyHub becomes your control center. Track registrations, view participants, manage updates, and monitor attendance.",
+        "bullets": [
+          "Create events in under 5 minutes",
+          "You stay organized",
+          "Your attendees stay informed",
+          "Everything stays in one system"
+        ]
+      }
+    },
+
+    "steps": {
+      "sectionTitle": "Simple process",
+      "sectionSubtitle": {
+        "line1": "Get started in",
+        "line2": "three simple steps"
+      },
+      "items": [
+        {
+          "title": "Browse events",
+          "description": "Discover what’s happening by browsing categories or searching instantly. Everything you like, all in one place."
+        },
+        {
+          "title": "Join instantly",
+          "description": "Register with a tap and get your digital ticket right away — complete with your unique QR code."
+        },
+        {
+          "title": "Attend & enjoy",
+          "description": "Show your QR code at entry for quick, effortless check-in. No paper, no hassle — just enjoy the event."
+        }
+      ]
+    },
+
+    "community": {
+      "sectionTitle": "Community feature",
+      "sectionSubtitle": {
+        "line1": "Your events,",
+        "line2": "your community"
+      },
+      "description": "See a cool event online? Share it on the Community page so others can find it too.",
+      "bullets": ["Help the city stay connected", "Anyone can contribute"],
+      "button": "Join the community"
+    }
   }
 }

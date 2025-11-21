@@ -12,9 +12,9 @@ import ActionTooltip from "@/components/shared/ActionTooltip";
 import { Button } from "@/components/ui/button";
 import { LoginLink, useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { LogIn, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 function CreateEventButton() {
   const { isAuthenticated } = useKindeBrowserClient();
   const t = useTranslations("events.components.createEventButton");

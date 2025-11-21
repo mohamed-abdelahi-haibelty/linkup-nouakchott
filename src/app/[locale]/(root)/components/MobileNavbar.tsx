@@ -7,7 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import Link from "next/link";
+
 import React from "react";
 import {
   ArrowRight,
@@ -24,10 +24,10 @@ import {
   useKindeBrowserClient,
 } from "@kinde-oss/kinde-auth-nextjs";
 import { NavUser } from "@/components/shared/NavUser";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { NAVIGATIONS } from "./AppNavbar";
 import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 
 const NAV_ICONS = {
   Discover: Sparkles,
