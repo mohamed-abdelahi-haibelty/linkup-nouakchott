@@ -73,7 +73,7 @@ export default function LandingPage() {
                     </Badge>
                   </div>
 
-                  <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-balance">
+                  <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight text-balance">
                     <span className="block text-foreground mb-2">
                       {t("hero.title.line1")}
                     </span>

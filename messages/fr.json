@@ -275,14 +275,14 @@
   "landingPage": {
     "hero": {
       "badge": {
-        "live": "Maintenant disponible à Nouakchott",
+        "live": "C’est parti à Nouakchott !",
         "beta": "Bêta"
       },
       "title": {
-        "line1": "Des événements qui rassemblent",
-        "line2": "les gens"
+        "line1": "Découvrez ce qui se passe",
+        "line2": "près de chez vous"
       },
-      "description": "Découvrez ce qui se passe à Nouakchott, créez vos propres événements et gérez tout dans un seul espace. Billets numériques, QR check-ins et fil communautaire — une plateforme pensée pour connecter.",
+      "description": "Découvrez les événements qui vous intéressent et participez facilement. Organisateurs, créez vos événements et atteignez un public plus large en quelques clics.",
       "buttons": {
         "explore": "Explorer les événements",
         "create": "Créer un événement"
@@ -298,7 +298,7 @@
 
       "feature1": {
         "title": "Ne manquez plus rien",
-        "description": "Ne ratez aucun événement. La page Découvrir met tous les événements de Nouakchott devant vous — claire, simple et toujours à jour. Parcourez les catégories, cherchez instantanément et rejoignez ce qui vous intéresse.",
+        "description": "La page Découvrir met tous les événements à portée de main — simple, claire et toujours à jour. Parcourez les catégories, recherchez instantanément et rejoignez ce qui vous intéresse.",
         "categories": [
           "Sport",
           "Culture",
@@ -310,7 +310,7 @@
       },
 
       "feature2": {
-        "title": "Des check-ins professionnels, sans effort.",
+        "title": "Check-ins professionnels, sans effort",
         "description": "Chaque inscription génère un billet numérique avec un QR code unique. Les participants le gardent sur leur appareil, et les organisateurs le scannent à l'entrée pour une vérification instantanée.",
         "points": [
           {
