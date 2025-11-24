@@ -111,7 +111,7 @@ export default function LandingPage() {
                   <div className="absolute -inset-4 bg-gradient-to-r from-accent/20 via-accent/10 to-accent/20 rounded-3xl blur-3xl" />
                   <div className="relative rounded-2xl overflow-hidden border shadow-2xl bg-card">
                     <BrowserMockup
-                      src="/images/discover-events-lg.png"
+                      src="/images/event-feed.png"
                       alt="discover events"
                     />
                   </div>
@@ -172,7 +172,7 @@ export default function LandingPage() {
 
                       <div className="relative group">
                         <BrowserMockup
-                          src="/images/discover-events-lg.png"
+                          src="/images/event-feed.png"
                           alt="event discovery"
                         />
                       </div>
@@ -211,7 +211,7 @@ export default function LandingPage() {
                       </div>
 
                       <BrowserMockup
-                        src="/images/ticket-mobile.png"
+                        src="/images/ticket-mobile.jpg"
                         alt="ticket mobile"
                       />
                     </div>
@@ -247,7 +247,7 @@ export default function LandingPage() {
                       </div>
 
                       <BrowserMockup
-                        src="/images/create-events-lg.png"
+                        src="/images/create-event-mobile.jpg"
                         alt="event creation"
                       />
                     </div>
@@ -338,7 +338,7 @@ export default function LandingPage() {
                 </div>
 
                 <BrowserMockup
-                  src="/images/post-card-mobile-3.png"
+                  src="/images/commuinty-post.jpg"
                   alt="Community post card"
                 />
               </div>
