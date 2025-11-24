@@ -27,6 +27,7 @@ import { EventFormInput } from "@/lib/validation/event";
 import { ArrowLeft, DollarSign, Info, Loader2, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { usePostHog } from "posthog-js/react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -36,6 +37,10 @@ function CreateEventForm() {
   const [isPending, startTransition] = useTransition();
   const [showPermissionDialog, setShowPermissionDialog] = useState(false);
   const t = useTranslations("events.create.form");
+  const posthog = usePostHog();
+  posthog.capture("event_creation_started", {
+    source: "event_create_page",
+  });
 
   const form = useForm<EventFormInput>({
     defaultValues: {
@@ -69,6 +74,10 @@ function CreateEventForm() {
         // Success case
         toast.success(res.message || t("success")); // "Event created successfully!"
         form.reset();
+
+        posthog.capture("event_created", {
+          source: "event_create_page",
+        });
 
         // ----- NEW: check user preference -----
         const optOut = localStorage.getItem("notifications_opt_out") === "true";

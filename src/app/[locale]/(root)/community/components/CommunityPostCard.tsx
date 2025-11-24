@@ -4,6 +4,7 @@ import { Calendar, Clock, MapPin, Share2 } from "lucide-react";
 import { format } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getFallback } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface CommunityPostCardProps {
   post: {
@@ -86,14 +87,22 @@ export function CommunityPostCard({ post }: CommunityPostCardProps) {
         await navigator.share({
           title: post.title || "Community Post",
           text: post.description,
-          url: window.location.href,
+          url: `${window.location.origin}/community/${post.id}`,
+        });
+        toast("Link copied!", {
+          description: "Post URL copied to your clipboard.",
         });
       } catch (err) {
         console.log("Share cancelled");
       }
     } else {
       // Fallback: copy to clipboard
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(
+        `${window.location.origin}/community/${post.id}`
+      );
+      toast("Link copied!", {
+        description: "Post URL copied to your clipboard.",
+      });
     }
   };
 

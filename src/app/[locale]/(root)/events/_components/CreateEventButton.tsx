@@ -15,13 +15,16 @@ import { LogIn, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { usePostHog } from "posthog-js/react";
 function CreateEventButton() {
   const { isAuthenticated } = useKindeBrowserClient();
   const t = useTranslations("events.components.createEventButton");
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const posthog = usePostHog();
 
   function handleAcessCheck() {
+    posthog.capture("event_create_click");
     if (isAuthenticated) {
       router.push("/events/create");
     } else {

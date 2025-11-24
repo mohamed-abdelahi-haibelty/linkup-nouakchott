@@ -9,6 +9,8 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { setRequestLocale } from "next-intl/server";
+import { PostHogProvider } from "../providers/PostHogProvider";
+import PostHogPageView from "../providers/PostHogPageView";
 
 const mabry = localFont({
   src: [
@@ -67,8 +69,11 @@ export default async function RootLayout({
         />
 
         <NextIntlClientProvider>
-          <Toaster position="top-right" />
-          {children}
+          <PostHogProvider>
+            <Toaster position="top-right" />
+            <PostHogPageView />
+            {children}
+          </PostHogProvider>
         </NextIntlClientProvider>
       </body>
     </html>

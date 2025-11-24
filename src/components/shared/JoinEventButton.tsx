@@ -25,6 +25,7 @@ import { joinEvent } from "@/app/[locale]/actions/events/participant/joinEvent";
 import { PhoneNumberModal } from "./PhoneNumberModal";
 import EventTicketModal from "@/app/[locale]/(root)/events/_components/EventTicketModal";
 import { useTranslations } from "next-intl";
+import { usePostHog } from "posthog-js/react";
 
 interface JoinEventButtonProps {
   event: EventWithParticipantsAndCounts;
@@ -53,6 +54,7 @@ export function JoinEventButton({
   const url = usePathname();
   const id = getUser()?.id;
   const t = useTranslations("events.joinButton");
+  const posthog = usePostHog();
 
   const maxCapacity = event.capacity;
   const eventId = event.id;
@@ -73,6 +75,11 @@ export function JoinEventButton({
       const res = await leaveEvent?.(eventId);
       if (res.success) {
         toast.success(res.message);
+        posthog.capture("event_left", {
+          event_id: event.id,
+          event_name: event.title,
+          source: "event_detail_page",
+        });
       } else {
         toast.error(res.message);
       }
@@ -94,9 +101,19 @@ export function JoinEventButton({
         toast.success(res.message);
         if (!event.isFree) {
           setOpenAprovalModal(true);
+          posthog.capture("event_joined_paid", {
+            event_id: event.id,
+            event_name: event.title,
+            source: "event_detail_page",
+          });
         } else {
           setQrurl(res?.data?.qrDataUrl!);
           setOpenTicketModal(true);
+          posthog.capture("event_joined_free", {
+            event_id: event.id,
+            event_name: event.title,
+            source: "event_detail_page",
+          });
         }
       } else {
         toast.error(res.message);
