@@ -22,6 +22,7 @@ type EventCardProps = Pick<
   | "tag"
   | "participants"
   | "capacity"
+  | "status"
 >;
 
 function EventCard({
@@ -36,6 +37,7 @@ function EventCard({
   tag,
   participants,
   capacity,
+  status,
 }: EventCardProps) {
   const priceValue = isFree ? "Free" : price;
   const formatedDate = formatDate(startTime);
@@ -59,15 +61,21 @@ function EventCard({
                 fill
                 className=" rounded-[8px] object-cover group-hover:opacity-95 transition-opacity"
               />
-              {tag && (
+              {(tag || status === "demo") && (
                 <Badge
                   className="absolute top-2 left-2 capitalize"
                   style={{
-                    backgroundColor: tagColors[tag]?.bg || "#E3DFF2",
-                    color: tagColors[tag]?.text || "#1F2937",
+                    backgroundColor:
+                      status === "demo"
+                        ? "#EDE9FE"
+                        : tagColors[tag as string]?.bg || "#E3DFF2",
+                    color:
+                      status === "demo"
+                        ? "#6B21A8"
+                        : tagColors[tag as string]?.text || "#1F2937",
                   }}
                 >
-                  {tag}
+                  {status === "demo" ? "Demo" : tag}
                 </Badge>
               )}
             </div>

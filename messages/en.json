@@ -361,5 +361,10 @@
       "bullets": ["Help the city stay connected", "Anyone can contribute"],
       "button": "Join the community"
     }
+  },
+  "demo": {
+    "title": "Demo Event",
+    "highlight": "demo event",
+    "message": "This is a <strong>demo event</strong> created to help you explore how the system works. You can participate and test all features — but this event is not real."
   }
 }

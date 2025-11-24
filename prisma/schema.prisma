@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url    = env("DATABASE_URL")
 }
 
 model User {
@@ -237,6 +237,7 @@ enum EventStatus {
   approved
   rejected
   cancelled
+  demo
 }
 
 enum CommunityPostStatus {

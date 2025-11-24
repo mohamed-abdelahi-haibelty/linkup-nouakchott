@@ -51,14 +51,17 @@ export function getFileHash(filePath: string) {
 
 const intlConfig = withNextIntl(nextConfig);
 
-const sentryConfig = withSentryConfig(intlConfig, {
-  org: "linkup-nouakchott",
-  project: "javascript-nextjs",
-  silent: !process.env.CI,
-  widenClientFileUpload: true,
-  disableLogger: true,
-  automaticVercelMonitors: true,
-});
+const sentryConfig =
+  process.env.NODE_ENV === "production"
+    ? withSentryConfig(intlConfig, {
+        org: "linkup-nouakchott",
+        project: "javascript-nextjs",
+        silent: !process.env.CI,
+        widenClientFileUpload: true,
+        disableLogger: true,
+        automaticVercelMonitors: true,
+      })
+    : intlConfig;
 
 const pwaConfig = withPWAInit({
   dest: "public",

@@ -119,6 +119,12 @@ export const statuses = [
 
     className: "bg-slate-100 text-slate-600 border border-slate-200",
   },
+  {
+    value: "demo",
+    label: "Demo",
+
+    className: "bg-primary/10 text-slate-600 border border-primary/20",
+  },
 ];
 
 export const eventHostStatues = [

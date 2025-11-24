@@ -51,7 +51,9 @@ export async function getEvents({
 
   const where = (() => {
     const q = query?.trim();
-    const conditions: any[] = [{ status: "approved" as const }];
+    const conditions: any[] = [
+      { status: { in: ["approved", "demo"] } as const },
+    ];
 
     if (q) {
       conditions.push({

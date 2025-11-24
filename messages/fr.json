@@ -371,5 +371,10 @@
       ],
       "button": "Rejoindre la communauté"
     }
+  },
+  "demo": {
+    "title": "Événement Démonstration",
+    "highlight": "événement de démonstration",
+    "message": "Ceci est un <strong>événement de démonstration</strong> créé pour vous permettre de découvrir le fonctionnement du système. Vous pouvez participer et tester toutes les fonctionnalités — mais cet événement n’est pas réel."
   }
 }

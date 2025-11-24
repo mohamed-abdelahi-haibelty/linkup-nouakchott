@@ -32,12 +32,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-import { BadgeCheck, Clock, TicketX, XCircle } from "lucide-react";
+import { BadgeCheck, Clock, TicketX, XCircle, Package } from "lucide-react";
 import { changeEventStatus } from "@/app/[locale]/actions/events/admin/changeEventStatus";
 import { deleteEvent } from "@/app/[locale]/actions/events/admin/deleteEvent";
 import { multiValueFilter } from "@/lib/tableUtils";
 
-const icons = [BadgeCheck, Clock, TicketX, XCircle];
+const icons = [BadgeCheck, Clock, TicketX, XCircle, Package];
 const newStatues = statuses.map((status, index) => {
   const icon = icons[index];
   return { ...status, icon };
@@ -107,7 +107,7 @@ export const columns = [
       const router = useRouter();
 
       const handleStatusChange = async (
-        status: "approved" | "rejected" | "pending"
+        status: "approved" | "rejected" | "pending" | "demo"
       ) => {
         // Prevent redundant update
         if (event.status === status) {
@@ -160,6 +160,12 @@ export const columns = [
               onClick={() => handleStatusChange("approved")}
             >
               Approve
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={event.status === "demo"}
+              onClick={() => handleStatusChange("demo")}
+            >
+              Demo
             </DropdownMenuItem>
             <DropdownMenuItem
               disabled={event.status === "rejected"}
