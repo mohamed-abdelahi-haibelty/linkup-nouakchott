@@ -38,7 +38,6 @@ function ParticipantsList({ users }: Props) {
         </div>
 
         <div className="mt-6 flex items-center gap-2 opacity-40">
-          <div className="w-8 h-px bg-gradient-to-r from-transparent to-border"></div>
           <UserPlus className="w-3 h-3 text-muted-foreground" />
           <div className="w-8 h-px bg-gradient-to-l from-transparent to-border"></div>
         </div>

@@ -63,14 +63,18 @@ function EventHero({ event }: EventHeroComponentProps) {
   ];
 
   const handleShare = async () => {
-    const shareUrl =
-      typeof window !== "undefined"
-        ? `${window.location.origin}/events/${id}_${slug}`
-        : "";
+    // const shareUrl =
+    //   typeof window !== "undefined"
+    //     ? `${window.location.origin}/events/${id}_${slug}`
+    //     : "";
+    if (typeof window === "undefined") return;
+
+    const locale = window.location.pathname.split("/")[1] || "en";
+
+    const shareUrl = `${window.location.origin}/${locale}/events/${id}_${slug}`;
 
     const shareData = {
       title,
-      text: description,
       url: shareUrl,
     };
 
