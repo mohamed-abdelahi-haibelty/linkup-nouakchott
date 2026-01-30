@@ -160,10 +160,10 @@ export function JoinEventButton({
     }
 
     // Check if user has a phone number only when joining
-    if (!phone) {
-      setOpenPhoneModal(true);
-      return;
-    }
+    // if (!phone) {
+    //   setOpenPhoneModal(true);
+    //   return;
+    // }
 
     handleJoinOrLeaveEvent();
   }
@@ -190,7 +190,7 @@ export function JoinEventButton({
           isFull && " disabled:bg-accent/80 disabled:cursor-not-allowed",
           // Loading state
           isLoading && "cursor-wait",
-          className
+          className,
         )}
       >
         <div className="flex items-center gap-2">
@@ -235,11 +235,11 @@ export function JoinEventButton({
       />
 
       {/* Phone Number Modal */}
-      <PhoneNumberModal
+      {/* <PhoneNumberModal
         open={openPhoneModal}
         setOpen={setOpenPhoneModal}
         onSuccess={handlePhoneSuccess}
-      />
+      /> */}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[425px]">
