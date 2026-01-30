@@ -13,7 +13,7 @@ function ParticipantItem({
           className="rounded-full aspect-square border-2 border-primary/20"
           width={40}
           height={40}
-          src={participant.avatarUrl || "/images/download.jpeg"}
+          src={participant.avatarUrl ?? "/images/download.jpeg"}
           alt={participant.name ?? "Participant"}
         />
       </div>
