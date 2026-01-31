@@ -13,7 +13,10 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Check, Loader2, LogIn, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { LoginLink, useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import {
+  RegisterLink,
+  useKindeBrowserClient,
+} from "@kinde-oss/kinde-auth-nextjs";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { EventWithParticipantsAndCounts } from "@/types";
@@ -252,10 +255,10 @@ export function JoinEventButton({
               <Button variant="outline">{t("dialog.button.cancel")}</Button>
             </DialogClose>
             <Button asChild>
-              <LoginLink>
+              <RegisterLink>
                 <LogIn />
                 Login
-              </LoginLink>
+              </RegisterLink>
             </Button>
           </DialogFooter>
         </DialogContent>
