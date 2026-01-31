@@ -18,6 +18,11 @@ function ParticipantItem({
               ? participant.avatarUrl
               : "/images/download.jpeg"
           }
+          // If the URL is broken or returns an error, switch to the local default
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = "/images/download.jpeg";
+          }}
           alt={participant.name ?? "Participant"}
         />
       </div>
