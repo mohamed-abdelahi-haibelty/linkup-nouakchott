@@ -1,51 +1,140 @@
+// import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+// import prisma from "@/lib/db";
+// import { NextResponse } from "next/server";
+
+// export async function GET(request: Request) {
+//   const { getUser } = getKindeServerSession();
+//   const user = await getUser();
+
+//   // Handle delayed session hydration for email login
+//   if (!user?.id) {
+//     console.log("User not ready yet, retrying...");
+//   }
+
+//   if (!user?.id) {
+//     console.error("Kinde user missing even after retry:", user);
+//     return NextResponse.redirect("/auth/error");
+//   }
+
+//   console.log("SESSION USER:", user);
+
+//   const existingUser = await prisma.user.findUnique({
+//     where: {
+//       id: user.id,
+//     },
+//   });
+
+//   if (!existingUser) {
+//     await prisma.user.upsert({
+//       where: {
+//         id: user?.id,
+//       },
+//       update: {
+//         name:
+//           `${user.given_name ?? ""} ${user.family_name ?? ""}`.trim() ?? "User",
+//         email: user?.email ?? "",
+//         avatarUrl: user?.picture,
+//         phoneNumber: user?.phone_number,
+//       },
+//       create: {
+//         id: user.id,
+//         name:
+//           `${user.given_name ?? ""} ${user.family_name ?? ""}`.trim() ?? "User",
+//         email: user?.email ?? "",
+//         avatarUrl: user?.picture,
+//         phoneNumber: user?.phone_number,
+//         role: "user",
+//       },
+//     });
+//   }
+
+//   const url = new URL(request.url);
+//   const redirectTo =
+//     url.searchParams.get("post_login_redirect_url") ||
+//     `${process.env.KINDE_SITE_URL}/events`;
+
+//   return NextResponse.redirect(redirectTo);
+// }
+
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import prisma from "@/lib/db";
 import { NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 
 export async function GET(request: Request) {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
 
-  // Handle delayed session hydration for email login
-  if (!user?.id) {
-    console.log("User not ready yet, retrying...");
-  }
+  if (!user || !user.email) {
+    Sentry.captureMessage("Invalid Kinde session", {
+      level: "error",
+      extra: { user },
+    });
 
-  if (!user?.id) {
-    console.error("Kinde user missing even after retry:", user);
     return NextResponse.redirect("/auth/error");
   }
 
-  console.log("SESSION USER:", user);
-
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      id: user.id,
-    },
+  // Attach authenticated user to Sentry scope
+  Sentry.setUser({
+    id: user.id,
+    email: user.email,
   });
 
-  if (!existingUser) {
-    await prisma.user.upsert({
-      where: {
-        id: user?.id,
-      },
-      update: {
-        name:
-          `${user.given_name ?? ""} ${user.family_name ?? ""}`.trim() ?? "User",
-        email: user?.email ?? "",
-        avatarUrl: user?.picture,
-        phoneNumber: user?.phone_number,
-      },
-      create: {
-        id: user.id,
-        name:
-          `${user.given_name ?? ""} ${user.family_name ?? ""}`.trim() ?? "User",
-        email: user?.email ?? "",
-        avatarUrl: user?.picture,
-        phoneNumber: user?.phone_number,
-        role: "user",
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { email: user.email },
+    });
+
+    if (!existingUser) {
+      await prisma.user.create({
+        data: {
+          id: user.id,
+          email: user.email,
+          name:
+            `${user.given_name ?? ""} ${user.family_name ?? ""}`.trim() ||
+            "User",
+          avatarUrl: user.picture,
+          phoneNumber: user.phone_number,
+          role: "user",
+        },
+      });
+
+      Sentry.captureMessage("User created from Kinde login", {
+        level: "info",
+        extra: {
+          kindeUserId: user.id,
+          email: user.email,
+        },
+      });
+    } else {
+      await prisma.user.update({
+        where: { email: user.email },
+        data: {
+          name:
+            `${user.given_name ?? ""} ${user.family_name ?? ""}`.trim() ||
+            existingUser.name,
+          avatarUrl: user.picture,
+          phoneNumber: user.phone_number,
+        },
+      });
+
+      Sentry.captureMessage("User updated from Kinde login", {
+        level: "info",
+        extra: {
+          userId: existingUser.id,
+          email: existingUser.email,
+        },
+      });
+    }
+  } catch (error) {
+    Sentry.captureException(error, {
+      extra: {
+        kindeUserId: user.id,
+        email: user.email,
       },
     });
+
+    return NextResponse.redirect("/auth/error");
   }
 
   const url = new URL(request.url);
