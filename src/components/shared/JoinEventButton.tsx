@@ -252,7 +252,7 @@ export function JoinEventButton({
               <Button variant="outline">{t("dialog.button.cancel")}</Button>
             </DialogClose>
             <Button asChild>
-              <LoginLink postLoginRedirectURL={url}>
+              <LoginLink>
                 <LogIn />
                 Login
               </LoginLink>
