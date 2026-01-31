@@ -5,6 +5,14 @@ function ParticipantItem({
   participant,
   attendedEventsCount,
 }: ParticipantWithUserAndCount) {
+  // We check if it exists AND if it's NOT the "blank" gravatar placeholder
+  const hasValidAvatar =
+    participant.avatarUrl && !participant.avatarUrl.includes("d=blank");
+
+  // 2. Determine the final source
+  const avatarSrc = hasValidAvatar
+    ? participant.avatarUrl
+    : "/images/download.jpeg";
   return (
     <div className="flex items-start gap-x-2  border rounded-lg bg-card p-2">
       <div className="relative">
@@ -13,16 +21,7 @@ function ParticipantItem({
           className="rounded-full aspect-square border-2 border-primary/20"
           width={40}
           height={40}
-          src={
-            participant.avatarUrl && participant.avatarUrl.trim() !== ""
-              ? participant.avatarUrl
-              : "/images/download.jpeg"
-          }
-          // If the URL is broken or returns an error, switch to the local default
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = "/images/download.jpeg";
-          }}
+          src={avatarSrc!}
           alt={participant.name ?? "Participant"}
         />
       </div>
