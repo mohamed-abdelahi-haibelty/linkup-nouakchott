@@ -63,7 +63,7 @@ const sentryConfig =
         silent: !process.env.CI,
         widenClientFileUpload: true,
         disableLogger: true,
-        automaticVercelMonitors: true,
+        automaticVercelMonitors: false,
       })
     : intlConfig;
 

@@ -50,7 +50,7 @@ function EventCard({
   const eventLink = `/events/${id}_${slug}`;
 
   return (
-    <Link href={eventLink}>
+    <Link href={eventLink} prefetch={false}>
       <Card className="w-[330px] md:w-[360px] lg:w-[470px] xl:w-[390px] h-[244px] group  cursor-pointer hover:shadow-[4px_4px_0px_0px_hsl(0_0%_0%_/_1)] transition-shadow">
         <CardContent className="h-full flex flex-col justify-between">
           <div className="flex items-start gap-x-2 ">
