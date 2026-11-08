@@ -1,10 +1,10 @@
-import { notFound } from "next/navigation";
-import EventMobileLayout from "../_components/EventMobileLayout";
-import EventDesktop from "../_components/EventDesktop";
-import { Metadata } from "next";
-import { getEventById } from "@/app/[locale]/actions/events/organizer/getEventById";
+import { getEventById } from "@/features/events/actions/organizer/getEventById";
+import EventDesktop from "@/features/events/components/EventDesktop";
+import EventMobileLayout from "@/features/events/components/EventMobileLayout";
+import { getUserRole } from "@/features/users/actions/getUserRole";
 import prisma from "@/lib/db";
-import { getUserRole } from "@/app/[locale]/actions/user/getUserRole";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ idSlug: string }>;
@@ -16,6 +16,7 @@ export async function generateMetadata({
   const url_param = await params;
   const id = url_param?.idSlug.split("_")[0];
   const event = await getEventById(id);
+  if (!event) return { title: "Event not found" };
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const eventUrl = `${baseUrl}/events/${url_param.idSlug}`;
@@ -30,7 +31,7 @@ export async function generateMetadata({
       type: "website",
       images: [
         {
-          url: event?.imageUrl!,
+          url: event.imageUrl,
           width: 1200,
           height: 630,
           alt: event?.title,
@@ -41,7 +42,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: event?.title,
       description: event?.description,
-      images: [event?.imageUrl!],
+      images: [event.imageUrl],
     },
   };
 }
@@ -79,10 +80,10 @@ async function page({ params }: PageProps) {
       <EventMobileLayout
         event={event}
         favoriteStatus={favoriteStatus}
-        phone={user?.phoneNumber!}
+        phone={user?.phoneNumber ?? ""}
       />
 
-      <EventDesktop event={event} phone={user?.phoneNumber!} />
+      <EventDesktop event={event} phone={user?.phoneNumber ?? ""} />
     </div>
   );
 }

@@ -22,8 +22,10 @@ import {
 import { DataTablePagination } from "./DataTablePagination";
 import { DataTableToolbar } from "./DataTableToolbar";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData> {
+  // Each column may have a different value type; row data remains fully typed.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  columns: ColumnDef<TData, any>[];
   data: TData[];
   filters?: {
     columnId: string;
@@ -46,7 +48,7 @@ interface DataTableProps<TData, TValue> {
   deleteCancelLabel?: string;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData>({
   columns,
   data,
   filters,
@@ -57,7 +59,9 @@ export function DataTable<TData, TValue>({
   deleteConfirmDescription,
   deleteConfirmLabel = "Delete",
   deleteCancelLabel = "Cancel",
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TData>) {
+  // TanStack Table manages mutable table state and is excluded from React Compiler memoization.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
@@ -93,7 +97,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -112,7 +116,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

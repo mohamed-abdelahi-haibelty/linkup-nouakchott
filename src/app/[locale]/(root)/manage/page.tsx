@@ -1,8 +1,8 @@
+import { getHostedEvents } from "@/features/events/actions/organizer/getHostedEvents";
+import TabComponent from "@/features/manage/components/TabComponent";
 import { requireAuthUser } from "@/lib/auth";
-import TabComponent from "./ui/TabComponent";
-import { getHostedEvents } from "@/app/[locale]/actions/events/organizer/getHostedEvents";
-import { redirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
+import { redirect } from "next/navigation";
 
 type Props = {
   params: Promise<{ locale: string }>;

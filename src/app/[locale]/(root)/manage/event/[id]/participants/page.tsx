@@ -1,11 +1,11 @@
-import { getEventParticipants } from "@/app/[locale]/actions/events/organizer/getEventParticipants";
 import NotFound from "@/app/[locale]/not-found";
 import { DataTable } from "@/components/shared/DataTable";
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
+import { getEventParticipants } from "@/features/events/actions/organizer/getEventParticipants";
+import { participantsStatues } from "@/lib/constant";
 import { ParticipantWithUser } from "@/types";
 import { redirect } from "next/navigation";
-import { columns } from "./columns";
-import { participantsStatues } from "@/lib/constant";
+import { columns } from "@/features/manage/tables/participants";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -30,7 +30,7 @@ async function page({ params }: PageProps) {
 
   return (
     <div>
-      <DataTable<ParticipantWithUser, any>
+      <DataTable<ParticipantWithUser>
         data={data ?? []}
         columns={columns}
         searchColumns={["name", "email", "phone"]}

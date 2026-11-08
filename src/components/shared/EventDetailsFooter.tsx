@@ -1,13 +1,13 @@
 "use client";
 
-import { EventWithParticipantsAndCounts } from "@/types";
-import { Heart } from "lucide-react";
-import { JoinEventButton } from "./JoinEventButton";
-import { useState, useTransition } from "react";
-import { toggleFavorite } from "@/app/[locale]/actions/favorite/toggleFavorite";
-import { FavoriteType, UserRole } from "@prisma/client";
-import { toast } from "sonner";
+import { toggleFavorite } from "@/features/favorites/actions/toggleFavorite";
 import { cn } from "@/lib/utils";
+import { EventWithParticipantsAndCounts } from "@/types";
+import { FavoriteType } from "@prisma/client";
+import { Heart } from "lucide-react";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { JoinEventButton } from "./JoinEventButton";
 
 type Props = {
   event: EventWithParticipantsAndCounts;
@@ -21,7 +21,7 @@ type Props = {
 function EventDetailsFooter({ event, favoriteStatus, phone }: Props) {
   // Initial favorite state (server-rendered or default false)
   const [isFavorited, setIsFavorited] = useState(
-    favoriteStatus.isFavorited ?? false
+    favoriteStatus.isFavorited ?? false,
   );
   const [isPending, startTransition] = useTransition();
 
@@ -57,13 +57,13 @@ function EventDetailsFooter({ event, favoriteStatus, phone }: Props) {
           aria-label="Toggle favorite"
           className={cn(
             "p-4 border-2 border-none rounded-full bg-background hover:shadow-xs hover:bg-muted transition-colors",
-            isFavorited && "text-red-500"
+            isFavorited && "text-red-500",
           )}
         >
           <Heart
             className={cn(
               "w-4 h-4 transition-transform duration-200",
-              isFavorited && "fill-red-500 text-red-500 scale-110"
+              isFavorited && "fill-red-500 text-red-500 scale-110",
             )}
           />
         </button>

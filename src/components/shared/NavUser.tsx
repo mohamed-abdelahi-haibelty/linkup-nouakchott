@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  HeartPlus,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
+import { Bell, ChevronsUpDown, LogOut } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -19,8 +12,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
 import { cn, getFallback } from "@/lib/utils";
+import { Button } from "../ui/button";
+
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
 import Link from "next/link";
 import { LanguageSwitcher } from "./LanguageSwitcher";
@@ -45,7 +39,7 @@ export function NavUser({
           variant={"ghost"}
           className={cn(
             "border border-transparent  hover:border-border hover:bg-accent/50 hover:shadow-sm transition-all duration-200 hover:text-foreground data-[state=open]:bg-accent/50 data-[state=open]:border-border data-[state=open]:shadow-sm",
-            className
+            className,
           )}
         >
           <Avatar className="h-8 w-8 rounded-lg">

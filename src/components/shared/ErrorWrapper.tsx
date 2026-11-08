@@ -1,7 +1,7 @@
 "use client";
 
-import React, { ReactNode } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
+import { ReactNode } from "react";
 
 interface ErrorWrapperProps {
   children: ReactNode;

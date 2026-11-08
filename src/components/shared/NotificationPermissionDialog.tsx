@@ -1,18 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { urlBase64ToUint8Array } from "@/lib/utils";
-import { subscribeToNotifications } from "@/app/[locale]/actions/events/notifications/subscribeToNotifications";
+import { useState } from "react";
+import { toast } from "sonner";
+
+import { subscribeToNotifications } from "@/features/events/actions/notifications/subscribeToNotifications";
 
 interface NotificationPermissionDialogProps {
   open: boolean;
@@ -20,7 +21,7 @@ interface NotificationPermissionDialogProps {
 }
 
 async function generateSubscriptionEndpoint(
-  registration: ServiceWorkerRegistration
+  registration: ServiceWorkerRegistration,
 ) {
   const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
   const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
@@ -39,7 +40,7 @@ async function generateSubscriptionEndpoint(
 
   if (success) {
     toast(
-      "✅ Notifications enabled! You’ll be notified when your event is approved."
+      "✅ Notifications enabled! You’ll be notified when your event is approved.",
     );
   } else {
     toast(message);
@@ -81,11 +82,11 @@ export function NotificationPermissionDialog({
         // User clicked "Enable" but then clicked "Deny"
         // In the future, permission === denied, so we will skip dialog entirely
         toast.error(
-          "Notification permission denied. Please enable it in your browser settings."
+          "Notification permission denied. Please enable it in your browser settings.",
         );
       } else {
         toast.info(
-          "You can enable notifications later in your browser settings."
+          "You can enable notifications later in your browser settings.",
         );
       }
 

@@ -1,7 +1,5 @@
-import { redirect } from "next/navigation";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import prisma from "@/lib/db";
-import { CheckCircle2, XCircle, Clock, AlertTriangle } from "lucide-react";
+import NotFound from "@/app/[locale]/not-found";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -9,9 +7,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import VerifyTicketButton from "../components/VerifyTicketButton";
-import NotFound from "@/app/[locale]/not-found";
+import prisma from "@/lib/db";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { AlertTriangle, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { redirect } from "next/navigation";
+import VerifyTicketButton from "@/features/tickets/components/VerifyTicketButton";
 
 interface CheckinPageProps {
   params: Promise<{ code: string }>;
@@ -65,7 +65,7 @@ export default async function CheckinPage({ params }: CheckinPageProps) {
   const startTime = new Date(ticket.event.startTime);
   const endTime = new Date(ticket.event.endTime);
   const twoHoursBeforeStart = new Date(
-    startTime.getTime() - 2 * 60 * 60 * 1000
+    startTime.getTime() - 2 * 60 * 60 * 1000,
   );
 
   // Determine ticket validity status

@@ -1,10 +1,10 @@
-import { getNotifications } from "@/app/[locale]/actions/notification/notifications";
 import { Button } from "@/components/ui/button";
+import { getNotifications } from "@/features/notifications/actions/notifications";
 import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { NotificationsHeader } from "./components/notificationsHeader";
-import { NotificationsList } from "./components/notificationsList";
 import { setRequestLocale } from "next-intl/server";
+import Link from "next/link";
+import { NotificationsHeader } from "@/features/notifications/components/notificationsHeader";
+import { NotificationsList } from "@/features/notifications/components/notificationsList";
 
 export const metadata = {
   title: "Notifications",

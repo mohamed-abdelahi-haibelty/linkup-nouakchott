@@ -7,24 +7,11 @@ import { Input } from "../ui/input";
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
 
 import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogAction,
-  AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
-import { useState } from "react";
-import { toast } from "sonner";
-import { deleteManyEvents } from "@/app/[locale]/actions/events/admin/deleteManyEvents";
-import {
   getTableSearchValue,
   handleDeleteSelected,
   handleTableSearch,
 } from "@/lib/tableUtils";
+import { useState } from "react";
 import { ConfirmDeleteDialog } from "./ConfirmDeleteDialog";
 
 interface DataTableToolbarProps<TData> {
@@ -125,7 +112,7 @@ export function DataTableToolbar<TData>({
                 title={filter.title}
                 options={filter.options}
               />
-            )
+            ),
         )}
 
         {isFiltered && (

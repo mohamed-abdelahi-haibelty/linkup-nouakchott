@@ -1,11 +1,11 @@
-import { TrendingUp } from "lucide-react";
-import EventList from "./_components/EventList";
-import SearchInput from "./_components/SearchInput";
 import ErrorWrapper from "@/components/shared/ErrorWrapper";
-import CreateEventButton from "./_components/CreateEventButton";
-import { getEvents } from "@/app/[locale]/actions/events/getEvents";
-import { EventTag } from "@prisma/client";
 import TagFilter from "@/components/shared/TagFilter";
+import { getEvents } from "@/features/events/actions/getEvents";
+import CreateEventButton from "@/features/events/components/CreateEventButton";
+import EventList from "@/features/events/components/EventList";
+import SearchInput from "@/features/events/components/SearchInput";
+import { EventTag } from "@prisma/client";
+import { TrendingUp } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 async function page({

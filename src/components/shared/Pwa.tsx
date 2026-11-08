@@ -1,19 +1,18 @@
 "use client";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 export default function Pwa() {
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/sw.js")
-        .then((registration) => {
-          console.log("Service Worker registered:", registration);
-        })
-        .catch((error) => {
-          console.error("Service Worker registration failed:", error);
-        });
-    }
+    if (
+      process.env.NODE_ENV !== "production" ||
+      !("serviceWorker" in navigator)
+    )
+      return;
+    navigator.serviceWorker
+      .register("/service-worker.js", { scope: "/", updateViaCache: "none" })
+      .catch((error: unknown) =>
+        console.error("Service worker registration failed", error),
+      );
   }, []);
-
-  return <></>;
+  return null;
 }

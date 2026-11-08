@@ -1,19 +1,20 @@
 import { formatDate, formatTime } from "@/lib/utils";
-import {
-  Calendar,
-  MapPin,
-  User,
-  Tag,
-  AlertCircle,
-  Clock,
-  Heart,
-} from "lucide-react";
-import Image from "next/image";
-import { notFound } from "next/navigation";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getCommunityPost } from "@/app/[locale]/actions/community/admin/getCommunityPost";
+import { getCommunityPost } from "@/features/community/actions/admin/getCommunityPost";
+import {
+  AlertCircle,
+  Calendar,
+  Clock,
+  Heart,
+  MapPin,
+  Tag,
+  User,
+} from "lucide-react";
+import Image from "next/image";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ id: string }>;

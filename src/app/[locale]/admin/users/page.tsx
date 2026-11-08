@@ -1,10 +1,9 @@
 import { DataTable } from "@/components/shared/DataTable";
-import { columns, UserWithCounts } from "./columns";
-import { getUserRole } from "@/app/[locale]/actions/user/getUserRole";
-import { redirect } from "next/navigation";
-import { notFound } from "next/navigation";
-import { getAllUsers } from "@/app/[locale]/actions/community/user/getAllUsers";
+import { getAllUsers } from "@/features/community/actions/user/getAllUsers";
+import { getUserRole } from "@/features/users/actions/getUserRole";
 import { setRequestLocale } from "next-intl/server";
+import { notFound, redirect } from "next/navigation";
+import { columns, UserWithCounts } from "@/features/admin/tables/users";
 
 // Define the user roles for filtering
 const userRoles = [
@@ -67,7 +66,7 @@ async function page({ params }: Props) {
         </p>
       </div>
 
-      <DataTable<UserWithCounts, any>
+      <DataTable<UserWithCounts>
         data={usersData.data}
         columns={columns}
         filters={[

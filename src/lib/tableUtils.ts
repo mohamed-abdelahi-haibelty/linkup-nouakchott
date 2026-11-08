@@ -1,13 +1,13 @@
-import { Table } from "@tanstack/react-table";
+import { Table, type Row } from "@tanstack/react-table";
 import { toast } from "sonner";
 
 /**
  * Text-based filter: case-insensitive substring match.
  */
-export const textIncludesFilter = (
-  row: any,
+export const textIncludesFilter = <TData>(
+  row: Row<TData>,
   columnId: string,
-  filterValue: string
+  filterValue: string,
 ) => {
   if (!filterValue) return true;
   const value = String(row.getValue(columnId) ?? "").toLowerCase();
@@ -17,14 +17,14 @@ export const textIncludesFilter = (
 /**
  * Multi-value filter: allows selecting multiple values (e.g., statuses)
  */
-export const multiValueFilter = (
-  row: any,
+export const multiValueFilter = <TData>(
+  row: Row<TData>,
   columnId: string,
-  filterValue: string[]
+  filterValue: string[],
 ) => {
   if (!filterValue || filterValue.length === 0) return true;
   const value = row.getValue(columnId);
-  return filterValue.includes(value);
+  return filterValue.includes(String(value));
 };
 
 /**
@@ -33,7 +33,7 @@ export const multiValueFilter = (
 export const handleTableSearch = <TData>(
   table: Table<TData>,
   searchColumns: string[],
-  value: string
+  value: string,
 ) => {
   searchColumns.forEach((col) => {
     const column = table.getColumn(col);
@@ -46,7 +46,7 @@ export const handleTableSearch = <TData>(
  */
 export const getTableSearchValue = <TData>(
   table: Table<TData>,
-  searchColumns: string[]
+  searchColumns: string[],
 ): string => {
   return (table.getColumn(searchColumns[0])?.getFilterValue() as string) ?? "";
 };
@@ -56,10 +56,17 @@ export const getTableSearchValue = <TData>(
  */
 export const handleDeleteSelected = async <TData>(
   table: Table<TData>,
-  deleteAction: (ids: string[]) => Promise<{ message: string }>
+  deleteAction: (ids: string[]) => Promise<{ message: string }>,
 ) => {
   const selectedRows = table.getSelectedRowModel().rows;
-  const ids = selectedRows.map((r: any) => r.original.id);
+  const ids = selectedRows.flatMap(({ original }) =>
+    typeof original === "object" &&
+    original !== null &&
+    "id" in original &&
+    typeof original.id === "string"
+      ? [original.id]
+      : [],
+  );
 
   if (ids.length === 0) return;
 
@@ -67,7 +74,7 @@ export const handleDeleteSelected = async <TData>(
     const res = await deleteAction(ids);
     toast.message(res.message);
     table.resetRowSelection();
-  } catch (err) {
+  } catch {
     toast.error("Failed to delete selected items");
   }
 };

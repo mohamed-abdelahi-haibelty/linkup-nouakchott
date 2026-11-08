@@ -1,17 +1,17 @@
 "use client";
 
-import React from "react";
 import {
   AlertDialog,
-  AlertDialogTrigger,
+  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
   AlertDialogDescription,
   AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import React from "react";
 
 interface ConfirmDeleteDialogProps {
   trigger?: React.ReactNode; // what opens the dialog (e.g. a Button)

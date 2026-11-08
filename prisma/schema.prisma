@@ -1,32 +1,30 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url    = env("DATABASE_URL")
 }
 
 model User {
-  id             String          @id
-  role           UserRole        @default(user)
-  name           String
-  email          String          @unique
-  avatarUrl      String?         @map("avatar_url")
-  phoneNumber    String?         @map("phone_number")
-  bio            String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  approvedPosts  CommunityPost[] @relation("PostApprover")
-  posts          CommunityPost[]
-  approvedEvents Event[]         @relation("EventApprover")
-  events         Event[]
-  notifications  Notification[]
-  registrations  Participant[]
-  tickets        Ticket[]
+  id                String             @id
+  role              UserRole           @default(user)
+  name              String
+  email             String             @unique
+  avatarUrl         String?            @map("avatar_url")
+  phoneNumber       String?            @map("phone_number")
+  bio               String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  approvedPosts     CommunityPost[]    @relation("PostApprover")
+  posts             CommunityPost[]
+  approvedEvents    Event[]            @relation("EventApprover")
+  events            Event[]
+  notifications     Notification[]
+  registrations     Participant[]
+  tickets           Ticket[]
   pushSubscriptions PushSubscription[]
-  favorites Favorite[]
+  favorites         Favorite[]
 
   @@index([email])
   @@index([role])
@@ -34,35 +32,35 @@ model User {
 }
 
 model Event {
-  id            String         @id @default(cuid())
-  title         String         @db.VarChar(255)
-  slug          String         @db.VarChar(255)
-  description   String
-  imageUrl      String         @map("image_url") @db.VarChar(500)
-  capacity      Int            @default(0)
-  price         Float          @default(0) @db.DoublePrecision
-  location      String         @db.VarChar(500)
-  status        EventStatus    @default(pending)
-  contactPhone  String?        @db.VarChar(20)
-  startTime     DateTime       @map("start_time")
-  endTime       DateTime       @map("end_time")
-  isFree        Boolean        @map("is_free")
-  tag           EventTag?
-  organizerId   String         @map("organizer_id")
-  approvedById  String?        @map("approved_by_id")
-  approvedAt    DateTime?      @map("approved_at")
-  rejectedAt    DateTime?      @map("rejected_at")
-  cancelledAt   DateTime?      @map("cancelled_at")
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  deletedAt     DateTime?      @map("deleted_at")
+  id                   String        @id @default(cuid())
+  title                String        @db.VarChar(255)
+  slug                 String        @db.VarChar(255)
+  description          String
+  imageUrl             String        @map("image_url") @db.VarChar(500)
+  capacity             Int           @default(0)
+  price                Float         @default(0) @db.DoublePrecision
+  location             String        @db.VarChar(500)
+  status               EventStatus   @default(pending)
+  contactPhone         String?       @db.VarChar(20)
+  startTime            DateTime      @map("start_time")
+  endTime              DateTime      @map("end_time")
+  isFree               Boolean       @map("is_free")
+  tag                  EventTag?
+  organizerId          String        @map("organizer_id")
+  approvedById         String?       @map("approved_by_id")
+  approvedAt           DateTime?     @map("approved_at")
+  rejectedAt           DateTime?     @map("rejected_at")
+  cancelledAt          DateTime?     @map("cancelled_at")
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  deletedAt            DateTime?     @map("deleted_at")
   registrationDeadline DateTime
   //timelineItems TimelineItem[]
-  approvedBy    User?          @relation("EventApprover", fields: [approvedById], references: [id])
-  organizer     User           @relation(fields: [organizerId], references: [id], onDelete: Cascade)
-  participants  Participant[]
-  tickets       Ticket[]
-  favorites Favorite[]
+  approvedBy           User?         @relation("EventApprover", fields: [approvedById], references: [id])
+  organizer            User          @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  participants         Participant[]
+  tickets              Ticket[]
+  favorites            Favorite[]
 
   @@index([slug])
   @@index([organizerId])
@@ -106,7 +104,7 @@ model CommunityPost {
   deletedAt    DateTime?
   approvedBy   User?               @relation("PostApprover", fields: [approvedById], references: [id])
   user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  favorites Favorite[]
+  favorites    Favorite[]
 
   @@index([userId])
   @@index([status])
@@ -132,6 +130,7 @@ model Participant {
   @@index([status])
   @@map("participants")
 }
+
 //in app notification
 model Notification {
   id        String           @id @default(cuid())
@@ -161,7 +160,7 @@ model Ticket {
   scannedBy String?      @map("scanned_by")
   event     Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  updatedAt     DateTime       @default(now()) @updatedAt
+  updatedAt DateTime     @default(now()) @updatedAt
 
   @@unique([eventId, userId])
   @@index([eventId])
@@ -178,37 +177,34 @@ model PushSubscription {
   keys      Json
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
 }
 
 model Favorite {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  eventId     String? 
-  event       Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId String?
+  event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
-  postId      String?
-  post        CommunityPost? @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String?
+  post   CommunityPost? @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  type        FavoriteType
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  type      FavoriteType
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
+  @@unique([userId, eventId])
+  @@unique([userId, postId])
   @@index([userId])
   @@index([eventId])
   @@index([postId])
-    @@unique([userId, eventId])
-  @@unique([userId, postId])
 }
 
 enum FavoriteType {
   event
   post
 }
-
-
 
 enum TicketStatus {
   active
@@ -230,7 +226,6 @@ enum UserRole {
   moderator
   admin
 }
-
 
 enum EventStatus {
   pending

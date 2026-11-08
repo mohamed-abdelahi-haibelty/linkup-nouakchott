@@ -1,24 +1,24 @@
 import { formatDate, formatTime } from "@/lib/utils";
-import {
-  Calendar,
-  CalendarRange,
-  MapPin,
-  Receipt,
-  Users,
-  Clock,
-  Phone,
-  User,
-  Tag,
-  AlertCircle,
-} from "lucide-react";
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import { Button } from "@/components/ui/button";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getEvent } from "@/app/[locale]/actions/events/admin/getEvent";
-import EventDescription from "@/app/[locale]/(root)/events/_components/EventDescription";
+import { getEvent } from "@/features/events/actions/admin/getEvent";
+import EventDescription from "@/features/events/components/EventDescription";
+import {
+  AlertCircle,
+  Calendar,
+  CalendarRange,
+  Clock,
+  MapPin,
+  Phone,
+  Receipt,
+  Tag,
+  User,
+  Users,
+} from "lucide-react";
+import Image from "next/image";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -36,22 +36,9 @@ async function page({ params }: PageProps) {
 
   const registrationDeadline = event.registrationDeadline
     ? `${formatDate(event.registrationDeadline)} at ${formatTime(
-        event.registrationDeadline
+        event.registrationDeadline,
       )}`
     : "Not specified";
-
-  const getStatusVariant = (status: string) => {
-    switch (status) {
-      case "approved":
-        return "default";
-      case "pending":
-        return "secondary";
-      case "rejected":
-        return "destructive";
-      default:
-        return "outline";
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -207,7 +194,7 @@ async function page({ params }: PageProps) {
                         Price
                       </span>
                       <span className="text-sm text-muted-foreground">
-                        {event.isFree ? "Free Event" : `${event.price} MRU`}
+                        {"Free Event"}
                       </span>
                     </div>
                   </div>
@@ -323,9 +310,7 @@ async function page({ params }: PageProps) {
                 <Separator />
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-muted-foreground">Type</span>
-                  <Badge variant={event.isFree ? "secondary" : "default"}>
-                    {event.isFree ? "Free" : "Paid"}
-                  </Badge>
+                  <Badge variant={"secondary"}>{"Free"}</Badge>
                 </div>
               </CardContent>
             </Card>

@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Linkup Nouakchott
 
-## Getting Started
+A community events platform for discovering local gatherings, hosting events, and registering for free tickets. Built with Next.js, React, TypeScript, Prisma, and PostgreSQL.
 
-First, run the development server:
+![Discover events](public/images/discover-events-lg.png)
 
-```bash
+## Features
+
+- Discover events and community posts in English or French.
+- Create events with capacity, registration deadlines, and organizer contact details.
+- Register for free and receive a QR ticket immediately.
+- Check in attendees with organizer-only ticket scanning.
+- Manage hosted events, registrations, saved items, and notifications.
+- Moderate users, events, and community posts through an admin dashboard.
+- Install the app as a PWA, with a lightweight offline page and optional push notifications.
+
+There is no checkout or payment confirmation flow. Historical price fields remain in the database for compatibility; event creation and updates always use free admission.
+
+## Local setup
+
+Use Node.js 24 LTS, npm, a Neon PostgreSQL database, and a Kinde application.
+
+```sh
+npm ci
+cp .env.example .env
+# Configure Neon and Kinde before starting the app.
+npm run db:generate
+npm run db:migrate
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The runtime uses the Neon WebSocket adapter. A plain local PostgreSQL server requires a compatible proxy or a different Prisma adapter.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+In Kinde, allow `http://localhost:3000/api/auth/kinde_callback` as a callback and `http://localhost:3000` as a logout redirect. Set the post-login destination to `/api/auth/session` so the authenticated profile is synchronized into the application database.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Email, push notifications, Sentry uploads, and PostHog analytics are optional. Registration still returns an in-app ticket if email delivery fails.
 
-## Learn More
+For disposable development data only:
 
-To learn more about Next.js, take a look at the following resources:
+```sh
+npm run db:seed
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The seed adds synthetic users and events; do not run it against production.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Structure
 
-## Deploy on Vercel
+```text
+src/app/          Route files, layouts, and application providers
+src/features/     Domain modules: events, tickets, community, manage, admin, users
+  <feature>/
+    actions/      Authenticated server entry points
+    components/   Feature UI
+    server/       Internal transactional workflows, where needed
+    schemas/      Input validation, where needed
+src/server/       Server-only errors, transactions, email, push, and public data projections
+src/components/   Shared UI and layout components
+src/lib/          Auth, database, logging, and browser-safe utilities
+src/types/        Shared domain types
+prisma/           Schema, versioned migrations, and development seed
+public/           Media, manifest, service worker, and offline page
+tests/            Registration, check-in, validation, and redirect regression tests
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Checks
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```sh
+npm run lint
+npm run typecheck
+npm test
+npm run format:check
+npm run build
+```
+
+Generate Prisma Client before type checking a fresh checkout. Tests mock the database and external services; full OAuth, camera, email, push, and database integration checks require a configured development environment.
+
+Builds do not apply database migrations. Run `npm run db:migrate` separately during a deployment that changes the schema.
+
+See [architecture](docs/architecture.md) and [domain configuration](docs/domain-configuration.md).

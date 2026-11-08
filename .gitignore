@@ -57,3 +57,6 @@ test.tsx
 **/public/workbox-*.js.map
 **/public/worker-*.js.map
 
+
+!.env.example
+coverage/

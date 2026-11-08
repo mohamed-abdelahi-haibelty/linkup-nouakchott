@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
-import AppNavbar from "./components/AppNavbar";
-import { getUserRole } from "../actions/user/getUserRole";
+import { getUserRole } from "@/features/users/actions/getUserRole";
 import { setRequestLocale } from "next-intl/server";
+import { ReactNode } from "react";
+import AppNavbar from "@/components/layout/AppNavbar";
 
 async function WebsiteLayout({
   children,

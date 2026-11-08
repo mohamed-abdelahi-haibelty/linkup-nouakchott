@@ -1,12 +1,11 @@
 "use client";
 
-import { verifyTicket } from "@/app/[locale]/actions/events/ticket/verifyTicket";
 import { Button } from "@/components/ui/button";
+import { verifyTicket } from "@/features/tickets/actions/verifyTicket";
 import { logError } from "@/lib/sentry";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import { Pause, Repeat } from "lucide-react";
 import { useState } from "react";
-import { boolean } from "zod";
 
 export default function ScanPage() {
   const [feedback, setFeedback] = useState<{
@@ -17,9 +16,8 @@ export default function ScanPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [torchOn, setTorchOn] = useState(false);
   const [facingMode, setFacingMode] = useState<"environment" | "user">(
-    "environment"
+    "environment",
   );
-  const [cameraError, setCameraError] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(false);
 
   const handleScan = async (codes: { rawValue: string; format: string }[]) => {
@@ -64,7 +62,7 @@ export default function ScanPage() {
     setTimeout(() => setLastScannedCode(null), 3000);
   };
 
-  const handleError = (error: any) => {
+  const handleError = (error: unknown) => {
     console.error(error);
     logError(error, { context: "QRScanner" });
     setFeedback({
@@ -95,7 +93,14 @@ export default function ScanPage() {
         <Scanner
           onScan={handleScan}
           onError={handleError}
-          constraints={{ facingMode, advanced: [{ torch: torchOn }] as any }}
+          constraints={{
+            facingMode,
+            advanced: [
+              { torch: torchOn } as MediaTrackConstraintSet & {
+                torch: boolean;
+              },
+            ],
+          }}
           styles={{
             container: { width: "100%", height: "100%" },
             video: { objectFit: "cover", width: "100%", height: "100%" },
@@ -159,7 +164,7 @@ export default function ScanPage() {
             size={"icon"}
             onClick={() =>
               setFacingMode((prev) =>
-                prev === "environment" ? "user" : "environment"
+                prev === "environment" ? "user" : "environment",
               )
             }
             className="p-3 bg-black/50 hover:bg-black/70 text-white rounded-full backdrop-blur-sm transition-all"
