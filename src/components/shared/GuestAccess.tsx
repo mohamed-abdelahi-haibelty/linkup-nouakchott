@@ -43,7 +43,11 @@ export default function GuestAccess() {
         method: session.isGuest ? "DELETE" : "POST",
       });
       if (!response.ok) throw new Error();
-      window.location.reload();
+      if (session.isGuest)
+        window.location.replace(
+          new URL(`/${locale}/events`, window.location.origin).href,
+        );
+      else window.location.reload();
     } catch {
       toast.error(t[5]);
       setBusy(false);

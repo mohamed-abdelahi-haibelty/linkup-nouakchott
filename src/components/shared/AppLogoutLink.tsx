@@ -10,7 +10,10 @@ export function AppLogoutLink(props: ComponentProps<typeof LogoutLink>) {
       className={props.className}
       onClick={async () => {
         const result = await fetch("/api/guest", { method: "DELETE" });
-        if (result.ok) window.location.reload();
+        if (result.ok)
+          window.location.replace(
+            new URL("/events", window.location.origin).href,
+          );
       }}
     >
       {props.children}
