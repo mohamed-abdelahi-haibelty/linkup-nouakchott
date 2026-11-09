@@ -1,11 +1,11 @@
 "use server";
 import prisma from "@/lib/db";
 import { handlePrismaError } from "@/lib/utils";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 
 export async function getUserCommunityPosts() {
   try {
-    const { getUser, isAuthenticated } = getKindeServerSession();
+    const { getUser, isAuthenticated } = getAppSession();
 
     if (!(await isAuthenticated())) {
       return {

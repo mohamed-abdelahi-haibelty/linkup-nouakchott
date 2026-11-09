@@ -1,4 +1,5 @@
 "use client";
+import { useAppSession } from "@/lib/use-app-session";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -17,12 +18,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { getFallback } from "@/lib/utils";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+
 import { EllipsisVertical, LogOut } from "lucide-react";
 
 export function DashboardUser() {
   const { isMobile } = useSidebar();
-  const { isAuthenticated, isLoading, getUser } = useKindeBrowserClient();
+  const { isAuthenticated, isLoading, getUser } = useAppSession();
   const user = getUser();
 
   if (!isAuthenticated) {

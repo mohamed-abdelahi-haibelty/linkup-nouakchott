@@ -1,4 +1,4 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 import { redirect } from "next/navigation";
 import CreateEventForm from "../_components/CreateEventForm";
 import { setRequestLocale } from "next-intl/server";
@@ -10,7 +10,7 @@ type Props = {
 async function page({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { isAuthenticated } = getKindeServerSession();
+  const { isAuthenticated } = getAppSession();
 
   if (!(await isAuthenticated())) {
     redirect("/api/auth/login");

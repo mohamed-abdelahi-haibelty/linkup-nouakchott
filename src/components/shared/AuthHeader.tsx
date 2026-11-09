@@ -1,14 +1,16 @@
 "use client";
+import { useAppSession } from "@/lib/use-app-session";
 
 import { Button } from "@/components/ui/button";
 
-import { LoginLink, LogoutLink } from "@kinde-oss/kinde-auth-nextjs/server";
+import { LoginLink } from "@kinde-oss/kinde-auth-nextjs";
+import { AppLogoutLink } from "./AppLogoutLink";
 
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+
 import { LogIn, LogOut } from "lucide-react";
 
 function AuthHeader() {
-  const { isAuthenticated } = useKindeBrowserClient();
+  const { isAuthenticated } = useAppSession();
 
   if (isAuthenticated) {
     return (
@@ -17,10 +19,10 @@ function AuthHeader() {
         className=" bg-accent border rounded-sm "
         variant={"ghost"}
       >
-        <LogoutLink postLogoutRedirectURL="/events">
+        <AppLogoutLink postLogoutRedirectURL="/events">
           Log Out
           <LogOut />
-        </LogoutLink>
+        </AppLogoutLink>
       </Button>
     );
   }

@@ -1,3 +1,4 @@
+import { GuestSessionProvider } from "@/lib/use-app-session";
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
@@ -70,9 +71,11 @@ export default async function RootLayout({
 
         <NextIntlClientProvider>
           <PostHogProvider>
+            <GuestSessionProvider>
             <Toaster position="top-right" />
             <PostHogPageView />
             {children}
+          </GuestSessionProvider>
           </PostHogProvider>
         </NextIntlClientProvider>
       </body>

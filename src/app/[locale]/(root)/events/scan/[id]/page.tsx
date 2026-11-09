@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 import prisma from "@/lib/db";
 import { XCircle } from "lucide-react";
 import {
@@ -16,7 +16,7 @@ interface EventScanPageProps {
 }
 
 async function page({ params }: EventScanPageProps) {
-  const { getUser, isAuthenticated } = getKindeServerSession();
+  const { getUser, isAuthenticated } = getAppSession();
   const { id, locale } = await params;
   setRequestLocale(locale);
   // Check if user is logged in
