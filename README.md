@@ -77,3 +77,11 @@ Generate Prisma Client before type checking a fresh checkout. Tests mock the dat
 Builds do not apply database migrations. Run `npm run db:migrate` separately during a deployment that changes the schema.
 
 See [architecture](docs/architecture.md) and [domain configuration](docs/domain-configuration.md).
+
+## Temporary guest access
+
+Choose **Try as a guest** above the public page content. Each visitor receives a separate ordinary user account and an opaque, HttpOnly session cookie lasting 24 hours. Only a SHA-256 token digest is stored in `guest_sessions`; no public account password is shared. Existing Kinde login takes precedence. Guest activity does not transfer into a Kinde account.
+
+Guests can browse, save favorites and use participant features. Publishing events/community posts and uploading files require Kinde sign-in. Guests have no administrator privileges. Guest ticket email is skipped because a guest has no verified email address. Ending the session invalidates it immediately; expired session digests remain available to enforce the creation limit of five sessions per IP per hour. User and registration records remain so existing tickets and event history are preserved.
+
+Before deploying, apply `20261109000100_guest_sessions` with `npx prisma migrate deploy`. Configure `KINDE_SITE_URL` to the public app origin; guest mutations reject missing/foreign Origin headers. Production uses Vercel's trusted forwarding header for the IP limit. Session/API responses and document navigations bypass the service worker cache.

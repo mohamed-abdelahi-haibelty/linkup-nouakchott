@@ -1,3 +1,4 @@
+import { getGuest, GUEST_COOKIE } from "@/lib/guest";
 import prisma from "@/lib/db";
 import { postLoginRedirect } from "@/lib/redirects";
 import { logError } from "@/lib/sentry";
@@ -28,10 +29,22 @@ export async function GET(request: Request) {
     logError(error, { operation: "auth-session" });
     return NextResponse.redirect(new URL("/auth/error", origin));
   }
-  return NextResponse.redirect(
+  const guest = await getGuest();
+  if (guest)
+    await prisma.guestSession.updateMany({
+      where: { userId: guest.id },
+      data: { expiresAt: new Date(0) },
+    });
+  const response = NextResponse.redirect(
     postLoginRedirect(
       new URL(request.url).searchParams.get("post_login_redirect_url"),
       origin,
     ),
   );
+  response.cookies.set(GUEST_COOKIE, "", {
+    httpOnly: true,
+    path: "/",
+    maxAge: 0,
+  });
+  return response;
 }

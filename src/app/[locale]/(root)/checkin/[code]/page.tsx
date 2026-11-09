@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import prisma from "@/lib/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 import { AlertTriangle, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { redirect } from "next/navigation";
 import VerifyTicketButton from "@/features/tickets/components/VerifyTicketButton";
@@ -18,7 +18,7 @@ interface CheckinPageProps {
 }
 
 export default async function CheckinPage({ params }: CheckinPageProps) {
-  const { getUser, isAuthenticated } = getKindeServerSession();
+  const { getUser, isAuthenticated } = getAppSession();
   const url_param = await params;
   const code = url_param?.code;
 

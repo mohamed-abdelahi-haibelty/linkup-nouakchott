@@ -2,12 +2,12 @@
 import prisma from "@/lib/db";
 import { handlePrismaError } from "@/server/errors";
 
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 import { revalidatePath } from "next/cache";
 
 export async function deleteUserCommunityPost(postId: string) {
   try {
-    const { getUser, isAuthenticated } = getKindeServerSession();
+    const { getUser, isAuthenticated } = getAppSession();
 
     if (!(await isAuthenticated())) {
       return {

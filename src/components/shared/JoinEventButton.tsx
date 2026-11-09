@@ -1,4 +1,5 @@
 "use client";
+import { useAppSession } from "@/lib/use-app-session";
 
 import {
   Dialog,
@@ -15,10 +16,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 
 import { EventWithParticipantsAndCounts } from "@/types";
-import {
-  RegisterLink,
-  useKindeBrowserClient,
-} from "@kinde-oss/kinde-auth-nextjs";
+import { RegisterLink } from "@kinde-oss/kinde-auth-nextjs";
 import { toast } from "sonner";
 
 import { joinEvent } from "@/features/events/actions/participant/joinEvent";
@@ -48,7 +46,7 @@ export function JoinEventButton({
   const [open, setOpen] = useState(false);
   const [openTicketModal, setOpenTicketModal] = useState(false);
   const [qrUrl, setQrurl] = useState("");
-  const { isAuthenticated, getUser } = useKindeBrowserClient();
+  const { isAuthenticated, getUser } = useAppSession();
   const id = getUser()?.id;
   const t = useTranslations("events.joinButton");
   const posthog = usePostHog();

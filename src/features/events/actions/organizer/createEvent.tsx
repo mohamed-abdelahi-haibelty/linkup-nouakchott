@@ -8,7 +8,7 @@ import { generateSlug } from "@/lib/utils";
 
 import { getUserRole } from "@/features/users/actions/getUserRole";
 import { logError } from "@/lib/sentry";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 import { EventStatus, Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
@@ -37,6 +37,13 @@ export async function createEvent(data: EventFormInput) {
   }
 
   try {
+    if (user.id.startsWith("guest_"))
+      return {
+        success: false,
+        message: "Please sign in to publish content.",
+        data: null,
+        code: 403,
+      };
     const event = await prisma.event.create({
       data: {
         ...parsed.data,
@@ -58,7 +65,7 @@ export async function createEvent(data: EventFormInput) {
   } catch (e) {
     logError(e, {
       data,
-      userId: (await getKindeServerSession().getUser())?.id,
+      userId: (await getAppSession().getUser())?.id,
     });
     // Handle Prisma errors
     if (e instanceof Prisma.PrismaClientKnownRequestError) {

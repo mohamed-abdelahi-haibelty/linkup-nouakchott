@@ -1,7 +1,7 @@
 import NotFound from "@/app/[locale]/not-found";
 import EditFormEvent from "@/features/events/components/EditEventForm";
 import prisma from "@/lib/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 import { setRequestLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
 interface PageProps {
@@ -9,7 +9,7 @@ interface PageProps {
 }
 
 async function page({ params }: PageProps) {
-  const { isAuthenticated, getUser } = getKindeServerSession();
+  const { isAuthenticated, getUser } = getAppSession();
   const { id, locale } = await params;
   const user = await getUser();
 

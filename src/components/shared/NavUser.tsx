@@ -15,7 +15,7 @@ import {
 import { cn, getFallback } from "@/lib/utils";
 import { Button } from "../ui/button";
 
-import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
+import { AppLogoutLink } from "./AppLogoutLink";
 import Link from "next/link";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
@@ -97,12 +97,12 @@ export function NavUser({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
 
-        <LogoutLink postLogoutRedirectURL="/events">
+        <AppLogoutLink postLogoutRedirectURL="/events">
           <DropdownMenuItem>
             <LogOut />
             Log out
           </DropdownMenuItem>
-        </LogoutLink>
+        </AppLogoutLink>
       </DropdownMenuContent>
     </DropdownMenu>
   );

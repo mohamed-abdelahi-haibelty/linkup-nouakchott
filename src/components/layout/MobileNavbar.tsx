@@ -1,4 +1,5 @@
 "use client";
+import { useAppSession } from "@/lib/use-app-session";
 import Image from "next/image";
 
 import {
@@ -11,11 +12,7 @@ import {
 import { NavUser } from "@/components/shared/NavUser";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  LoginLink,
-  RegisterLink,
-  useKindeBrowserClient,
-} from "@kinde-oss/kinde-auth-nextjs";
+import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs";
 import {
   ArrowRight,
   FolderKanban,
@@ -42,7 +39,7 @@ type Props = {
 };
 
 function MobileNavbar({ role }: Props) {
-  const { isAuthenticated, isLoading, getUser } = useKindeBrowserClient();
+  const { isAuthenticated, isLoading, getUser } = useAppSession();
   const user = getUser();
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);

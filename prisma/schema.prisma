@@ -7,6 +7,7 @@ datasource db {
 }
 
 model User {
+  guestSessions GuestSession[]
   id                String             @id
   role              UserRole           @default(user)
   name              String
@@ -261,4 +262,16 @@ enum EventTag {
   entertainment
   health
   community
+}
+
+model GuestSession {
+  tokenHash String @id
+  userId String @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipHash String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  @@index([ipHash, createdAt])
+  @@index([expiresAt])
+  @@map("guest_sessions")
 }

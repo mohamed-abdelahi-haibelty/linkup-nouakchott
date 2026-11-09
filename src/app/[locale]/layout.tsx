@@ -1,3 +1,4 @@
+import { GuestSessionProvider } from "@/lib/use-app-session";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
@@ -70,9 +71,11 @@ export default async function RootLayout({
 
         <NextIntlClientProvider>
           <PostHogProvider>
-            <Toaster position="top-right" />
-            <PostHogPageView />
-            {children}
+            <GuestSessionProvider>
+              <Toaster position="top-right" />
+              <PostHogPageView />
+              {children}
+            </GuestSessionProvider>
           </PostHogProvider>
         </NextIntlClientProvider>
       </body>
