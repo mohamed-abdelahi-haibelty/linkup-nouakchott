@@ -2,15 +2,15 @@
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogClose,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
+import { MessageCircle, X } from "lucide-react";
 import { Button } from "../ui/button";
-import { X, MessageCircle } from "lucide-react";
 
 interface PendingApprovalModalProps {
   open: boolean;
@@ -37,12 +37,12 @@ export function PendingApprovalModal({
     if (!phoneNumber) return;
 
     // Remove any non-digit characters except + at the start
-    let cleanPhone = phoneNumber.trim().replace(/[^\d+]/g, "");
+    const cleanPhone = phoneNumber.trim().replace(/[^\d+]/g, "");
 
     // Check if phone starts with country code
     if (!cleanPhone.startsWith("+")) {
       alert(
-        "Unable to contact organizer: Phone number must include country code (e.g., +222 for Mauritania, +212 for Morocco)."
+        "Unable to contact organizer: Phone number must include country code (e.g., +222 for Mauritania, +212 for Morocco).",
       );
       return;
     }
@@ -50,7 +50,7 @@ export function PendingApprovalModal({
     // Validate minimum length
     if (cleanPhone.length < 10) {
       alert(
-        "Unable to contact organizer: Phone number appears to be incomplete."
+        "Unable to contact organizer: Phone number appears to be incomplete.",
       );
       return;
     }

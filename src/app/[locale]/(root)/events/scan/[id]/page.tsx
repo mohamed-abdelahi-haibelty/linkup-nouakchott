@@ -1,15 +1,15 @@
-import { redirect } from "next/navigation";
-import { getAppSession } from "@/lib/app-session";
-import prisma from "@/lib/db";
-import { XCircle } from "lucide-react";
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import EventScannerClient from "./EventScannerClient";
+import prisma from "@/lib/db";
+import { getAppSession } from "@/lib/app-session";
+import { XCircle } from "lucide-react";
 import { setRequestLocale } from "next-intl/server";
+import { redirect } from "next/navigation";
+import EventScannerClient from "@/features/tickets/components/EventScannerClient";
 
 interface EventScanPageProps {
   params: Promise<{ id: string; locale: string }>;
@@ -51,7 +51,7 @@ async function page({ params }: EventScanPageProps) {
               Event Not Found
             </CardTitle>
             <CardDescription>
-              The event you're looking for does not exist.
+              The event you&apos;re looking for does not exist.
             </CardDescription>
           </CardHeader>
         </Card>

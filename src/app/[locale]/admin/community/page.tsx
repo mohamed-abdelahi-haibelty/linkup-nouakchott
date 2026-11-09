@@ -1,11 +1,14 @@
-import { DataTable } from "@/components/shared/DataTable";
-import { columns, CommunityPostWithUser } from "./columns";
-import { getAllCommunityPosts } from "@/app/[locale]/actions/community/admin/getAllCommunityPosts";
-import { deleteManyCommunityPosts } from "@/app/[locale]/actions/community/admin/deleteManyCommunityPosts";
-import { getUserRole } from "@/app/[locale]/actions/user/getUserRole";
-import { redirect } from "next/navigation";
 import NotFound from "@/app/[locale]/not-found";
+import { DataTable } from "@/components/shared/DataTable";
+import { deleteManyCommunityPosts } from "@/features/community/actions/admin/deleteManyCommunityPosts";
+import { getAllCommunityPosts } from "@/features/community/actions/admin/getAllCommunityPosts";
+import { getUserRole } from "@/features/users/actions/getUserRole";
 import { setRequestLocale } from "next-intl/server";
+import { redirect } from "next/navigation";
+import {
+  columns,
+  CommunityPostWithUser,
+} from "@/features/admin/tables/community";
 
 // Define the community post statuses
 const communityPostStatuses = [
@@ -53,14 +56,14 @@ async function page({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const { user, success, code } = await getUserRole();
+  const { user, success } = await getUserRole();
   if (!user || !success) redirect("/api/auth/login");
   if (user.role !== "admin" && user.role !== "moderator") return NotFound();
   const posts = await getAllCommunityPosts();
 
   return (
     <div className="">
-      <DataTable<CommunityPostWithUser, any>
+      <DataTable<CommunityPostWithUser>
         data={posts.data ?? []}
         columns={columns}
         filters={[

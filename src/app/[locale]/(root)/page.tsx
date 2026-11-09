@@ -1,22 +1,15 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Calendar,
-  Ticket,
-  QrCode,
-  Shield,
-  ArrowRight,
-  Check,
-} from "lucide-react";
-import { useEffect, useRef, useState } from "react";
 import PatternBg from "@/components/shared/PatternBg";
+import { Badge } from "@/components/ui/badge";
 import BrowserMockup from "@/components/ui/BowserMockup";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Check } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import AppNavbar from "./components/AppNavbar";
+import AppNavbar from "@/components/layout/AppNavbar";
 
 export default function LandingPage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -194,19 +187,24 @@ export default function LandingPage() {
                         <div className="grid grid-cols-2 gap-6 pt-4">
                           {t
                             .raw("features.feature2.points")
-                            .map((point: any, index: number) => (
-                              <div key={index} className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                  <Check className="w-5 h-5 text-green-600" />
-                                  <span className="font-semibold">
-                                    {point.title}
-                                  </span>
+                            .map(
+                              (
+                                point: { title: string; description: string },
+                                index: number,
+                              ) => (
+                                <div key={index} className="space-y-2">
+                                  <div className="flex items-center gap-2">
+                                    <Check className="w-5 h-5 text-green-600" />
+                                    <span className="font-semibold">
+                                      {point.title}
+                                    </span>
+                                  </div>
+                                  <p className="text-sm text-muted-foreground">
+                                    {point.description}
+                                  </p>
                                 </div>
-                                <p className="text-sm text-muted-foreground">
-                                  {point.description}
-                                </p>
-                              </div>
-                            ))}
+                              ),
+                            )}
                         </div>
                       </div>
 
@@ -278,17 +276,24 @@ export default function LandingPage() {
 
                 {/* Steps */}
                 <div className="grid md:grid-cols-3 gap-12">
-                  {t.raw("steps.items").map((step: any, index: number) => (
-                    <div key={index} className="text-center space-y-4">
-                      <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary text-primary-foreground text-3xl font-bold">
-                        {`0${index + 1}`}
-                      </div>
-                      <h3 className="text-2xl font-bold">{step.title}</h3>
-                      <p className="text-muted-foreground">
-                        {step.description}
-                      </p>
-                    </div>
-                  ))}
+                  {t
+                    .raw("steps.items")
+                    .map(
+                      (
+                        step: { title: string; description: string },
+                        index: number,
+                      ) => (
+                        <div key={index} className="text-center space-y-4">
+                          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary text-primary-foreground text-3xl font-bold">
+                            {`0${index + 1}`}
+                          </div>
+                          <h3 className="text-2xl font-bold">{step.title}</h3>
+                          <p className="text-muted-foreground">
+                            {step.description}
+                          </p>
+                        </div>
+                      ),
+                    )}
                 </div>
               </div>
             </div>

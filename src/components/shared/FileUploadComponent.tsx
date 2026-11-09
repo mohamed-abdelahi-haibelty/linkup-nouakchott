@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
 import { UploadButton } from "@/lib/uploadthing";
-import { X, Loader2, AlertCircle, Upload, ImageIcon } from "lucide-react";
+import { AlertCircle, ImageIcon, Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 
 interface FileUploadComponentProps {
   onImageChange?: (url: string | null) => void;
@@ -118,7 +118,7 @@ function FileUploadComponent({
                   setError(error.message || "Failed to upload image");
                   setIsUploading(false);
                 }}
-                onUploadBegin={(name) => {
+                onUploadBegin={() => {
                   setIsUploading(true);
                   setError(null);
                 }}

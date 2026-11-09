@@ -1,9 +1,10 @@
 "use client";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Bell, Cable } from "lucide-react";
+import Link from "next/link";
+
 import { useScrollTop } from "@/hooks/useScrollTop";
+import { Bell, Cable } from "lucide-react";
 import AuthHeader from "./AuthHeader";
 
 function Navbar() {
@@ -13,7 +14,7 @@ function Navbar() {
     <nav
       className={cn(
         "p-6 fixed z-50 top-0 h-20 md:h-24 w-full bg-background",
-        scrolled && "border-b shadow-xs"
+        scrolled && "border-b shadow-xs",
       )}
     >
       <div className="hidden sm:flex items-center justify-between max-w-7xl mx-auto">

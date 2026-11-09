@@ -1,15 +1,14 @@
 "use client";
 
-import { EventTag } from "@prisma/client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { EventTag } from "@prisma/client";
 import { SlidersHorizontal } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "../ui/badge";
 
 const TAG_LABELS: Record<EventTag, string> = {

@@ -10,23 +10,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+import { Check, Loader2, LogIn, Users } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { Check, Loader2, LogIn, Users } from "lucide-react";
-import { cn } from "@/lib/utils";
-import {
-  RegisterLink,
-} from "@kinde-oss/kinde-auth-nextjs";
-import { usePathname } from "next/navigation";
-import { toast } from "sonner";
-import { EventWithParticipantsAndCounts } from "@/types";
-import { PendingApprovalModal } from "./PendingApprovalModal";
 
+import { EventWithParticipantsAndCounts } from "@/types";
+import { RegisterLink } from "@kinde-oss/kinde-auth-nextjs";
+import { toast } from "sonner";
+
+import { joinEvent } from "@/features/events/actions/participant/joinEvent";
+import { leaveEvent } from "@/features/events/actions/participant/leaveEvent";
+import EventTicketModal from "@/features/events/components/EventTicketModal";
 import { logError } from "@/lib/sentry";
-import { leaveEvent } from "@/app/[locale]/actions/events/participant/leaveEvent";
-import { joinEvent } from "@/app/[locale]/actions/events/participant/joinEvent";
-import { PhoneNumberModal } from "./PhoneNumberModal";
-import EventTicketModal from "@/app/[locale]/(root)/events/_components/EventTicketModal";
 import { useTranslations } from "next-intl";
 import { usePostHog } from "posthog-js/react";
 
@@ -45,16 +41,12 @@ export function JoinEventButton({
   size = "default",
   variant = "default",
   disabled = false,
-  phone,
 }: JoinEventButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [openTicketModal, setOpenTicketModal] = useState(false);
   const [qrUrl, setQrurl] = useState("");
-  const [openAprovalModal, setOpenAprovalModal] = useState(false);
   const { isAuthenticated, getUser } = useAppSession();
-  const [openPhoneModal, setOpenPhoneModal] = useState(false);
-  const url = usePathname();
   const id = getUser()?.id;
   const t = useTranslations("events.joinButton");
   const posthog = usePostHog();
@@ -102,22 +94,13 @@ export function JoinEventButton({
       const res = await joinEvent(eventId);
       if (res.success) {
         toast.success(res.message);
-        if (!event.isFree) {
-          setOpenAprovalModal(true);
-          posthog.capture("event_joined_paid", {
-            event_id: event.id,
-            event_name: event.title,
-            source: "event_detail_page",
-          });
-        } else {
-          setQrurl(res?.data?.qrDataUrl!);
-          setOpenTicketModal(true);
-          posthog.capture("event_joined_free", {
-            event_id: event.id,
-            event_name: event.title,
-            source: "event_detail_page",
-          });
-        }
+        setQrurl(res.data?.qrDataUrl ?? "");
+        setOpenTicketModal(true);
+        posthog.capture("event_registered", {
+          event_id: event.id,
+          event_name: event.title,
+          source: "event_detail_page",
+        });
       } else {
         toast.error(res.message);
       }
@@ -162,17 +145,6 @@ export function JoinEventButton({
       return;
     }
 
-    // Check if user has a phone number only when joining
-    // if (!phone) {
-    //   setOpenPhoneModal(true);
-    //   return;
-    // }
-
-    handleJoinOrLeaveEvent();
-  }
-
-  function handlePhoneSuccess() {
-    // After phone number is added, proceed with joining the event
     handleJoinOrLeaveEvent();
   }
 
@@ -219,15 +191,6 @@ export function JoinEventButton({
         </div>
       </Button>
 
-      {/* Pending Approval Modal */}
-      <PendingApprovalModal
-        open={openAprovalModal}
-        setOpen={setOpenAprovalModal}
-        title={t("approveModal.title")}
-        description={t("approveModal.description")}
-        phoneNumber={event.contactPhone}
-        eventTitle={event.title}
-      />
       <EventTicketModal
         title={event.title}
         startTime={event.startTime}
@@ -236,13 +199,6 @@ export function JoinEventButton({
         open={openTicketModal}
         setOpen={setOpenTicketModal}
       />
-
-      {/* Phone Number Modal */}
-      {/* <PhoneNumberModal
-        open={openPhoneModal}
-        setOpen={setOpenPhoneModal}
-        onSuccess={handlePhoneSuccess}
-      /> */}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[425px]">

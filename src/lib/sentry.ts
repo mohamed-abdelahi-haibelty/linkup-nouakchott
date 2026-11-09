@@ -6,7 +6,7 @@ type LogEventType = {
   message: string;
   category?: string;
   level?: LogLevel;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   error?: unknown;
 };
 
@@ -31,11 +31,11 @@ export function logEvent({
   }
 }
 
-export function logError(error: unknown, context?: Record<string, any>) {
+export function logError(error: unknown, context?: Record<string, unknown>) {
   Sentry.captureException(error, { level: "error", extra: context });
 }
 
-export function logWarning(message: string, context?: Record<string, any>) {
+export function logWarning(message: string, context?: Record<string, unknown>) {
   Sentry.captureMessage(message, "warning");
 
   if (context) Sentry.setContext("warning", context);

@@ -1,0 +1,29 @@
+name: Quality checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://localhost:5432/linkup
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      KINDE_CLIENT_ID: ci-placeholder
+      KINDE_CLIENT_SECRET: ci-placeholder-not-a-production-secret
+      KINDE_ISSUER_URL: https://example.kinde.com
+      KINDE_SITE_URL: http://localhost:3000
+      KINDE_POST_LOGIN_REDIRECT_URL: http://localhost:3000/api/auth/session
+      KINDE_POST_LOGOUT_REDIRECT_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx prisma validate
+      - run: npm run check
+      - run: npm run format:check
+      - run: npm run build

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 interface GlobalLoaderProps {
   isLoading?: boolean;
@@ -37,7 +37,7 @@ export function GlobalLoader({
     <div
       className={cn(
         "fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm",
-        className
+        className,
       )}
     >
       <div className="flex flex-col items-center space-y-6 loader-fade-in">

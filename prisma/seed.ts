@@ -1,15 +1,22 @@
+import "dotenv/config";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { neonConfig } from "@neondatabase/serverless";
+import ws from "ws";
 import {
-  PrismaClient,
-  UserRole,
-  EventStatus,
   CommunityPostStatus,
-  RegistrationStatus,
-  NotificationType,
+  EventStatus,
   EventTag,
+  NotificationType,
+  PrismaClient,
+  RegistrationStatus,
+  UserRole,
 } from "@prisma/client";
 import { randomUUID } from "crypto";
 
-const prisma = new PrismaClient();
+neonConfig.webSocketConstructor = ws;
+const prisma = new PrismaClient({
+  adapter: new PrismaNeon({ connectionString: process.env.DATABASE_URL }),
+});
 
 // Helper to pick a random item from an array
 const random = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
@@ -236,7 +243,7 @@ async function main() {
 
     // Create a seed from the event title to ensure consistency
     const seed = encodeURIComponent(
-      eventTitle.toLowerCase().replace(/\s+/g, "-")
+      eventTitle.toLowerCase().replace(/\s+/g, "-"),
     );
 
     // Using DiceBear API v9 format
@@ -258,15 +265,10 @@ async function main() {
     // Registration deadline is before the start time (1-7 days before)
     const daysBeforeEvent = faker.number.int({ min: 1, max: 7 });
     const registrationDeadline = new Date(
-      startTime.getTime() - daysBeforeEvent * 24 * 60 * 60 * 1000
+      startTime.getTime() - daysBeforeEvent * 24 * 60 * 60 * 1000,
     );
 
     const eventTag = random(eventTags);
-
-    const isFree = Math.random() < 0.5;
-    const price = isFree
-      ? 0
-      : parseFloat(faker.commerce.price({ min: 1, max: 500 }));
 
     const eventTitle = getEventTitle(eventTag);
     const slug = faker.helpers
@@ -282,8 +284,8 @@ async function main() {
         description: faker.lorem.paragraphs(2),
         location: faker.location.city().substring(0, 450), // Ensure location is within 500 char limit
         capacity: faker.number.int({ min: 50, max: 500 }),
-        price,
-        isFree,
+        price: 0,
+        isFree: true,
         startTime,
         endTime,
         registrationDeadline,
@@ -342,12 +344,7 @@ async function main() {
     const eventUsers = faker.helpers.arrayElements(users, participantsCount);
 
     for (const user of eventUsers) {
-      const status = random([
-        "pending",
-        "confirmed",
-        "paid",
-        "cancelled",
-      ] as RegistrationStatus[]);
+      const status = random(["confirmed", "cancelled"] as RegistrationStatus[]);
       const participant = await prisma.participant.create({
         data: {
           id: uuidv4(),
@@ -355,11 +352,9 @@ async function main() {
           eventId: event.id,
           status,
           confirmedAt:
-            status === "confirmed" || status === "paid"
-              ? faker.date.recent({ days: 10 })
-              : null,
+            status === "confirmed" ? faker.date.recent({ days: 10 }) : null,
           checkedInAt:
-            status === "paid" ? faker.date.recent({ days: 5 }) : null,
+            status === "confirmed" ? faker.date.recent({ days: 5 }) : null,
         },
       });
       participants.push(participant);
@@ -367,7 +362,9 @@ async function main() {
   }
 
   // --- Create Tickets ---
-  for (const participant of participants.filter((p) => p.status === "paid")) {
+  for (const participant of participants.filter(
+    (p) => p.status === "confirmed",
+  )) {
     await prisma.ticket.create({
       data: {
         id: uuidv4(),
@@ -405,7 +402,7 @@ async function main() {
   }
 
   console.log(
-    "✅ Database seeded with users, 200 events (with images), posts, participants, tickets, and notifications!"
+    "✅ Database seeded with users, 200 events (with images), posts, participants, tickets, and notifications!",
   );
 }
 

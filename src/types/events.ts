@@ -1,16 +1,13 @@
 import { Event, EventStatus } from "@prisma/client";
 
-import {
-  ParticipantWithUser,
-  ParticipantWithUserAndCount,
-} from "./participants";
 import { Organizer } from "./organizer";
+import { ParticipantWithUserAndCount, PublicParticipant } from "./participants";
 
 export type SafeEvent = Omit<Event, "price"> & { price: number };
 
 // Event with basic participants (no count)
 export type EventWithParticipants = SafeEvent & {
-  participants: ParticipantWithUser[];
+  participants: PublicParticipant[];
 };
 
 // Event with participants that include attended event counts

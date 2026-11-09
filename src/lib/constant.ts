@@ -1,5 +1,3 @@
-import { BadgeCheck, Clock, TicketX, XCircle } from "lucide-react";
-
 export const tagColors: Record<string, { bg: string; text: string }> = {
   music: { bg: "#E9D5FF", text: "#581C87" }, // purple
   sports: { bg: "#BBF7D0", text: "#166534" }, // green

@@ -1,94 +1,28 @@
-import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
-import withPWAInit from "@ducanh2912/next-pwa";
 import createNextIntlPlugin from "next-intl/plugin";
-import { readFileSync } from "fs";
-import { createHash } from "crypto";
+import { withSentryConfig } from "@sentry/nextjs/config";
 
-// 1) Create the next-intl plugin
-const withNextIntl = createNextIntlPlugin();
-
-const nextConfig: NextConfig = {
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
-  },
+const config: NextConfig = {
   images: {
     dangerouslyAllowSVG: true,
+    contentDispositionType: "attachment",
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "api.dicebear.com",
-        pathname: "/9.x/**", // allow any style + seed + size
-      },
-      {
-        protocol: "https",
-        hostname: "cdn.jsdelivr.net",
-      },
-      {
-        protocol: "https",
-        hostname: "avatars.githubusercontent.com",
-      },
-      {
-        protocol: "https",
-        hostname: "65q1es69v0.ufs.sh",
-      },
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com",
-      },
-      {
-        protocol: "https",
-        hostname: "gravatar.com",
-      },
+      { protocol: "https", hostname: "api.dicebear.com", pathname: "/9.x/**" },
+      { protocol: "https", hostname: "cdn.jsdelivr.net" },
+      { protocol: "https", hostname: "avatars.githubusercontent.com" },
+      { protocol: "https", hostname: "65q1es69v0.ufs.sh" },
+      { protocol: "https", hostname: "lh3.googleusercontent.com" },
+      { protocol: "https", hostname: "gravatar.com" },
     ],
   },
-  /* other config options */
 };
 
-export function getFileHash(filePath: string) {
-  const buffer = readFileSync(filePath);
-  const hash = createHash("md5").update(buffer).digest("hex");
-  return hash;
-}
-
-const intlConfig = withNextIntl(nextConfig);
-
-const sentryConfig =
-  process.env.NODE_ENV === "production"
-    ? withSentryConfig(intlConfig, {
-        org: "linkup-nouakchott",
-        project: "javascript-nextjs",
-        silent: !process.env.CI,
-        widenClientFileUpload: true,
-        disableLogger: true,
-        automaticVercelMonitors: false,
-      })
-    : intlConfig;
-
-const pwaConfig = withPWAInit({
-  dest: "public",
-  register: true,
-  cacheStartUrl: false,
-  disable: process.env.NODE_ENV === "development",
-  extendDefaultRuntimeCaching: true,
-  workboxOptions: {
-  // Never persist session responses or server-rendered account pages offline.
-  runtimeCaching: [{
-    urlPattern: ({request, url}) => request.mode === "navigate" || url.pathname.startsWith("/api/"),
-    handler: "NetworkOnly",
-  }],
-
-    additionalManifestEntries: [
-      {
-        url: "/custom-sw.js",
-        revision: getFileHash("public/custom-sw.js"),
-      },
-    ],
-    // Import the custom service worker
-    importScripts: ["/custom-sw.js"],
-  },
-})(sentryConfig as any);
-
-export default pwaConfig;
+const localizedConfig = createNextIntlPlugin()(config);
+export default process.env.SENTRY_AUTH_TOKEN
+  ? withSentryConfig(localizedConfig, {
+      org: process.env.SENTRY_ORG || "linkup-nouakchott",
+      project: process.env.SENTRY_PROJECT || "javascript-nextjs",
+      silent: !process.env.CI,
+    })
+  : localizedConfig;

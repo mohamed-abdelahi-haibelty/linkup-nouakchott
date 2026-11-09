@@ -1,5 +1,5 @@
-import { getCommunityFeed } from "@/app/[locale]/actions/community/getCommunityFeed";
-import CommunityPageClient from "./components/CommunityPageClient";
+import { getCommunityFeed } from "@/features/community/actions/getCommunityFeed";
+import CommunityPageClient from "@/features/community/components/CommunityPageClient";
 
 export default async function CommunityPage() {
   const result = await getCommunityFeed();

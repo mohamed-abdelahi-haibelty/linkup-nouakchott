@@ -1,17 +1,17 @@
 import { GuestSessionProvider } from "@/lib/use-app-session";
-import type { Metadata } from "next";
-import "./globals.css";
-import localFont from "next/font/local";
-import { Toaster } from "@/components/ui/sonner";
-import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
-import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
-import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { notFound } from "next/navigation";
+import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import type { Metadata } from "next";
+import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { PostHogProvider } from "../providers/PostHogProvider";
+import localFont from "next/font/local";
+import { notFound } from "next/navigation";
+import { extractRouterConfig } from "uploadthing/server";
 import PostHogPageView from "../providers/PostHogPageView";
+import { PostHogProvider } from "../providers/PostHogProvider";
+import "./globals.css";
 
 const mabry = localFont({
   src: [
@@ -72,10 +72,10 @@ export default async function RootLayout({
         <NextIntlClientProvider>
           <PostHogProvider>
             <GuestSessionProvider>
-            <Toaster position="top-right" />
-            <PostHogPageView />
-            {children}
-          </GuestSessionProvider>
+              <Toaster position="top-right" />
+              <PostHogPageView />
+              {children}
+            </GuestSessionProvider>
           </PostHogProvider>
         </NextIntlClientProvider>
       </body>

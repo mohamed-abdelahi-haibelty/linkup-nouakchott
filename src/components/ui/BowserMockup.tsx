@@ -1,3 +1,4 @@
+import Image from "next/image";
 export default function BrowserMockup({
   src,
   alt,
@@ -28,7 +29,10 @@ export default function BrowserMockup({
         </div>
 
         {/* Screenshot */}
-        <img
+        <Image
+          unoptimized
+          width={1200}
+          height={800}
           src={src}
           alt={alt}
           className="w-full h-auto max-h-[70vh] object-contain"

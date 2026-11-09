@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { CalendarIcon, ClockIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
@@ -14,7 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface DateTimePickerProps {
   value?: Date;
@@ -47,35 +48,24 @@ export function DateTimePicker({
 }: DateTimePickerProps) {
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(value);
-  const [timeValue, setTimeValue] = useState("");
-
-  // Initialize time value when date changes
-  useEffect(() => {
-    if (selectedDate && showTime) {
-      const hours = selectedDate.getHours();
-      const minutes = selectedDate.getMinutes();
-
-      if (timeFormat === "12") {
-        const period = hours >= 12 ? "PM" : "AM";
-        const displayHours = hours % 12 || 12;
-        setTimeValue(
-          `${displayHours
-            .toString()
-            .padStart(2, "0")}:${minutes.toString().padStart(2, "0")} ${period}`
-        );
-      } else {
-        setTimeValue(
-          `${hours.toString().padStart(2, "0")}:${minutes
-            .toString()
-            .padStart(2, "0")}`
-        );
-      }
-    }
-  }, [selectedDate, showTime, timeFormat]);
-
-  useEffect(() => {
+  const [previousValue, setPreviousValue] = useState(value);
+  if (value !== previousValue) {
+    setPreviousValue(value);
     setSelectedDate(value);
-  }, [value]);
+  }
+  const [timeInput, setTimeInput] = useState({
+    date: selectedDate,
+    format: timeFormat,
+    value: "",
+  });
+  const timeValue =
+    timeInput.date === selectedDate &&
+    timeInput.format === timeFormat &&
+    timeInput.value
+      ? timeInput.value
+      : selectedDate && showTime
+        ? format(selectedDate, timeFormat === "12" ? "hh:mm a" : "HH:mm")
+        : "";
 
   const handleDateSelect = (date: Date | undefined) => {
     if (!date) {
@@ -98,7 +88,7 @@ export function DateTimePicker({
   };
 
   const handleTimeChange = (timeString: string) => {
-    setTimeValue(timeString);
+    setTimeInput({ date: selectedDate, format: timeFormat, value: timeString });
 
     if (!selectedDate) return;
 
@@ -170,7 +160,7 @@ export function DateTimePicker({
             "w-full justify-start h-11 text-left bg-card hover:bg-muted hover:text-muted-foreground font-normal",
             !selectedDate && "text-muted-foreground",
             error && "border-destructive focus-visible:ring-destructive",
-            className
+            className,
           )}
           disabled={disabled}
           name={name}
@@ -238,7 +228,11 @@ export function DateTimePicker({
               size="sm"
               onClick={() => {
                 setSelectedDate(undefined);
-                setTimeValue("");
+                setTimeInput({
+                  date: undefined,
+                  format: timeFormat,
+                  value: "",
+                });
                 onChange?.(undefined);
                 setOpen(false);
               }}
@@ -256,11 +250,10 @@ export function DateTimePicker({
   );
 }
 
-export interface DateTimePickerFieldProps
-  extends Omit<
-    DateTimePickerProps,
-    "value" | "onChange" | "onBlur" | "name" | "error"
-  > {
+export interface DateTimePickerFieldProps extends Omit<
+  DateTimePickerProps,
+  "value" | "onChange" | "onBlur" | "name" | "error"
+> {
   field: {
     value: Date | undefined;
     onChange: (value: Date | undefined) => void;

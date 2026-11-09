@@ -2,12 +2,12 @@ import { randomBytes, randomUUID, createHmac } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import { GUEST_COOKIE, getGuest, hashToken } from "@/lib/guest";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 
 export async function GET() {
   return NextResponse.json(
     {
-      user: (await getKindeServerSession().getUser()) ? null : await getGuest(),
+      user: (await getAppSession().getUser()) ? null : await getGuest(),
     },
     { headers: { "Cache-Control": "no-store" } },
   );
@@ -22,7 +22,7 @@ function sameOrigin(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   if (!sameOrigin(request)) return new NextResponse(null, { status: 403 });
-  if ((await getKindeServerSession().getUser()) || (await getGuest()))
+  if ((await getAppSession().getUser()) || (await getGuest()))
     return NextResponse.json({ success: true });
   const secret = process.env.KINDE_CLIENT_SECRET;
   if (!secret) return new NextResponse(null, { status: 503 });

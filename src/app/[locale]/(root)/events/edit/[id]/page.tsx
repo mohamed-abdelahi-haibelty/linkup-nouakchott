@@ -1,10 +1,9 @@
 import NotFound from "@/app/[locale]/not-found";
+import EditFormEvent from "@/features/events/components/EditEventForm";
 import prisma from "@/lib/db";
 import { getAppSession } from "@/lib/app-session";
-import { redirect } from "next/navigation";
-import React from "react";
-import EditFormEvent from "../../_components/EditEventForm";
 import { setRequestLocale } from "next-intl/server";
+import { redirect } from "next/navigation";
 interface PageProps {
   params: Promise<{ id: string; locale: string }>;
 }

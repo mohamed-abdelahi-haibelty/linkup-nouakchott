@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,14 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { Loader2, Phone } from "lucide-react";
-import { toast } from "sonner";
-import { updateUserPhone } from "@/app/[locale]/actions/user/updateUserPhone";
+import { updateUserPhone } from "@/features/users/actions/updateUserPhone";
 import { logError } from "@/lib/sentry";
+import { Loader2, Phone } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface PhoneNumberModalProps {
   open: boolean;

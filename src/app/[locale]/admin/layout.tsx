@@ -1,8 +1,8 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { ReactNode } from "react";
-import { DashboardSidebar } from "./ui/DashboardSidebar";
-import { DashboardHeader } from "./ui/DashboardHeader";
+import { DashboardHeader } from "@/features/admin/components/DashboardHeader";
+import { DashboardSidebar } from "@/features/admin/components/DashboardSidebar";
 import { setRequestLocale } from "next-intl/server";
+import { ReactNode } from "react";
 
 async function AdminLayout({
   children,

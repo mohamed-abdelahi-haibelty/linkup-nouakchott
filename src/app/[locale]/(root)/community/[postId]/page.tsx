@@ -1,7 +1,7 @@
-import { getCommunityPostDetail } from "@/app/[locale]/actions/community/getCommunityPostDetail";
+import { getCommunityPostDetail } from "@/features/community/actions/getCommunityPostDetail";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CommunityPostCard } from "../components/CommunityPostCard";
+import { CommunityPostCard } from "@/features/community/components/CommunityPostCard";
 
 type Props = {
   params: Promise<{ postId: string }>;

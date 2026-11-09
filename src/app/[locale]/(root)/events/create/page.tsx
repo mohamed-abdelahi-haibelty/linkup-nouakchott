@@ -1,7 +1,7 @@
+import CreateEventForm from "@/features/events/components/CreateEventForm";
 import { getAppSession } from "@/lib/app-session";
-import { redirect } from "next/navigation";
-import CreateEventForm from "../_components/CreateEventForm";
 import { setRequestLocale } from "next-intl/server";
+import { redirect } from "next/navigation";
 
 type Props = {
   params: Promise<{ locale: string }>;

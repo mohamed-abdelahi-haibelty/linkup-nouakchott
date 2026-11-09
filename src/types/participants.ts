@@ -6,6 +6,10 @@ export type ParticipantWithUser = Participant & {
 };
 
 // Add attendedEventsCount to the participant type
-export type ParticipantWithUserAndCount = ParticipantWithUser & {
+export type PublicParticipant = Participant & {
+  participant: Pick<User, "id" | "name" | "avatarUrl">;
+};
+
+export type ParticipantWithUserAndCount = PublicParticipant & {
   attendedEventsCount: number;
 };

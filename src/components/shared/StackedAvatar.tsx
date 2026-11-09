@@ -2,12 +2,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { cn, getFallback } from "@/lib/utils";
+
 import { User } from "@prisma/client";
 import { AvatarGroup, AvatarGroupTooltip } from "./AvatarGroup";
 
 type Props = {
   className?: string;
-  users?: User[];
+  users?: Pick<User, "id" | "name" | "avatarUrl">[];
 };
 
 export const StackedAvatar = ({ className, users }: Props) => {
@@ -38,7 +39,7 @@ export const StackedAvatar = ({ className, users }: Props) => {
                   key="extra"
                   className={cn(
                     "size-7 border-3 border-background bg-muted text-xs font-medium flex items-center justify-center",
-                    className
+                    className,
                   )}
                 >
                   <AvatarFallback>+{extraCount}</AvatarFallback>
@@ -51,7 +52,7 @@ export const StackedAvatar = ({ className, users }: Props) => {
             key="placeholder"
             className={cn(
               "size-7 border-3 border-background bg-muted text-xs font-medium flex items-center justify-center",
-              className
+              className,
             )}
           >
             <AvatarFallback>–</AvatarFallback>
