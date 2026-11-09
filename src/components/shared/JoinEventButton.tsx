@@ -1,4 +1,5 @@
 "use client";
+import { useAppSession } from "@/lib/use-app-session";
 
 import {
   Dialog,
@@ -15,7 +16,6 @@ import { Check, Loader2, LogIn, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   RegisterLink,
-  useKindeBrowserClient,
 } from "@kinde-oss/kinde-auth-nextjs";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
@@ -52,7 +52,7 @@ export function JoinEventButton({
   const [openTicketModal, setOpenTicketModal] = useState(false);
   const [qrUrl, setQrurl] = useState("");
   const [openAprovalModal, setOpenAprovalModal] = useState(false);
-  const { isAuthenticated, getUser } = useKindeBrowserClient();
+  const { isAuthenticated, getUser } = useAppSession();
   const [openPhoneModal, setOpenPhoneModal] = useState(false);
   const url = usePathname();
   const id = getUser()?.id;

@@ -1,11 +1,11 @@
 "use server";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 
 import prisma from "@/lib/db";
 import { logError } from "@/lib/sentry";
 
 export async function getUserRole() {
-  const { getUser, isAuthenticated } = getKindeServerSession();
+  const { getUser, isAuthenticated } = getAppSession();
 
   try {
     if (!(await isAuthenticated())) {

@@ -7,7 +7,7 @@ import {
 } from "@/lib/validation/communityPost";
 import { revalidatePath } from "next/cache";
 import { logError } from "@/lib/sentry";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 import { CommunityPostStatus, Prisma } from "@prisma/client";
 import { getUserRole } from "../user/getUserRole";
 
@@ -38,6 +38,7 @@ export async function createCommunityPost(data: CommunityPostFormInput) {
   }
 
   try {
+    if (user.id.startsWith("guest_")) return { success: false, message: "Please sign in to publish content.", data: null, code: 403 };
     const post = await prisma.communityPost.create({
       data: {
         ...parsed.data,
@@ -57,7 +58,7 @@ export async function createCommunityPost(data: CommunityPostFormInput) {
   } catch (e) {
     logError(e, {
       data,
-      userId: (await getKindeServerSession().getUser())?.id,
+      userId: (await getAppSession().getUser())?.id,
     });
 
     // Handle Prisma errors

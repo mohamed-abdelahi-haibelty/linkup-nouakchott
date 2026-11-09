@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 import prisma from "@/lib/db";
 import { CheckCircle2, XCircle, Clock, AlertTriangle } from "lucide-react";
 import {
@@ -18,7 +18,7 @@ interface CheckinPageProps {
 }
 
 export default async function CheckinPage({ params }: CheckinPageProps) {
-  const { getUser, isAuthenticated } = getKindeServerSession();
+  const { getUser, isAuthenticated } = getAppSession();
   const url_param = await params;
   const code = url_param?.code;
 

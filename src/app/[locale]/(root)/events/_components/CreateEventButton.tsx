@@ -1,4 +1,5 @@
 "use client";
+import { useAppSession } from "@/lib/use-app-session";
 import {
   Dialog,
   DialogClose,
@@ -10,14 +11,14 @@ import {
 } from "@/components/ui/dialog";
 import ActionTooltip from "@/components/shared/ActionTooltip";
 import { Button } from "@/components/ui/button";
-import { LoginLink, useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { LoginLink } from "@kinde-oss/kinde-auth-nextjs";
 import { LogIn, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { usePostHog } from "posthog-js/react";
 function CreateEventButton() {
-  const { isAuthenticated } = useKindeBrowserClient();
+  const { isAuthenticated } = useAppSession();
   const t = useTranslations("events.components.createEventButton");
   const [open, setOpen] = useState(false);
   const router = useRouter();

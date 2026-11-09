@@ -1,6 +1,6 @@
 import NotFound from "@/app/[locale]/not-found";
 import prisma from "@/lib/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 import { redirect } from "next/navigation";
 import React from "react";
 import EditFormEvent from "../../_components/EditEventForm";
@@ -10,7 +10,7 @@ interface PageProps {
 }
 
 async function page({ params }: PageProps) {
-  const { isAuthenticated, getUser } = getKindeServerSession();
+  const { isAuthenticated, getUser } = getAppSession();
   const { id, locale } = await params;
   const user = await getUser();
 

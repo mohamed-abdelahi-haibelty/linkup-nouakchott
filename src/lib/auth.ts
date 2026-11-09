@@ -1,8 +1,8 @@
 "use server";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { getAppSession } from "@/lib/app-session";
 
 export async function requireAuthUser() {
-  const { getUser, isAuthenticated } = getKindeServerSession();
+  const { getUser, isAuthenticated } = getAppSession();
 
   if (!(await isAuthenticated())) {
     return {

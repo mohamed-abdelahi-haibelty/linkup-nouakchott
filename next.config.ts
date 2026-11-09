@@ -70,9 +70,16 @@ const sentryConfig =
 const pwaConfig = withPWAInit({
   dest: "public",
   register: true,
+  cacheStartUrl: false,
   disable: process.env.NODE_ENV === "development",
   extendDefaultRuntimeCaching: true,
   workboxOptions: {
+  // Never persist session responses or server-rendered account pages offline.
+  runtimeCaching: [{
+    urlPattern: ({request, url}) => request.mode === "navigate" || url.pathname.startsWith("/api/"),
+    handler: "NetworkOnly",
+  }],
+
     additionalManifestEntries: [
       {
         url: "/custom-sw.js",
