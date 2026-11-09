@@ -85,3 +85,7 @@ Choose **Try as a guest** above the public page content. Each visitor receives a
 Guests can browse, save favorites and use participant features. Publishing events/community posts and uploading files require Kinde sign-in. Guests have no administrator privileges. Guest ticket email is skipped because a guest has no verified email address. Ending the session invalidates it immediately; expired session digests remain available to enforce the creation limit of five sessions per IP per hour. User and registration records remain so existing tickets and event history are preserved.
 
 Before deploying, apply `20261109000100_guest_sessions` with `npx prisma migrate deploy`. Configure `KINDE_SITE_URL` to the public app origin; guest mutations reject missing/foreign Origin headers. Production uses Vercel's trusted forwarding header for the IP limit. Session/API responses and document navigations bypass the service worker cache.
+
+## Deployment status
+
+The live app is available at [linkup-nouakchott.vercel.app](https://linkup-nouakchott.vercel.app/en). The repository contains the newer architecture refactor; the existing production deployment remains on its verified guest-access revision. Git-triggered Vercel deployments are disabled in `vercel.json` so publishing repository updates does not replace that live version. Deployments are manual until the refactor is scheduled for release.
